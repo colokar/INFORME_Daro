@@ -1,0 +1,1514 @@
+/* ======================================================
+TIPOGRAFIA OFICIAL
+====================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&display=swap');
+
+/* ======================================================
+PALETA DE COLORES OFICIAL
+====================================================== */
+
+:root{
+    --azul-oscuro: #292a4e;
+    --azul-medio: #47658e;
+    --gris-azulado: #7e7f93;
+    --gris-claro: #c9cfe6;
+    --dorado: #e6b85f;
+    --blanco: #ffffff;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Lora, serif;
+    background: var(--gris-claro);
+    color: var(--azul-oscuro);
+}
+
+/* TITULOS */
+
+h1,h2,h3{
+    color: var(--azul-oscuro);
+}
+
+/* BOTONES */
+
+button{
+    background: var(--azul-medio);
+    color: var(--blanco);
+    border:none;
+    padding:10px 15px;
+    border-radius:6px;
+}
+
+button:hover{
+    background: var(--azul-oscuro);
+}
+
+
+
+/* ============================= */
+/* VEHICULOS CONTROLADOS NUEVO */
+/* ============================= */
+
+.vc-bloque{
+    background:#f2f2f2;
+    padding:30px;
+    margin-top:20px;
+    border-radius:10px;
+    color:#1f2a44;
+    width: 100%;
+    overflow: visible;
+}
+
+.vc-contenedor{
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.vc-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    position: relative;
+}
+
+.vc-titulo {
+    display: flex;
+    align-items: center;
+    font-size: 32px;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+}
+
+.vc-flecha-titulo {
+    display: inline-block;
+    margin-right: 12px;
+    color: #e6b85f;
+    font-size: 32px;
+    line-height: 1;
+}
+
+.vc-linea {
+    flex-grow: 1;
+    height: 4px;
+    background: #1f3558;
+    position: relative;
+    margin-right: 50px;
+}
+
+.vc-linea::after {
+    content: "";
+    position: absolute;
+    right: -50px;
+    top: -8px;
+    width: 50px;
+    height: 50px;
+    border-top: 4px solid #1f3558;
+    border-right: 4px solid #1f3558;
+    transform: rotate(-45deg);
+    border-radius: 0 8px 0 0;
+}
+
+.vc-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+.vc-izquierda {
+    flex: 1 1 500px; /* Crece, se achica, pero intenta medir 500px */
+    max-width: 100%;
+}
+
+.vc-derecha {
+    width: 100%;
+    max-width: 40%;
+    min-width: 280px;
+    display: flex;
+    justify-content: center;
+}
+
+/* BARRA HORIZONTAL - ESTRUCTURA UNIFICADA */
+
+.vc-barra-container {
+    width: 100%;
+}
+
+.vc-barra-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    gap: 20px;
+}
+
+.vc-header-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #1f2a44;
+}
+
+.vc-icono {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.vc-icono img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+/* BARRA HORIZONTAL UNIFICADA */
+
+.vc-barra-horizontal {
+    display: flex;
+    width: 100%;
+    height: 35px;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(31, 53, 88, 0.1);
+    margin-bottom: 12px;
+}
+
+.vc-barra-cargas {
+    background: #1f3558;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 13px;
+    flex: 1;
+}
+
+.vc-barra-pasajeros {
+    background: #6c7285;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 13px;
+    flex: 1;
+}
+
+.vc-unidades-container {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #1f2a44;
+    font-weight: 500;
+}
+
+.vc-flecha {
+    font-size: 16px;
+    color: #e6b85f;
+}
+
+.vc-grafico-contenedor {
+    position: relative;
+    width: auto;
+    min-width: 300px;
+    min-height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    overflow: visible;
+}
+
+.vc-indicadores {
+    position: static;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 0;
+    z-index: 1;
+}
+
+.vc-indicador {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    max-width: 220px;
+}
+
+.vc-texto {
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.vc-valor-ind {
+    font-weight: 600;
+    color: #1f2a44;
+}
+
+.vc-subrayado {
+    width: 35px;
+    height: 2px;
+    background: currentColor;
+    margin: 3px 0;
+}
+
+.vc-porc-ind {
+    font-size: 11px;
+    font-weight: 500;
+    opacity: 0.85;
+}
+
+.vc-indicador.retenciones {
+    color: #d4a64a;
+}
+
+.vc-indicador.retenciones .vc-subrayado {
+    background: #d4a64a;
+}
+
+.vc-indicador.actas {
+    color: #6c7285;
+}
+
+.vc-indicador.actas .vc-subrayado {
+    background: #6c7285;
+}
+
+.vc-indicador img {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+}
+
+#grafico-vc {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.vc-centro {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    z-index: 10;
+    background: transparent; /*clave */
+}
+
+.vc-icono-centro {
+    width: 44px;
+    margin-bottom: 10px;
+}
+
+.vc-total {
+    font-size: 42px;
+    font-weight: 800;
+    color: #1f2a44;
+}
+
+.vc-sub {
+    font-size: 14px;
+    color: #8a8f9a;
+    margin-top: 6px;
+}
+
+/* ============================= */
+/* INDICADORES EXTERNOS DEL DONUT */
+/* ============================= */
+
+.vc-indicador {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    z-index: 5;
+}
+
+.vc-indicador.retenciones {
+    top: 20px;
+    right: -180px;
+    color: #d4a64a;
+}
+
+.vc-indicador.actas {
+    top: 100px;
+    right: -180px;
+    color: #6c7285;
+}
+
+
+
+
+
+
+/* === Header (Encabezado principal) === */
+.header {
+    background: linear-gradient(135deg, #2d2d5f 100%);
+    color: #292a4e;
+    padding: 8px 10px;
+    border-bottom: 4px solid #2a2f5a;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.header-logos {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 0;
+    padding: 0 5px;
+}
+
+.logo-ministerio {
+    height: 150px;
+    width: auto;
+    object-fit: contain;
+}
+
+.logo-cnrt {
+    height: 75px;
+    width: auto;
+    object-fit: contain;
+}
+
+/* === Título del Header === */
+.header h1 {
+    font-size: 2.5em;
+    margin-top: 15px;
+    margin-bottom: 10px;
+    text-align: center;
+    color: #ffffff;
+    font-weight: 700;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    letter-spacing: 1px;
+}
+
+.header p {
+    font-size: 0.9em;
+    margin: 5px 0;
+    text-align: center;
+    color: #e6b85f;
+}
+
+.seccion-titulo {
+    font-size: 32px;
+    font-weight: 700;
+    margin-top: 25px;
+    margin-bottom: 20px;
+    border-bottom: 3px solid #7e7f93;
+    padding-bottom: 8px;
+    color: #c9cfe6;
+}
+
+/* === Filtro / Controles - .container-filtro (Filtro de fechas + botón) === */
+.container-filtro {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 20px;
+  padding: 25px 30px;
+  background: linear-gradient(135deg, #e8ecf1 0%, #d9dfe7 100%);
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  font-family: 'Segoe UI', sans-serif;
+  margin: 25px auto;
+  max-width: 900px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+
+/* Campos de entrada */
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.campo label {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #2d2d5f;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Inputs de fecha */
+input[type="date"] {
+  padding: 12px 16px;
+  border: 2px solid #b0b8c1;
+  border-radius: 8px;
+  font-size: 1rem;
+  color: #1a1a1a;
+  background-color: #ffffff;
+  background-image: linear-gradient(to bottom, #ffffff 0%, #f7f8fa 100%);
+  transition: border-color 0.3s, box-shadow 0.3s, background-color 0.3s;
+  outline: none;
+  font-weight: 500;
+}
+
+input[type="date"]:hover {
+  background-color: #fafbfc;
+  border-color: #9aa4af;
+}
+
+input[type="date"]:focus {
+  border-color: #2d2d5f;
+  box-shadow: 0 0 0 4px rgba(45, 45, 95, 0.15), inset 0 1px 3px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+}
+
+/* Botón Generar */
+.btn-informe {
+  padding: 12px 32px;
+  background: linear-gradient(135deg, #2d2d5f 0%, #1f1f40 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(45, 45, 95, 0.3);
+  letter-spacing: 0.3px;
+}
+
+.btn-informe:hover {
+  background: linear-gradient(135deg, #1f1f40 0%, #151530 100%);
+  box-shadow: 0 6px 16px rgba(45, 45, 95, 0.4);
+  transform: translateY(-2px);
+}
+
+.btn-informe:active {
+  transform: scale(0.97) translateY(0);
+  box-shadow: 0 2px 8px rgba(45, 45, 95, 0.3);
+}
+
+/* Estilo para el icono del calendario (Solo Webkit) */
+
+
+/* === Control Item - (Tarjeta resumen: icono + detalles) === */
+.control-item {
+    display: block;
+    width: 100%;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    background: white;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Contenedor para poner dos cajas lado a lado (ej. Conductores + Retenciones) */
+.two-boxes {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+/* === Inner Box - .inner-box (Cuadros internos en Retenciones) === */
+.inner-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+/* Ajustes para que las dos cajas principales se vean del mismo tamaño */
+.two-boxes .control-item {
+    min-height: 180px;
+}
+
+/* CONTENEDOR PRINCIPAL DEL BLOQUE */
+
+/* ===== COLOR SOLO NUMEROS ===== */
+
+.control-item .item-numero {
+    color: #2d4a87;
+    font-weight: bold;
+}
+
+.control-item .detalle-valor {
+    color: #2d4a87;
+}
+
+.control-item .detalle-porcentaje {
+    color: #2d4a87;
+}
+
+/* ICONO + DONUT */
+
+/* ===== GRAFICOS DONUT EN DETALLES ===== */
+
+/* ===== DETALLE FLEX ===== */
+
+/* ===== CONTENEDOR DONUT ===== */
+
+.grafico-mini {
+    /* Permitimos que crezca un poco más para mejor legibilidad */
+    width: 140px; 
+    height: 140px;
+    position: relative;
+    margin: 0 auto; /* Lo centra en su contenedor */
+    
+    /* Evitamos que colapse en contenedores flex */
+    flex-shrink: 0; 
+}
+
+/* ===== CANVAS ===== */
+.grafico-mini canvas {
+    /* Chart.js necesita que el canvas sea relativo al padre */
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* ===== ICONO + NUMERO ===== */
+.item-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Centrado para que acompañe al donut */
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+
+/* =========================================
+   CONTENEDOR PRINCIPAL
+   CARGAS | GRAFICO | PASAJEROS
+========================================= */
+
+.item-detalles{
+
+flex:1;
+
+display:grid;
+/* columnas automaticas responsive */
+grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+
+align-items:center;
+
+gap:30px;
+
+padding:10px 20px;
+
+width:100%;
+box-sizing:border-box;
+
+}
+
+/* GRAFICOS MINI (TORTA) */
+
+.grafico-mini{
+    width:120px;
+    height:120px;
+    margin-left:20px;
+}
+
+.grafico-mini canvas{
+    width:100% !important;
+    height:100% !important;
+}
+
+/* === Barras separadoras ROJO === */
+
+/* ========================================
+DETALLE DE TRANSPORTE
+CARGAS / PASAJEROS
+CONTROLA EL SEPARADOR ROJO
+======================================== */
+
+.detalle {
+
+position: relative;
+
+background: #f9f9f9;
+
+padding: 40px 40px 40px 40px;
+
+border-radius: 3px;
+
+}
+
+/* ========================================
+SEPARADOR VERTICAL ROJO
+======================================== */
+
+.detalle::before {
+
+content: "";
+
+position: absolute;
+
+left: 10px;
+
+top: 0;
+bottom: 0;
+
+width: 2px;
+
+background: #e6b85f;
+
+}
+
+.detalle-label {
+    font-size: 0.85em;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.detalle-valor {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #333;
+}
+
+.detalle-porcentaje {
+    font-size: 0.9em;
+    color: #3f4aac;
+    margin-top: 5px;
+}
+
+.organismo {
+    display: inline-block;
+    font-weight: bold;
+    font-size: 0.8em;
+    margin: 2px;
+}
+
+.gftau {
+    background-color: #000000;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 3px;
+}
+
+.sfdr {
+    background-color: #666666;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 3px;
+}
+
+.footer {
+    margin-top: 50px;
+    padding: 20px;
+    text-align: center;
+    font-size: 0.85em;
+    color: #666;
+    border-top: 1px solid #e0e0e0;
+}
+
+.tabla-regiones {
+    margin-top: 0px;
+    background: white;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    overflow-x: auto;
+}
+
+.tabla-regiones table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9em;
+}
+
+.tabla-regiones th {
+    background-color: #57575e;
+    color: white;
+    padding: 12px;
+    text-align: left;
+    font-weight: bold;
+    border: 1px solid #2b2929;
+}
+
+.tabla-regiones td {
+    padding: 15px 20px;
+    border: 1px solid #ddd;
+    text-align: center;
+    color: black;
+}
+
+/* FILA TOTAL CNRT ESTILO INSTITUCIONAL */
+.tabla-regiones .total-row {
+    background-color: #f4f6fa;
+    font-weight: bold;
+    border-top: 3px solid rgb(45, 45, 95);
+}
+
+.tabla-regiones .total-row td {
+    color: rgb(45, 45, 95);
+}
+
+/* Evita que el hover la afecte */
+.tabla-regiones tr.total-row:hover {
+    background-color: #f4f6fa;
+}
+
+
+/*COLOR DE LAS LETRAS DE LA TABLA POR REGION*/
+.tabla-regiones .region-label {
+    text-align: left;
+    font-weight: bold;
+    background-color: #ffffff;
+    color: black;
+}
+
+.tabla-regiones .total-row {
+    background-color: white;
+    color: black;
+    font-weight: bold;
+}
+
+.tabla-regiones .total-row td {
+    border-color: #0000008f;
+    padding: 12px;
+}
+
+
+
+@media (max-width: 768px) {
+    .control-item {
+        grid-template-columns: 1fr;
+    }
+
+    .two-boxes {
+        grid-template-columns: 1fr;
+    }
+
+    .tabla-regiones {
+        font-size: 0.8em;
+    }
+
+    .tabla-regiones td,
+    .tabla-regiones th {
+        padding: 8px;
+    }
+
+    .mapa-img {
+        width: 60%;
+    }
+}
+
+
+
+/* ESTILOS PARA MAPA DE RETENCIONES */
+.seccion-mapa-retenciones {
+    margin-top: 40px;
+    margin-bottom: 20px;
+    background: white;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.boton-expandir {
+    width: 100%;
+    padding: 15px 20px;
+    background: linear-gradient(135deg, #2d2d5f 100%);
+    color: white;
+    border: none;
+    font-size: 1em;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.3s ease;
+}
+
+.boton-expandir:hover {
+    background: linear-gradient(135deg, #1a1a3f 100%);
+}
+
+#icono-expandir {
+    transition: transform 0.3s ease;
+    display: inline-block;
+}
+
+.icono-rotated {
+    transform: rotate(180deg);
+}
+
+.contenedor-mapa-oculto {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease;
+}
+
+.contenedor-mapa-visible {
+    max-height: none;
+    transition: max-height 0.4s ease;
+}
+
+.filtros-mapa {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+    background: #f9f9f9;
+    border-bottom: 1px solid #eee;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.grupo-filtro {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.grupo-filtro label {
+    font-weight: bold;
+    color: #333;
+    font-size: 0.9em;
+}
+
+/* ===== MAPA SVG ===== */
+
+.area-mapa{
+    width:100%;
+}
+
+
+
+.mapa-container {
+    position: relative;
+    width: 500px;
+    margin: auto;
+    min-height: 420px;
+    transform: scale(0.8);
+    transform-origin: top center;
+}
+
+.mapa {
+    width: 100%;
+    display: block;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(31, 42, 68, 0.12);
+}
+
+.region {
+    position: absolute;
+    width: 230px;
+    min-width: 230px;
+    font-size: 15px;
+    color: #1f2a44;
+}
+
+.region .info {
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(31, 42, 68, 0.12);
+    border-radius: 10px;
+    padding: 16px 20px;
+    box-shadow: 0 8px 20px rgba(31, 42, 68, 0.08);
+}
+
+.region .info h3 {
+    margin: 0 0 6px;
+    font-size: 17px;
+    letter-spacing: 0.5px;
+}
+
+.region .info p {
+    margin: 2px 0;
+}
+
+.region .ret {
+    color: #e6b85f;
+    font-weight: 700;
+}
+
+.region .linea {
+    position: absolute;
+    height: 2px;
+    background: #1f2a44;
+}
+
+.region .punto {
+    width: 10px;
+    height: 10px;
+    background: #1f2a44;
+    border-radius: 50%;
+    position: absolute;
+}
+
+.region.noa {
+    top: 10px;
+    left: -270px;
+}
+
+.region.noa .linea {
+    top: 46px;
+    left: 190px;
+    width: 150px;
+    height: 2px;
+    background: #1f2a44;
+}
+
+.region.noa .linea::after {
+    content: "";
+    position: absolute;
+    left: 150px;
+    top: -10px;
+    width: 60px;
+    height: 2px;
+    background: #1f2a44;
+    transform: rotate(15deg);
+    transform-origin: left center;
+}
+
+.region.noa .punto {
+    top: 33px;
+    left: 405px;
+}
+
+.region.cuyo {
+    top: 170px;
+    left: -270px;
+}
+
+.region.cuyo .linea {
+    top: 40px;
+    left: 190px;
+    width: 120px;
+    height: 2px;
+    background: #1f2a44;
+}
+
+.region.cuyo .linea::after {
+    content: "";
+    position: absolute;
+    left: 120px;
+    top: -8px;
+    width: 90px;
+    height: 2px;
+    background: #c9cfe6;
+    transform: rotate(12deg);
+    transform-origin: left center;
+}
+
+.region.cuyo .punto {
+    top: 29px;
+    left: 405px;
+}
+
+.region.patagonia {
+    top: 320px;
+    left: -270px;
+}
+
+.region.patagonia .linea {
+    top: 40px;
+    left: 190px;
+    width: 140px;
+    height: 2px;
+    background: #1f2a44;
+}
+
+.region.patagonia .linea::after {
+    content: "";
+    position: absolute;
+    left: 140px;
+    top: -12px;
+    width: 70px;
+    height: 2px;
+    background: #1f2a44;
+    transform: rotate(18deg);
+    transform-origin: left center;
+}
+
+.region.patagonia .punto {
+    top: 25px;
+    left: 405px;
+}
+
+.region.nea {
+    top: 10px;
+    right: -270px;
+}
+
+.region.nea .linea {
+    top: 46px;
+    right: 190px;
+    width: 150px;
+    height: 2px;
+    background: #1f2a44;
+}
+
+.region.nea .linea::after {
+    content: "";
+    position: absolute;
+    right: 150px;
+    top: -10px;
+    width: 60px;
+    height: 2px;
+    background: #1f2a44;
+    transform: rotate(-15deg);
+    transform-origin: right center;
+}
+
+.region.nea .punto {
+    top: 33px;
+    right: 405px;
+}
+
+.region.amba {
+    top: 170px;
+    right: -270px;
+}
+
+.region.amba .linea {
+    top: 40px;
+    right: 190px;
+    width: 210px;
+    height: 2px;
+    background: #1f2a44;
+}
+
+.region.amba .punto {
+    top: 37px;
+    right: 405px;
+}
+
+.region.amba .punto::after {
+    content: "";
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #1f2a44;
+    border-radius: 50%;
+    top: -5px;
+    left: -5px;
+}
+
+.region.centro {
+    top: 320px;
+    right: -270px;
+}
+
+.region.centro .linea {
+    top: 40px;
+    right: 190px;
+    width: 130px;
+    height: 2px;
+    background: #1f2a44;
+}
+
+.region.centro .linea::after {
+    content: "";
+    position: absolute;
+    right: 130px;
+    top: -20px;
+    width: 80px;
+    height: 2px;
+    background: #1f2a44;
+    transform: rotate(-20deg);
+    transform-origin: right center;
+}
+
+.region.centro .punto {
+    top: 17px;
+    right: 400px;
+}
+
+.grupo-filtro select {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 0.9em;
+    background-color: white;
+    cursor: pointer;
+}
+
+.grupo-filtro select:focus {
+    outline: none;
+    border-color: #2a90d9;
+    box-shadow: 0 0 5px rgba(42, 144, 217, 0.3);
+}
+
+.contador-hitos {
+    font-size: 0.9em;
+    color: #666;
+    padding: 8px 12px;
+    background: white;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+}
+
+.area-mapa {
+    padding: 20px;
+    background: white;
+    border-bottom: 1px solid #eee;
+}
+
+.mapa-svg {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    border: 1px solid #eee;
+    border-radius: 4px;
+}
+
+.definicion-hito {
+    padding: 20px;
+    background: #f0f4f8;
+    border-top: 1px solid #eee;
+}
+
+.definicion-hito h3 {
+    margin-bottom: 10px;
+    color: #2d2d5f;
+    font-size: 1.1em;
+}
+
+.definicion-hito p {
+    margin-bottom: 10px;
+    color: #555;
+    font-size: 0.95em;
+}
+
+.definicion-hito ul {
+    list-style-position: inside;
+    margin: 0;
+    padding: 0;
+}
+
+.definicion-hito li {
+    margin-bottom: 8px;
+    color: #555;
+    font-size: 0.95em;
+    line-height: 1.4;
+}
+
+/* ESTILOS PARA PANEL DE INDICADORES */
+.panel {
+    margin-top: 40px;
+    margin-bottom: 30px;
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-left: 5px solid #2d2d5f;
+}
+
+.panel h2 {
+    color: #2d2d5f;
+    margin-bottom: 25px;
+    font-size: 1.4em;
+    text-align: center;
+}
+
+.kpi {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.kpi > div {
+    background: linear-gradient(135deg, #f5f5f5 0%, #eeeeee 100%);
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    border: 2px solid #295cae;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.kpi > div:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+}
+
+.kpi h3 {
+    font-size: 0.95em;
+    color: #555;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.kpi span {
+    display: block;
+    font-size: 2.5em;
+    font-weight: bold;
+    color: #2d2d5f;
+    margin: 10px 0;
+}
+
+.metodologia {
+    background: #f0f4f8;
+    padding: 20px;
+    border-radius: 6px;
+    border-left: 4px solid #ffc107;
+}
+
+.metodologia strong {
+    color: #2d2d5f;
+    font-size: 1.05em;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.metodologia p {
+    color: #555;
+    font-size: 0.95em;
+    line-height: 1.5;
+    margin: 0;
+}
+
+
+
+#graficoRegiones{
+    width:100%;
+    height:350px;
+}
+
+/* ====================================================== */
+/* PRINCIPALES MOTIVOS DE INFRACCIÓN - DASHBOARD */
+/* ====================================================== */
+
+.principal-infracciones {
+    margin-top: 40px;
+    margin-bottom: 40px;
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.principal-infracciones-titulo {
+    font-size: 1.4em;
+    color: #2d2d5f;
+    margin-bottom: 30px;
+    text-align: center;
+    font-weight: 600;
+}
+
+.principal-infracciones-contenedor {
+    display: grid;
+    grid-template-columns: 60% 1fr;
+    gap: 40px;
+    align-items: flex-start;
+}
+
+/* COLUMNA IZQUIERDA - BARRAS */
+.principal-infracciones-columna-izq {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+.principal-infracciones-seccion {
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 6px;
+    border-left: 5px solid #292a4e;
+}
+
+.principal-infracciones-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 25px;
+    gap: 15px;
+}
+
+.principal-infracciones-icono {
+    flex-shrink: 0;
+}
+
+.principal-infracciones-icono img {
+    width: 50px;
+    height: auto;
+}
+
+.principal-infracciones-info {
+    flex: 1;
+}
+
+.principal-infracciones-titulo-seccion {
+    margin: 0;
+    font-size: 1.1em;
+    color: #2d2d5f;
+    font-weight: 600;
+}
+
+.principal-infracciones-subtitulo {
+    margin: 5px 0 0 0;
+    font-size: 0.9em;
+    color: #666;
+}
+
+/* BARRAS HORIZONTALES */
+.principal-infracciones-barras {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.barra-horizontal-fila {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    align-items: center;
+}
+
+.barra-datos {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.barra-porcentaje {
+    font-size: 0.85em;
+    font-weight: 600;
+    color: #2d2d5f;
+    min-width: 70px;
+}
+
+.barra-contenedor {
+    width: 100%;
+    height: 18px;
+    background: #e8e8e8;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.barra-fill {
+    height: 100%;
+    transition: width 0.3s ease;
+    border-radius: 4px;
+}
+
+.barra-descripcion {
+    font-size: 0.85em;
+    color: #555;
+    line-height: 1.3;
+}
+
+/* Variaciones de color para cargas (más oscuro) */
+.principal-infracciones-barras.cargas .barra-fill {
+    background: linear-gradient(90deg, #1a2a3d, #47658e);
+}
+
+/* Variaciones de color para pasajeros (gris) */
+.principal-infracciones-barras.pasajeros .barra-fill {
+    background: linear-gradient(90deg, #7e7f93, #c9cfe6);
+}
+
+/* COLUMNA DERECHA - GRÁFICO */
+.principal-infracciones-columna-der {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.principal-infracciones-grafico-contenedor {
+    position: relative;
+    width: 250px;
+    height: 250px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#graficoInfracciones {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.principal-infracciones-total {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    pointer-events: none;
+}
+
+.principal-infracciones-total-numero {
+    font-size: 2.2em;
+    font-weight: bold;
+    color: #2d2d5f;
+}
+
+.principal-infracciones-total-label {
+    font-size: 0.9em;
+    color: #666;
+    margin-top: 5px;
+}
+
+/* NOTA AL PIE */
+.principal-infracciones-nota {
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid #e0e0e0;
+    font-size: 0.8em;
+    color: #666;
+    line-height: 1.5;
+}
+
+.principal-infracciones-nota p {
+    margin: 0;
+}
+
+/* RESPONSIVE */
+@media (max-width: 1024px) {
+    .principal-infracciones-contenedor {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+
+    .principal-infracciones-columna-der {
+        justify-content: center;
+    }
+
+    .barra-horizontal-fila {
+        grid-template-columns: 1fr;
+    }
+
+    .barra-descripcion {
+        grid-column: 1;
+    }
+}
+
+@media (max-width: 768px) {
+    .principal-infracciones {
+        padding: 20px;
+    }
+
+    .principal-infracciones-titulo {
+        font-size: 1.2em;
+    }
+
+    .principal-infracciones-seccion {
+        border-left-width: 3px;
+    }
+
+    .principal-infracciones-grafico-contenedor {
+        width: 200px;
+        height: 200px;
+    }
+
+    .principal-infracciones-total-numero {
+        font-size: 1.8em;
+    }
+}

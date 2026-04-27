@@ -1,0 +1,175 @@
+/**************************************
+BASE DE DATOS INDEXEDDB - CNRT
+**************************************/
+
+let db;
+
+/* ==============================
+   INICIAR BASE DE DATOS
+============================== */
+
+function iniciarDB() {
+  return new Promise((resolve, reject) => {
+
+    if (!window.indexedDB) {
+      reject("IndexedDB no está soportado en este navegador");
+      return;
+    }
+
+    const request = indexedDB.open("CNRT_DB", 1);
+
+    request.onupgradeneeded = e => {
+      const database = e.target.result;
+
+      if (!database.objectStoreNames.contains("fiscalizaciones")) {
+
+        const store = database.createObjectStore("fiscalizaciones", {
+          keyPath: "id",
+          autoIncrement: true
+        });
+
+        store.createIndex("fecha", "fecha", { unique: false });
+        store.createIndex("regional", "regional", { unique: false });
+        store.createIndex("tipo", "tipo", { unique: false });
+        store.createIndex("latitud", "latitud", { unique: false });
+        store.createIndex("longitud", "longitud", { unique: false });
+      }
+    };
+
+    request.onsuccess = e => {
+      db = e.target.result;
+      console.log("✅ Base CNRT_DB iniciada correctamente");
+      resolve(db);
+    };
+
+    request.onerror = e => {
+      console.error("❌ Error al abrir DB:", e.target.error);
+      reject(e.target.error);
+    };
+
+  });
+}
+
+/* ==============================
+   GUARDAR REGISTRO
+============================== */
+
+function guardarFiscalizacion(data) {
+  return new Promise((resolve, reject) => {
+
+    const transaction = db.transaction("fiscalizaciones", "readwrite");
+    const store = transaction.objectStore("fiscalizaciones");
+
+    const request = store.add(data);
+
+    request.onsuccess = () => resolve("Registro guardado");
+    request.onerror = e => reject(e.target.error);
+
+  });
+}
+
+/* ==============================
+   OBTENER TODOS LOS REGISTROS
+============================== */
+
+function obtenerTodas() {
+  return new Promise((resolve, reject) => {
+
+    const transaction = db.transaction("fiscalizaciones", "readonly");
+    const store = transaction.objectStore("fiscalizaciones");
+
+    const request = store.getAll();
+
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = e => reject(e.target.error);
+
+  });
+}
+
+/* ==============================
+   FILTRAR POR REGIÓN
+============================== */
+
+function buscarPorRegion(region) {
+  return new Promise((resolve, reject) => {
+
+    const transaction = db.transaction("fiscalizaciones", "readonly");
+    const store = transaction.objectStore("fiscalizaciones");
+    const index = store.index("regional");
+
+    const request = index.getAll(region);
+
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = e => reject(e.target.error);
+
+  });
+}
+
+/* ==============================
+   FILTRAR POR TIPO
+============================== */
+
+function buscarPorTipo(tipo) {
+  return new Promise((resolve, reject) => {
+
+    const transaction = db.transaction("fiscalizaciones", "readonly");
+    const store = transaction.objectStore("fiscalizaciones");
+    const index = store.index("tipo");
+
+    const request = index.getAll(tipo);
+
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = e => reject(e.target.error);
+
+  });
+}
+
+/* ==============================
+   ELIMINAR REGISTRO POR ID
+============================== */
+
+function eliminarRegistro(id) {
+  return new Promise((resolve, reject) => {
+
+    const transaction = db.transaction("fiscalizaciones", "readwrite");
+    const store = transaction.objectStore("fiscalizaciones");
+
+    const request = store.delete(id);
+
+    request.onsuccess = () => resolve("Registro eliminado");
+    request.onerror = e => reject(e.target.error);
+
+  });
+}
+
+/* ==============================
+   LIMPIAR TODA LA TABLA
+============================== */
+
+function limpiarBase() {
+  return new Promise((resolve, reject) => {
+
+    const transaction = db.transaction("fiscalizaciones", "readwrite");
+    const store = transaction.objectStore("fiscalizaciones");
+
+    const request = store.clear();
+
+    request.onsuccess = () => resolve("Base limpiada");
+    request.onerror = e => reject(e.target.error);
+
+  });
+}
+
+/* ==============================
+   EJEMPLO DE USO AUTOMÁTICO
+============================== */
+
+async function inicializarSistema() {
+
+  await iniciarDB();
+
+  console.log("Sistema listo para usar IndexedDB");
+
+}
+
+inicializarSistema();

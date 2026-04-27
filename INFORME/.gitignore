@@ -1,0 +1,13 @@
+.venv/
+venv/
+__pycache__/
+*.pyc
+node_modules/
+.vscode/
+Excel/
+*.xlsx
+*.xls
+datos.json
+datos_fiscalizacion.json
+fiscalizacion.db
+package-lock.json
