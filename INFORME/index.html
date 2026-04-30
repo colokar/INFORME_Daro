@@ -1046,22 +1046,33 @@ function actualizarDashboard() {
             }
 
             // --- TABLA DE REGIONES ---
-            // Asegúrate que estos IDs coincidan con tu HTML (amba, cen, cuy, nea, noa, pat)
-            var listaRegiones = ["amba", "cen", "cuy", "nea", "noa", "pat", "costa"];
-            listaRegiones.forEach(function(r) {
-                var dReg = regionesData[r.toUpperCase()];
-                if (dReg) {
-                    escribir(r + "_cargas_vc", dReg.cargas.vc);
-                    escribir(r + "_cargas_actas", dReg.cargas.actas);
-                    escribir(r + "_cargas_ret", dReg.cargas.ret);
-                    escribir(r + "_pasajeros_vc", dReg.pasajeros.vc);
-                    escribir(r + "_pasajeros_actas", dReg.pasajeros.actas);
-                    escribir(r + "_pasajeros_ret", dReg.pasajeros.ret);
-                    escribir(r + "_total_vc", dReg.total.vc);
-                    escribir(r + "_total_actas", dReg.total.actas);
-                    escribir(r + "_total_ret", dReg.total.ret);
-                }
-            });
+            // --- TABLA DE REGIONES (Versión Final Blindada) ---
+        var listaRegiones = ["AMBA", "CEN", "CUY", "NEA", "NOA", "COSTA", "PAT"];
+
+        listaRegiones.forEach(function(r) {
+        // 1. Buscamos el dato en el JSON siempre usando MAYÚSCULAS
+        var dReg = regionesData[r.toUpperCase()]; 
+    
+        if (dReg) {
+        // 2. Definimos el ID del HTML siempre en minúsculas
+        var idBase = r.toLowerCase(); 
+
+        // 3. Escribimos los datos (Cargas, Pasajeros y Totales)
+        escribir(idBase + "_cargas_vc", dReg.cargas.vc);
+        escribir(idBase + "_cargas_actas", dReg.cargas.actas);
+        escribir(idBase + "_cargas_ret", dReg.cargas.ret);
+        
+        escribir(idBase + "_pasajeros_vc", dReg.pasajeros.vc);
+        escribir(idBase + "_pasajeros_actas", dReg.pasajeros.actas);
+        escribir(idBase + "_pasajeros_ret", dReg.pasajeros.ret);
+        
+        escribir(idBase + "_total_vc", dReg.total.vc);
+        escribir(idBase + "_total_actas", dReg.total.actas);
+        escribir(idBase + "_total_ret", dReg.total.ret);
+    } else {
+        console.warn("No se encontraron datos para la región:", r);
+    }
+    });
 
             console.log("✅ Dashboard actualizado con metadata y regiones.");
         })
