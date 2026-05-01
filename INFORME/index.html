@@ -44,7 +44,9 @@
         </div>
 
         <!-- SECCION DE VEHICULOS CONTROLADOS === -->
-<div class="control-item">
+<div class="vc-grupo-unificado">
+
+    <!-- SECCION DE VEHICULOS CONTROLADOS -->
     <div class="vc-bloque">
         <div class="vc-contenedor">
             <div class="vc-header">
@@ -56,7 +58,6 @@
             </div>
 
             <div class="vc-main">
-
                 <div class="vc-izquierda">
                     <div class="vc-barra-container">
                         <div class="vc-barra-header">
@@ -87,113 +88,117 @@
                 </div>
 
                 <div class="vc-derecha">
-                    <div class="vc-grafico-contenedor">
-                        <canvas id="grafico-vc"></canvas>
-                        <div class="vc-centro">
-                            <img src="IMAGENES/VC_azul.png" class="vc-icono-centro" alt="PDA">
-                            <div id="vc_total" class="vc-total">0</div>
-                            <div class="vc-sub">Total VC 100%</div>
-                            
-                        </div>
-                        <div class="vc-indicadores">
-                            <div class="vc-indicador retenciones">
-                                <div class="vc-texto">
-                                    <div class="vc-valor-ind">➤ Retenciones <span id="vc_ret_valor">0</span></div>
-                                    <div class="vc-subrayado"></div>
-                                    <span class="vc-porc-ind" id="vc_ret_porc">0%</span>
-                                </div>
-                                <img src="IMAGENES/stop_azul.png" alt="Retencion">
-                            </div>
-                            <div class="vc-indicador actas">
-                                <div class="vc-texto">
-                                    <div class="vc-valor-ind">➤ Actas <span id="vc_actas_valor">0</span></div>
-                                    <div class="vc-subrayado"></div>
-                                    <span class="vc-porc-ind" id="vc_actas_porc">0%</span>
-                                </div>
-                                <img src="IMAGENES/Anotador.png" alt="Actas">
-                            </div>
-                        </div>
-                    </div>
+    <div class="vc-grafico-contenedor">
+        <!-- Círculo central -->
+        <div class="vc-centro">
+            <div id="vc_total" class="vc-total">0</div>
+            <div class="vc-sub">Total VC 100%</div>
+        </div>
+        
+        <!-- Contenedor de indicadores que ahora respeta márgenes -->
+        <div class="vc-indicadores-wrapper">
+            <!-- Indicador Actas -->
+            <div class="vc-indicador actas">
+                <div class="vc-texto">
+                    <div class="vc-valor-ind">➤ Actas <span id="vc_actas_valor">0</span></div>
+                    <div class="vc-subrayado"></div>
+                    <span class="vc-porc-ind" id="vc_actas_porc">0%</span>
                 </div>
-
+                <img src="IMAGENES/Anotador.png" alt="Actas">
             </div>
 
+            <!-- Indicador Retenciones -->
+            <div class="vc-indicador retenciones">
+                <div class="vc-texto">
+                    <div class="vc-valor-ind">➤ Retenciones <span id="vc_ret_valor">0</span></div>
+                    <div class="vc-subrayado"></div>
+                    <span class="vc-porc-ind" id="vc_ret_porc">0%</span>
+                </div>
+                <img src="IMAGENES/Grua.png" alt="Retenciones">
+            </div>
         </div>
     </div>
-
 </div>
-
-        <!-- ===ACTAS=== -->
-        <div class="vc-bloque">
-
-            <div class="vc-header">
-                <div class="vc-titulo">
-                    <span class="vc-flecha-titulo">&gt;</span>
-                    Actas
-                </div>
-                <div class="vc-linea"></div>
             </div>
+        </div>
+    </div> <!-- FIN VEHICULOS CONTROLADOS -->
 
-            <div class="vc-main">                
+    <!-- SEPARADOR VISUAL -->
+    <div class="vc-separador-interno"></div>
 
-                <div class="vc-izquierda">
-                    <div class="vc-barra-container">
-                        <div class="vc-barra-header">
-                            <div class="vc-header-item">
-                                <img src="IMAGENES/camion_azul.png" alt="Camión" class="vc-icono">
-                                <span>Cargas</span>
-                            </div>
-                            <div class="vc-header-item">
-                                <img src="IMAGENES/micro_azul.png" alt="Micro" class="vc-icono">
-                                <span>Pasajeros</span>
-                            </div>
-                        </div>
-                        <div class="vc-barra-horizontal">
-                            <div class="vc-barra-cargas" id="actas_cargas_pct">0%</div>
-                            <div class="vc-barra-pasajeros" id="actas_pasajeros_pct">0%</div>
-                        </div>
-                        <div class="vc-unidades-container">
-                            <div class="vc-unidades">
-                                <span class="vc-flecha">➤</span>
-                                <span id="actas_cargas_un">0</span> un.
-                            </div>
-                            <div class="vc-unidades">
-                                <span class="vc-flecha">➤</span>
-                                <span id="actas_pasajeros_un">0</span> un.
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="vc-derecha">
-                    <div class="vc-grafico-contenedor">
-                        <canvas id="grafico-actas"></canvas>
-                        <div class="vc-indicadores">
-                            <div class="vc-indicador retenciones">
-                                <div class="vc-texto">
-                                    <div class="vc-valor-ind">➤ Retenciones <span id="actas_ret_valor">0</span></div>
-                                    <div class="vc-subrayado"></div>
-                                    <span class="vc-porc-ind" id="actas_ret_porc">0%</span>
-                                </div>
-                                <img src="IMAGENES/stop_azul.png" alt="Retencion">
-                            </div>
-                        </div>
-                        <div class="vc-centro">
-                            <img src="IMAGENES/Anotador.png" class="vc-icono-centro" alt="PDA">
-                            <div id="actas_total" class="vc-total">0</div>
-                            <div class="vc-sub">Total Actas 100%</div>
-                        </div>
-                        
-                    </div>
-                </div>
-
+    <!-- SECCION DE ACTAS -->
+    <div class="vc-bloque">
+        <div class="vc-header">
+            <div class="vc-titulo">
+                <span class="vc-flecha-titulo">&gt;</span>
+                Actas
             </div>
-
+            <div class="vc-linea"></div>
         </div>
 
-        <!-- === Sección - Retenciones === -->
-        <div class="vc-bloque">
+        <div class="vc-main">                
+            <div class="vc-izquierda">
+                <div class="vc-barra-container">
+                    <div class="vc-barra-header">
+                        <div class="vc-header-item">
+                            <img src="IMAGENES/camion_azul.png" alt="Camión" class="vc-icono">
+                            <span>Cargas</span>
+                        </div>
+                        <div class="vc-header-item">
+                            <img src="IMAGENES/micro_azul.png" alt="Micro" class="vc-icono">
+                            <span>Pasajeros</span>
+                        </div>
+                    </div>
+                    <div class="vc-barra-horizontal">
+                        <div class="vc-barra-cargas" id="actas_cargas_pct">0%</div>
+                        <div class="vc-barra-pasajeros" id="actas_pasajeros_pct">0%</div>
+                    </div>
+                    <div class="vc-unidades-container">
+                        <div class="vc-unidades">
+                            <span class="vc-flecha">➤</span>
+                            <span id="actas_cargas_un">0</span> un.
+                        </div>
+                        <div class="vc-unidades">
+                            <span class="vc-flecha">➤</span>
+                            <span id="actas_pasajeros_un">0</span> un.
+                        </div>
+                    </div>
+                </div>
+            </div>
 
+            <div class="vc-derecha">
+                <div class="vc-grafico-contenedor">
+                    <canvas id="grafico-actas"></canvas>
+                    <div class="vc-indicadores">
+                        <div class="vc-indicador retenciones">
+                            <div class="vc-texto">
+                                <div class="vc-valor-ind">➤ Retenciones <span id="actas_ret_valor">0</span></div>
+                                <div class="vc-subrayado"></div>
+                                <span class="vc-porc-ind" id="actas_ret_porc">0%</span>
+                            </div>
+                            <img src="IMAGENES/stop_azul.png" alt="Retencion">
+                        </div>
+                    </div>
+                    <div class="vc-centro">
+                        <img src="IMAGENES/Anotador.png" class="vc-icono-centro" alt="PDA">
+                        <div id="actas_total" class="vc-total">0</div>
+                        <div class="vc-sub">Total Actas 100%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> <!-- FIN ACTAS -->
+
+</div> <!-- FIN GRUPO UNIFICADO -->
+
+       <!-- =========================================================== -->
+<!-- GRUPO UNIFICADO: RETENCIONES + INFRACCIONES               -->
+<!-- =========================================================== -->
+<div class="vc-grupo-unificado">
+
+    <!-- SECCION DE RETENCIONES -->
+    <div class="vc-bloque">
+        <div class="vc-contenedor">
             <div class="vc-header">
                 <div class="vc-titulo">
                     <span class="vc-flecha-titulo">&gt;</span>
@@ -203,7 +208,6 @@
             </div>
 
             <div class="vc-main">
-
                 <div class="vc-izquierda">
                     <div class="vc-barra-container">
                         <div class="vc-barra-header">
@@ -236,6 +240,11 @@
                 <div class="vc-derecha">
                     <div class="vc-grafico-contenedor">
                         <canvas id="grafico-retenciones"></canvas>
+                        <div class="vc-centro">
+                            <img src="IMAGENES/stop_azul.png" class="vc-icono-centro" alt="Retencion">
+                            <div id="ret_total" class="vc-total">0</div>
+                            <div class="vc-sub">Total Retenciones 100%</div>
+                        </div>
                         <div class="vc-indicadores">
                             <div class="vc-indicador actas">
                                 <div class="vc-texto">
@@ -246,21 +255,18 @@
                                 <img src="IMAGENES/Anotador.png" alt="Actas">
                             </div>
                         </div>
-                        <div class="vc-centro">
-                            <img src="IMAGENES/stop_azul.png" class="vc-icono-centro" alt="PDA">
-                            <div id="ret_total" class="vc-total">0</div>
-                            <div class="vc-sub">Total Retenciones 100%</div>
-                        </div>
                     </div>
                 </div>
-
             </div>
-
         </div>
+    </div> <!-- FIN RETENCIONES -->
 
-        <!-- === Sección - Infracciones === -->
-        <div class="vc-bloque">
+    <!-- SEPARADOR VISUAL INTERNO -->
+    <div class="vc-separador-interno"></div>
 
+    <!-- SECCION DE INFRACCIONES -->
+    <div class="vc-bloque">
+        <div class="vc-contenedor">
             <div class="vc-header">
                 <div class="vc-titulo">
                     <span class="vc-flecha-titulo">&gt;</span>
@@ -270,7 +276,6 @@
             </div>
 
             <div class="vc-main">
-
                 <div class="vc-izquierda">
                     <div class="vc-barra-container">
                         <div class="vc-barra-header">
@@ -304,225 +309,20 @@
                     <div class="vc-grafico-contenedor">
                         <canvas id="grafico-infracciones"></canvas>
                         <div class="vc-centro">
-                            <img src="IMAGENES/iconos-infracciones-azul.png" class="vc-icono-centro" alt="PDA">
+                            <img src="IMAGENES/iconos-infracciones-azul.png" class="vc-icono-centro" alt="Infracciones">
                             <div id="infracciones_total" class="vc-total">0</div>
-                            <div class="vc-sub">Total Infracciones a nivel nacional</div>
+                            <div class="vc-sub">Total Infracciones 100%</div>
                         </div>
-                    </div>
-                </div>
-
-            </div>
-
-        </div>
-
-        <!-- === Sección - Conductores Desafectados 2 cajas) === -->
-        <div class="seccion-titulo">Conductores Desafectados</div>
-
-        <!-- === Contenedor dos cajas - (izquierda: Conductores / derecha: Retenciones) === -->
-        <div class="two-boxes">
-
-            <!-- Caja: Conductores Desafectados (lado izquierdo) -->
-            <div class="control-item">
-                <div class="item-icon">
-                    <img src="IMAGENES/retencion_azul.png" alt="Conductores Desafectados" width="200" height="210">
-                    <div class="item-numero">00</div>
-                </div>
-                <div class="item-detalles">
-                    <div class="detalle">
-                        <div class="detalle-label">GFTAU</div>
-                        <div class="detalle-valor">00</div>
-                        <div class="detalle-porcentaje">00.00%</div>
-                        <div style="margin-top: 10px;">
-                            <span class="organismo gftau">000 (00%)</span>
-                            <span class="organismo gftau">000 (00%)</span>
-                        </div>
-                    </div>
-                    <div class="detalle">
-                        <div class="detalle-label">SFDR</div>
-                        <div class="detalle-valor">00</div>
-                        <div class="detalle-porcentaje">0000%</div>
-                        <div style="margin-top: 10px;">
-                            <span class="organismo sfdr">000 (00%)</span>
-                            <span class="organismo sfdr">000 (00%)</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Caja: Retenciones (lado derecho) - contiene los dos cuadritos internos -->
-            <div class="control-item">
-                <div class="item-icon">
-                </div>
-                <div class="item-detalles">
-
-                    <!-- Alcoholemia y Sustancias -->
-                    <div class="detalle inner-box">
-                        <img src="IMAGENES/alcoholimetro_azul.png"  width="100" height="90">
-                        <div class="detalle-label">Alcoholemia Positiva</div>
-                        <div class="detalle-valor" id="alc_pos">00</div>
-                    </div>
-
-                    <div class="detalle inner-box">
-                        <img src="IMAGENES/Sustancias_azul.png" width="100" height="90">
-                        <div class="detalle-label">Sustancias Positivas</div>
-                        <div class="detalle-valor" id="sus_pos">00</div>
-                    </div>
-                    </div>
+                        <!-- Si en el futuro agregas indicadores para infracciones, irían aquí -->
                     </div>
                 </div>
             </div>
         </div>
+    </div> <!-- FIN INFRACCIONES -->
 
-        <!-- ===TABLA DE REGIONES=== -->
-        <div class="tabla-regiones">
-            <table>
-                <thead>
-                    <tr>
-                        <th colspan="2">REGIÓN</th>
-                        <th colspan="3">CARGAS</th>
-                        <th colspan="3">PASAJEROS</th>
-                        <th colspan="3">TOTAL</th>
-                    </tr>
-                    <tr>
-                        <th>REGIÓN</th>
-                        <th>DESCRIPCIÓN</th>
-                        <th>VC</th>
-                        <th>ACTAS</th>
-                        <th>RET</th>
-                        <th>VC</th>
-                        <th>ACTAS</th>
-                        <th>RET</th>
-                        <th>VC</th>
-                        <th>ACTAS</th>
-                        <th>RET</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td class="region-label">AMBA</td>
-                        <td class="region-label">TOTAL AMBA</td>
+</div> <!-- FIN GRUPO UNIFICADO -->
 
-                        <td id="amba_cargas_vc">0</td>
-                        <td id="amba_cargas_actas">0</td>
-                        <td id="amba_cargas_ret">0</td>
-
-                        <td id="amba_pasajeros_vc">0</td>
-                        <td id="amba_pasajeros_actas">0</td>
-                        <td id="amba_pasajeros_ret">0</td>
-
-                        <td id="amba_total_vc">0</td>
-                        <td id="amba_total_actas">0</td>
-                        <td id="amba_total_ret">0</td>
-                        </tr>
-
-                        <tr>
-                        <td class="region-label">CEN</td>
-                        <td class="region-label">TOTAL CENTRO</td>
-
-                        <td id="cen_cargas_vc">0</td>
-                        <td id="cen_cargas_actas">0</td>
-                        <td id="cen_cargas_ret">0</td>
-
-                        <td id="cen_pasajeros_vc">0</td>
-                        <td id="cen_pasajeros_actas">0</td>
-                        <td id="cen_pasajeros_ret">0</td>
-
-                        <td id="cen_total_vc">0</td>
-                        <td id="cen_total_actas">0</td>
-                        <td id="cen_total_ret">0</td>
-                        </tr>
-
-                        <tr>
-                        <td class="region-label">CUY</td>
-                        <td class="region-label">TOTAL CUYO</td>
-
-                        <td id="cuy_cargas_vc">0</td>
-                        <td id="cuy_cargas_actas">0</td>
-                        <td id="cuy_cargas_ret">0</td>
-
-                        <td id="cuy_pasajeros_vc">0</td>
-                        <td id="cuy_pasajeros_actas">0</td>
-                        <td id="cuy_pasajeros_ret">0</td>
-
-                        <td id="cuy_total_vc">0</td>
-                        <td id="cuy_total_actas">0</td>
-                        <td id="cuy_total_ret">0</td>
-                        </tr>
-
-                        <tr>
-                        <td class="region-label">NEA</td>
-                        <td class="region-label">TOTAL NEA</td>
-
-                        <td id="nea_cargas_vc">0</td>
-                        <td id="nea_cargas_actas">0</td>
-                        <td id="nea_cargas_ret">0</td>
-
-                        <td id="nea_pasajeros_vc">0</td>
-                        <td id="nea_pasajeros_actas">0</td>
-                        <td id="nea_pasajeros_ret">0</td>
-
-                        <td id="nea_total_vc">0</td>
-                        <td id="nea_total_actas">0</td>
-                        <td id="nea_total_ret">0</td>
-                        </tr>
-
-                        <tr>
-                        <td class="region-label">NOA</td>
-                        <td class="region-label">TOTAL NOA</td>
-
-                        <td id="noa_cargas_vc">0</td>
-                        <td id="noa_cargas_actas">0</td>
-                        <td id="noa_cargas_ret">0</td>
-
-                        <td id="noa_pasajeros_vc">0</td>
-                        <td id="noa_pasajeros_actas">0</td>
-                        <td id="noa_pasajeros_ret">0</td>
-
-                        <td id="noa_total_vc">0</td>
-                        <td id="noa_total_actas">0</td>
-                        <td id="noa_total_ret">0</td>
-                        </tr>
-
-                        <tr>
-                        <td class="region-label">PAT</td>
-                        <td class="region-label">TOTAL PATAGONIA</td>
-
-                        <td id="pat_cargas_vc">0</td>
-                        <td id="pat_cargas_actas">0</td>
-                        <td id="pat_cargas_ret">0</td>
-
-                        <td id="pat_pasajeros_vc">0</td>
-                        <td id="pat_pasajeros_actas">0</td>
-                        <td id="pat_pasajeros_ret">0</td>
-
-                        <td id="pat_total_vc">0</td>
-                        <td id="pat_total_actas">0</td>
-                        <td id="pat_total_ret">0</td>
-                        </tr>
-
-                        <tr class="total-row">
-
-                        <td colspan="2">TOTAL</td>
-
-                        <td id="total_cargas_vc">0</td>
-                        <td id="total_cargas_actas">0</td>
-                        <td id="total_cargas_ret">0</td>
-
-                        <td id="total_pasajeros_vc">0</td>
-                        <td id="total_pasajeros_actas">0</td>
-                        <td id="total_pasajeros_ret">0</td>
-
-                        <td id="total_vc">0</td>
-                        <td id="total_actas">0</td>
-                        <td id="total_ret">0</td>
-
-                        </tr>
-                </tbody>
-            </table>
-        </div>
-
-
-        <!-- PRINCIPALES MOTIVOS DE INFRACCIÓN - DASHBOARD -->
+<!-- PRINCIPALES MOTIVOS DE INFRACCIÓN - DASHBOARD -->
         <div class="principal-infracciones">
             <h2 class="principal-infracciones-titulo">▸ Principales Motivos de Infracción sobre el total de actas</h2>
             
@@ -803,6 +603,215 @@
                 Decreto 1356/1988 y modificatorias para transporte de pasajeros.</p>
             </div>
         </div>
+
+        <!-- === Sección - Conductores Desafectados 2 cajas) === -->
+        <div class="seccion-titulo">Conductores Desafectados</div>
+
+        <!-- === Contenedor dos cajas - (izquierda: Conductores / derecha: Retenciones) === -->
+        <div class="two-boxes">
+
+            <!-- Caja: Conductores Desafectados (lado izquierdo) -->
+            <div class="control-item">
+                <div class="item-icon">
+                    <img src="IMAGENES/retencion_azul.png" alt="Conductores Desafectados" width="200" height="210">
+                    <div class="item-numero">00</div>
+                </div>
+                <div class="item-detalles">
+                    <div class="detalle">
+                        <div class="detalle-label">GFTAU</div>
+                        <div class="detalle-valor">00</div>
+                        <div class="detalle-porcentaje">00.00%</div>
+                        <div style="margin-top: 10px;">
+                            <span class="organismo gftau">000 (00%)</span>
+                            <span class="organismo gftau">000 (00%)</span>
+                        </div>
+                    </div>
+                    <div class="detalle">
+                        <div class="detalle-label">SFDR</div>
+                        <div class="detalle-valor">00</div>
+                        <div class="detalle-porcentaje">0000%</div>
+                        <div style="margin-top: 10px;">
+                            <span class="organismo sfdr">000 (00%)</span>
+                            <span class="organismo sfdr">000 (00%)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Caja: Retenciones (lado derecho) - contiene los dos cuadritos internos -->
+            <div class="control-item">
+                <div class="item-icon">
+                </div>
+                <div class="item-detalles">
+
+                    <!-- Alcoholemia y Sustancias -->
+                    <div class="detalle inner-box">
+                        <img src="IMAGENES/alcoholimetro_azul.png"  width="100" height="90">
+                        <div class="detalle-label">Alcoholemia Positiva</div>
+                        <div class="detalle-valor" id="alc_pos">00</div>
+                    </div>
+
+                    <div class="detalle inner-box">
+                        <img src="IMAGENES/Sustancias_azul.png" width="100" height="90">
+                        <div class="detalle-label">Sustancias Positivas</div>
+                        <div class="detalle-valor" id="sus_pos">00</div>
+                    </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===TABLA DE REGIONES=== -->
+        <div class="tabla-regiones">
+            <table>
+                <thead>
+                    <tr>
+                        <th colspan="2">REGIÓN</th>
+                        <th colspan="3">CARGAS</th>
+                        <th colspan="3">PASAJEROS</th>
+                        <th colspan="3">TOTAL</th>
+                    </tr>
+                    <tr>
+                        <th>REGIÓN</th>
+                        <th>DESCRIPCIÓN</th>
+                        <th>VC</th>
+                        <th>ACTAS</th>
+                        <th>RET</th>
+                        <th>VC</th>
+                        <th>ACTAS</th>
+                        <th>RET</th>
+                        <th>VC</th>
+                        <th>ACTAS</th>
+                        <th>RET</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="region-label">AMBA</td>
+                        <td class="region-label">TOTAL AMBA</td>
+
+                        <td id="amba_cargas_vc">0</td>
+                        <td id="amba_cargas_actas">0</td>
+                        <td id="amba_cargas_ret">0</td>
+
+                        <td id="amba_pasajeros_vc">0</td>
+                        <td id="amba_pasajeros_actas">0</td>
+                        <td id="amba_pasajeros_ret">0</td>
+
+                        <td id="amba_total_vc">0</td>
+                        <td id="amba_total_actas">0</td>
+                        <td id="amba_total_ret">0</td>
+                        </tr>
+
+                        <tr>
+                        <td class="region-label">CEN</td>
+                        <td class="region-label">TOTAL CENTRO</td>
+
+                        <td id="cen_cargas_vc">0</td>
+                        <td id="cen_cargas_actas">0</td>
+                        <td id="cen_cargas_ret">0</td>
+
+                        <td id="cen_pasajeros_vc">0</td>
+                        <td id="cen_pasajeros_actas">0</td>
+                        <td id="cen_pasajeros_ret">0</td>
+
+                        <td id="cen_total_vc">0</td>
+                        <td id="cen_total_actas">0</td>
+                        <td id="cen_total_ret">0</td>
+                        </tr>
+
+                        <tr>
+                        <td class="region-label">CUY</td>
+                        <td class="region-label">TOTAL CUYO</td>
+
+                        <td id="cuy_cargas_vc">0</td>
+                        <td id="cuy_cargas_actas">0</td>
+                        <td id="cuy_cargas_ret">0</td>
+
+                        <td id="cuy_pasajeros_vc">0</td>
+                        <td id="cuy_pasajeros_actas">0</td>
+                        <td id="cuy_pasajeros_ret">0</td>
+
+                        <td id="cuy_total_vc">0</td>
+                        <td id="cuy_total_actas">0</td>
+                        <td id="cuy_total_ret">0</td>
+                        </tr>
+
+                        <tr>
+                        <td class="region-label">NEA</td>
+                        <td class="region-label">TOTAL NEA</td>
+
+                        <td id="nea_cargas_vc">0</td>
+                        <td id="nea_cargas_actas">0</td>
+                        <td id="nea_cargas_ret">0</td>
+
+                        <td id="nea_pasajeros_vc">0</td>
+                        <td id="nea_pasajeros_actas">0</td>
+                        <td id="nea_pasajeros_ret">0</td>
+
+                        <td id="nea_total_vc">0</td>
+                        <td id="nea_total_actas">0</td>
+                        <td id="nea_total_ret">0</td>
+                        </tr>
+
+                        <tr>
+                        <td class="region-label">NOA</td>
+                        <td class="region-label">TOTAL NOA</td>
+
+                        <td id="noa_cargas_vc">0</td>
+                        <td id="noa_cargas_actas">0</td>
+                        <td id="noa_cargas_ret">0</td>
+
+                        <td id="noa_pasajeros_vc">0</td>
+                        <td id="noa_pasajeros_actas">0</td>
+                        <td id="noa_pasajeros_ret">0</td>
+
+                        <td id="noa_total_vc">0</td>
+                        <td id="noa_total_actas">0</td>
+                        <td id="noa_total_ret">0</td>
+                        </tr>
+
+                        <tr>
+                        <td class="region-label">PAT</td>
+                        <td class="region-label">TOTAL PATAGONIA</td>
+
+                        <td id="pat_cargas_vc">0</td>
+                        <td id="pat_cargas_actas">0</td>
+                        <td id="pat_cargas_ret">0</td>
+
+                        <td id="pat_pasajeros_vc">0</td>
+                        <td id="pat_pasajeros_actas">0</td>
+                        <td id="pat_pasajeros_ret">0</td>
+
+                        <td id="pat_total_vc">0</td>
+                        <td id="pat_total_actas">0</td>
+                        <td id="pat_total_ret">0</td>
+                        </tr>
+
+                        <tr class="total-row">
+
+                        <td colspan="2">TOTAL</td>
+
+                        <td id="total_cargas_vc">0</td>
+                        <td id="total_cargas_actas">0</td>
+                        <td id="total_cargas_ret">0</td>
+
+                        <td id="total_pasajeros_vc">0</td>
+                        <td id="total_pasajeros_actas">0</td>
+                        <td id="total_pasajeros_ret">0</td>
+
+                        <td id="total_vc">0</td>
+                        <td id="total_actas">0</td>
+                        <td id="total_ret">0</td>
+
+                        </tr>
+                </tbody>
+            </table>
+        </div>
+
+
+        
 
         </div>
 

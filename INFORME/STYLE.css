@@ -27,6 +27,81 @@ body {
     font-family: Lora, serif;
     background: var(--gris-claro);
     color: var(--azul-oscuro);
+    line-height: 1.6;
+}
+
+/* ======================================================
+   HEADER - ENCABEZADO PRINCIPAL
+   ====================================================== */
+.header {
+    position: relative;
+    min-height: 450px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-size: cover;
+    background-position: center;
+    overflow: hidden;
+    width: 100%;
+    border-bottom: 4px solid var(--azul-oscuro);
+}
+
+/* Efecto de desenfoque nublado */
+.header::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(135deg, rgba(45, 45, 95, 0.8), rgba(45, 45, 95, 0.6));
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    z-index: 1;
+}
+
+/* Asegura que el contenido esté sobre el desenfoque */
+.header > * {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+}
+
+.header-logos {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+    width: 100%;
+    margin-bottom: 20px;
+    padding: 0 20px;
+}
+
+.logo-ministerio {
+    height: 120px;
+    width: auto;
+    object-fit: contain;
+    filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.3));
+}
+
+.logo-cnrt {
+    height: 75px;
+    width: auto;
+    object-fit: contain;
+    filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.3));
+}
+
+.header h1 {
+    font-size: 3em;
+    color: var(--blanco) !important;
+    font-weight: 700;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    letter-spacing: 1px;
+    margin: 15px 0;
+}
+
+.header p {
+    font-size: 1.2em;
+    color: var(--dorado) !important;
+    font-weight: 600;
 }
 
 /* TITULOS */
@@ -48,8 +123,6 @@ button{
 button:hover{
     background: var(--azul-oscuro);
 }
-
-
 
 /* ============================= */
 /* VEHICULOS CONTROLADOS NUEVO */
@@ -326,6 +399,105 @@ button:hover{
     color: #8a8f9a;
     margin-top: 6px;
 }
+/* ============================================================ */
+/* SECCIÓN: VEHÍCULOS CONTROLADOS (UNIFICADO Y SIMÉTRICO)       */
+/* ============================================================ */
+
+/* 1. El Contenedor Principal (Igual al de Infracciones) */
+.vc-bloque {
+    background: white; /* Cambiado a blanco para matchear con Infracciones */
+    padding: 30px;
+    margin: 40px 0;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Sombra idéntica a línea 45 de tu imagen */
+    width: 100%;
+    box-sizing: border-box;
+    color: #1f2a44;
+}
+
+/* 2. Disposición de Columnas (60% barras - 40% gráfico) */
+.vc-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 40px;
+}
+
+.vc-izquierda {
+    flex: 0 0 60%; /* Mismo ancho que tu columna de infracciones */
+}
+
+.vc-derecha {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    position: relative;
+}
+
+/* 3. Gráfico y Textos (Sin que se salgan del margen) */
+.vc-grafico-contenedor {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end; /* Pega los indicadores al borde derecho */
+    width: 100%;
+    gap: 20px;
+}
+
+.vc-centro {
+    position: absolute;
+    top: 50%;
+    left: 40%; /* Ajuste para que el número quede dentro del donut */
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+/* 4. Indicadores (Actas y Retenciones) */
+.vc-indicadores {
+    position: static; /* IMPORTANTE: Esto evita que "vuelen" fuera del box */
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.vc-indicador {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 220px;
+}
+
+.vc-texto {
+    font-size: 12px;
+    text-align: right;
+    flex: 1;
+}
+
+.vc-subrayado {
+    width: 40px;
+    height: 2px;
+    margin: 3px 0 3px auto; /* Alineado a la derecha */
+}
+
+/* Colores de los Indicadores */
+.vc-indicador.retenciones { color: #d4a64a; }
+.vc-indicador.retenciones .vc-subrayado { background: #d4a64a; }
+
+.vc-indicador.actas { color: #6c7285; }
+.vc-indicador.actas .vc-subrayado { background: #6c7285; }
+
+.vc-indicador img {
+    width: 35px;
+    height: 35px;
+    object-fit: contain;
+}
+
+/* 5. Títulos y Líneas (Igualando estética general) */
+.vc-titulo {
+    font-size: 1.4em; /* Como en línea 49 de tu imagen */
+    font-weight: 600;
+    margin-bottom: 30px;
+}
 
 /* ============================= */
 /* INDICADORES EXTERNOS DEL DONUT */
@@ -350,10 +522,6 @@ button:hover{
     right: -180px;
     color: #6c7285;
 }
-
-
-
-
 
 
 /* === Header (Encabezado principal) === */
@@ -718,70 +886,53 @@ background: #e6b85f;
 }
 
 .tabla-regiones {
-    margin-top: 0px;
-    background: white;
-    padding: 15px;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    overflow-x: auto;
+    margin: 20px auto;
+    padding: 0; /* Quitamos el padding para que la tabla llegue al borde del efecto */
+    border-radius: 12px;
+    overflow: hidden; /* Esto "recorta" la tabla para que herede el redondeo del contenedor */
+    
+    /* El efecto que te gustó */
+    background: rgba(255, 255, 255, 0.4); 
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .tabla-regiones table {
     width: 100%;
-    border-collapse: collapse;
-    font-size: 0.9em;
+    border-collapse: collapse; /* CLAVE: Une todas las líneas en una sola */
+    font-size: 0.85em;
 }
 
 .tabla-regiones th {
-    background-color: #57575e;
+    background-color: #2d2d5f; /* Azul institucional sólido para el cabezal */
     color: white;
-    padding: 12px;
-    text-align: left;
-    font-weight: bold;
-    border: 1px solid #2b2929;
+    padding: 10px 5px;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.1); /* Línea divisoria muy fina */
 }
 
 .tabla-regiones td {
-    padding: 15px 20px;
-    border: 1px solid #ddd;
+    padding: 8px 10px;
     text-align: center;
-    color: black;
+    color: #1a1a1a;
+    /* Líneas divisorias sutiles y rectas */
+    border: 1px solid rgba(0, 0, 0, 0.05); 
 }
 
-/* FILA TOTAL CNRT ESTILO INSTITUCIONAL */
-.tabla-regiones .total-row {
-    background-color: #f4f6fa;
-    font-weight: bold;
-    border-top: 3px solid rgb(45, 45, 95);
-}
-
+/* Fila de totales: Sin redondeos internos, solo una línea fuerte arriba */
 .tabla-regiones .total-row td {
-    color: rgb(45, 45, 95);
+    background-color: rgba(255, 255, 255, 0.5) !important;
+    font-weight: bold;
+    color: #2d2d5f;
+    border-top: 2px solid #2d2d5f; 
 }
 
-/* Evita que el hover la afecte */
-.tabla-regiones tr.total-row:hover {
-    background-color: #f4f6fa;
-}
-
-
-/*COLOR DE LAS LETRAS DE LA TABLA POR REGION*/
+/* Etiquetas de región a la izquierda */
 .tabla-regiones .region-label {
-    text-align: left;
+    text-align: left !important;
     font-weight: bold;
-    background-color: #ffffff;
-    color: black;
-}
-
-.tabla-regiones .total-row {
-    background-color: white;
-    color: black;
-    font-weight: bold;
-}
-
-.tabla-regiones .total-row td {
-    border-color: #0000008f;
-    padding: 12px;
+    padding-left: 15px !important;
 }
 
 
@@ -887,8 +1038,6 @@ background: #e6b85f;
 .area-mapa{
     width:100%;
 }
-
-
 
 .mapa-container {
     position: relative;
@@ -1470,45 +1619,19 @@ background: #e6b85f;
     margin: 0;
 }
 
-/* RESPONSIVE */
-@media (max-width: 1024px) {
-    .principal-infracciones-contenedor {
-        grid-template-columns: 1fr;
-        gap: 30px;
-    }
-
-    .principal-infracciones-columna-der {
-        justify-content: center;
-    }
-
-    .barra-horizontal-fila {
-        grid-template-columns: 1fr;
-    }
-
-    .barra-descripcion {
-        grid-column: 1;
-    }
-}
+/* ======================================================
+   RESPONSIVE (AJUSTES PARA CELULARES)
+   ====================================================== */
 
 @media (max-width: 768px) {
-    .principal-infracciones {
-        padding: 20px;
-    }
-
-    .principal-infracciones-titulo {
-        font-size: 1.2em;
-    }
-
-    .principal-infracciones-seccion {
-        border-left-width: 3px;
-    }
-
-    .principal-infracciones-grafico-contenedor {
-        width: 200px;
-        height: 200px;
-    }
-
-    .principal-infracciones-total-numero {
-        font-size: 1.8em;
-    }
+    .two-boxes { grid-template-columns: 1fr; }
+    .header h1 { font-size: 2em; }
+    .logo-ministerio { height: 80px; }
+    .logo-cnrt { height: 50px; }
+    .vc-main { flex-direction: column; }
+    .mapa-container { transform: scale(0.6); margin-left: -50px; }
 }
+
+/* --- NUEVAS REGLAS PARA UNIFICAR BLOQUES --- */
+
+/* Contenedor que agrupa los pares (VC+Actas y Retenciones+Infracciones) */
