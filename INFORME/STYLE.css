@@ -23,11 +23,12 @@ PALETA DE COLORES OFICIAL
   box-sizing: border-box;
 }
 
-body {
+  body {
   font-family: Lora, serif;
   background: var(--gris-claro);
   color: var(--azul-oscuro);
   line-height: 1.6;
+  padding: 0 0px; /* Esto da un pequeño respiro en los bordes de la pantalla */
 }
 
 /* ======================================================
@@ -134,13 +135,15 @@ button:hover {
 /* ============================= */
 
 .vc-bloque {
-  background: #f2f2f2;
+  background: white;
   padding: 30px;
-  margin-top: 20px;
-  border-radius: 10px;
-  color: #1f2a44;
+  margin: 40px auto; /* Agregamos auto para que se centre si sobra espacio */
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   width: 100%;
-  overflow: visible;
+  max-width: 1200px; /* <--- TOCAR AQUÍ: Pon 1200px o 100% para que se estire */
+  box-sizing: border-box;
+  color: #1f2a44;
 }
 
 .vc-contenedor {
@@ -408,16 +411,20 @@ button:hover {
 
 /* 1. El Contenedor Principal (Igual al de Infracciones) */
 .vc-bloque {
-  background: white;
-  /* Cambiado a blanco para matchear con Infracciones */
+ background: white;
   padding: 30px;
-  margin: 40px 0;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  /* Sombra idéntica a línea 45 de tu imagen */
-  width: 100%;
-  box-sizing: border-box;
   color: #1f2a44;
+  box-sizing: border-box;
+
+  /* --- SIMETRÍA TOTAL --- */
+  width: 120%;           /* El ancho que desees (puedes probar 115%, 120%, etc.) */
+  margin-left: -10%;    /* Siempre debe ser la MITAD del excedente (si usas 120, pones -10) */
+  margin-top: 40px;
+  margin-bottom: 40px;
+  
+  /* Eliminamos left y position relative para que no interfieran con el centrado real */
 }
 
 /* 2. Disposición de Columnas (60% barras - 40% gráfico) */
