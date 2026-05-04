@@ -449,13 +449,14 @@ button:hover {
 
 /* 3. Gráfico y Textos (Sin que se salgan del margen) */
 .vc-grafico-contenedor {
-  position: relative;
+ position: relative;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-  /* Pega los indicadores al borde derecho */
+  justify-content: center; /* Cambiamos a center para que no se pegue a la derecha */
   width: 100%;
   gap: 20px;
+  padding-right: 40px; /* <--- Esto empuja todo hacia adentro desde la derecha */
+  box-sizing: border-box;
 }
 
 .vc-centro {
@@ -469,11 +470,11 @@ button:hover {
 
 /* 4. Indicadores (Actas y Retenciones) */
 .vc-indicadores {
-  position: static;
-  /* IMPORTANTE: Esto evita que "vuelen" fuera del box */
+ position: static; /* Esto es clave para que respeten el espacio del contenedor */
   display: flex;
   flex-direction: column;
   gap: 15px;
+  min-width: 180px; /* Le damos un ancho fijo para que no se deformen */
 }
 
 .vc-indicador {
@@ -498,14 +499,17 @@ button:hover {
 
 /* Colores de los Indicadores */
 .vc-indicador.retenciones {
+  top: 20px;
+  right: 0; /* Cambiado de -180px a 0 o un valor pequeño positivo */
   color: #d4a64a;
-}
-.vc-indicador.retenciones .vc-subrayado {
-  background: #d4a64a;
+  position: relative; /* Cambia de absolute a relative si querés que use el flex */
 }
 
 .vc-indicador.actas {
+  top: 100px;
+  right: 0; /* Cambiado de -180px a 0 */
   color: #6c7285;
+  position: relative;
 }
 .vc-indicador.actas .vc-subrayado {
   background: #6c7285;
