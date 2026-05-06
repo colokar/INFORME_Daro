@@ -1091,6 +1091,61 @@ function actualizarDashboard() {
 </script>
 
 </body>
+
+<script>
+  window.addEventListener('load', () => {
+    // Buscamos las barras por clase
+    const barraCargas = document.querySelector('.vc-barra-cargas');
+    const barraPasajeros = document.querySelector('.vc-barra-pasajeros');
+
+    // Aquí pones los porcentajes reales que vengan de tu base de datos
+    // Por ahora los forzamos para ver la animación
+    setTimeout(() => {
+      barraCargas.style.width = '55%'; 
+      barraPasajeros.style.width = '45%';
+    }, 500);
+  });
+
+  /*________________________________________________*/
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const boton = document.getElementById("btn-generar");
+    
+    boton.addEventListener("click", () => {
+        // Capturamos las fechas de los inputs
+        const desde = document.getElementById("fecha_desde").value;
+        const hasta = document.getElementById("fecha_hasta").value;
+
+        if (!desde || !hasta) {
+            alert("Por favor, seleccioná un intervalo de fechas.");
+            return;
+        }
+
+        // Llamamos a la función pasando las fechas como parámetros
+        actualizarDashboard(desde, hasta);
+    });
+});
+
+async function actualizarDashboard(desde, hasta) {
+    console.log(`Generando informe desde ${desde} hasta ${hasta}...`);
+    
+    try {
+        // Enviamos las fechas a Flask mediante parámetros en la URL (Query Params)
+        const url = `http://127.0.0.1:5000/resumen?desde=${desde}&hasta=${hasta}`;
+        const response = await fetch(url);
+        
+        if (!response.ok) throw new Error("Error en el servidor");
+        const data = await response.json();
+
+        // Una vez que llegan los datos, disparamos las animaciones
+        procesarDatosDashboard(data);
+        
+    } catch (err) {
+        console.error("❌ Error al obtener el informe:", err);
+    }
+}
+</script>
+
 </html>
 
 </div>

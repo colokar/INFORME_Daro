@@ -23,6 +23,10 @@ PALETA DE COLORES OFICIAL
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
   body {
   font-family: Lora, serif;
   background: var(--gris-claro);
@@ -135,15 +139,15 @@ button:hover {
 /* ============================= */
 
 .vc-bloque {
-  background: white;
-  padding: 30px;
-  margin: 40px auto; /* Agregamos auto para que se centre si sobra espacio */
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 1200px; /* <--- TOCAR AQUÍ: Pon 1200px o 100% para que se estire */
-  box-sizing: border-box;
-  color: #1f2a44;
+    background: white;
+    padding: 40px;
+    border-radius: 12px;
+    width: 95%;        /* Ocupa casi todo el ancho en pantallas chicas */
+    max-width: 1400px; /* Pero no crece más de esto en pantallas gigantes */
+    margin: 30px auto; /* Centra el bloque automáticamente */
+    
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
 }
 
 .vc-contenedor {
@@ -259,6 +263,25 @@ button:hover {
 
 /* BARRA HORIZONTAL UNIFICADA */
 
+/* Esto aplica la animación a ambas al mismo tiempo */
+.vc-barra-cargas, 
+.vc-barra-pasajeros {
+  width: 0; /* Empiezan vacías para que se vea el crecimiento */
+  transition: width 1.5s cubic-bezier(0.22, 1, 0.36, 1);
+  /* Asegurate de que tengan una altura y fondo para que se vean al cargar */
+  height: 25px; 
+  border-radius: 5px;
+}
+
+/* Mantene los colores por separado */
+.vc-barra-cargas {
+  background-color: var(--azul-oscuro);
+}
+
+.vc-barra-pasajeros {
+  background-color: var(--gris-azulado);
+}
+
 .vc-barra-horizontal {
   display: flex;
   width: 100%;
@@ -277,7 +300,7 @@ button:hover {
   justify-content: center;
   font-weight: 700;
   font-size: 13px;
-  flex: 1;
+  width: 0; /* Empieza vacía para la animación */
 }
 
 .vc-barra-pasajeros {
@@ -288,7 +311,7 @@ button:hover {
   justify-content: center;
   font-weight: 700;
   font-size: 13px;
-  flex: 1;
+  width: 0;
 }
 
 .vc-unidades-container {
@@ -929,7 +952,7 @@ SEPARADOR VERTICAL ROJO
 
 /* Fila de totales: Sin redondeos internos, solo una línea fuerte arriba */
 .tabla-regiones .total-row td {
-  background-color: rgba(255, 255, 255, 0.5) !important;
+  background-color: rgba(201, 207, 230, 0.2) !important;
   font-weight: bold;
   color: #2d2d5f;
   border-top: 2px solid #2d2d5f;
