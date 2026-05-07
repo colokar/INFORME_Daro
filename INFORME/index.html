@@ -18,7 +18,6 @@
             <img src="IMAGENES/logo CNRT blanco.png" alt="CNRT" class="logo-cnrt">
         </div>
         <h1>Resumen Operativo</h1>
-        
         <p>Análisis de Resultado</p>
 
         <!-- === Boton de fechas y botón Generar Informe === -->
@@ -960,15 +959,87 @@
                         </div>
                     </div>
 
-                <div class="definicion-hito">
-                    <h3>Definición de Hito Crítico</h3>
-                    <p>Cada punto en el mapa representa un evento con relevancia jurídica:</p>
-                    <ul>
-                        <li><strong>Alcoholemia positiva:</strong> Validada por medición técnica con resultado de infracción</li>
-                        <li><strong>Detección de sustancias:</strong> Identificación de psicoactivos en análisis de control</li>
-                        <li><strong>Retención efectiva:</strong> Retención del vehículo o desafectación del conductor</li>
-                    </ul>
-                </div>
+                
+        <!-- =================DASHBOARD COMPARATIVA ================= -->
+
+   <!-- ================= BOTONES ================= -->
+
+<div class="header-controls"
+     style="justify-content: center; margin-bottom: 20px;">
+
+    <button class="section-btn active"
+            id="btn-operativo"
+            onclick="mostrarSeccion('operativo')">
+
+        Vista Operativa
+
+    </button>
+
+    <button class="section-btn"
+            id="btn-comparativa"
+            onclick="mostrarSeccion('comparativa')">
+
+        Vista Comparativa
+
+    </button>
+
+</div>
+
+<!-- =========================================
+     SECCIÓN OPERATIVA
+========================================= -->
+
+<div id="seccion-operativo">
+
+    <!-- TODO TU DASHBOARD ACTUAL -->
+
+
+
+<!-- =========================================
+     SECCIÓN COMPARATIVA
+========================================= -->
+
+<div id="seccion-comparativa"
+     class="comparativas-section"
+     style="display: none;">
+
+    <!-- CARDS -->
+
+    <section class="summary-cards"
+             id="summaryCardsAcademic">
+
+    </section>
+
+    <!-- GRÁFICOS -->
+
+    <section class="charts-grid">
+
+        <div class="chart-card">
+
+            <div class="chart-header">
+
+                <h2>Acumulado Comparativa</h2>
+
+                <span class="badge badge-purple">
+                    Comparativa
+                </span>
+
+            </div>
+
+            <div class="chart-container">
+
+                <canvas id="chartCumulative"></canvas>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="data.js"></script>
             </div>
         </div>
 
@@ -1106,7 +1177,7 @@ function actualizarDashboard() {
     }, 500);
   });
 
-  /*________________________________________________*/
+  /*_____FUNCION PARA TRAER DATOS_____*/
 
   document.addEventListener("DOMContentLoaded", () => {
     const boton = document.getElementById("btn-generar");
@@ -1143,6 +1214,30 @@ async function actualizarDashboard(desde, hasta) {
     } catch (err) {
         console.error("❌ Error al obtener el informe:", err);
     }
+}
+
+// Función para cambiar entre el Dashboard de CNRT y las Comparativas
+function mostrarSeccion(nombre) {
+    const operativo = document.getElementById('seccion-operativo');
+    const comparativa = document.getElementById('seccion-comparativa');
+    const botones = document.querySelectorAll('.section-btn');
+
+    // Cambiar visibilidad
+    if (nombre === 'operativo') {
+        operativo.style.display = 'block';
+        comparativa.style.display = 'none';
+    } else {
+        operativo.style.display = 'block'; // Lo dejamos en block para que no se rompa el layout
+        comparativa.style.display = 'block';
+        // Si tienes la lógica de gráficos cargada, aquí la disparas:
+        if (typeof updateAll === 'function') updateAll();
+    }
+
+    // Cambiar estado visual de los botones
+    botones.forEach(btn => {
+        btn.classList.remove('active');
+        if(btn.textContent.toLowerCase().includes(nombre)) btn.classList.add('active');
+    });
 }
 </script>
 

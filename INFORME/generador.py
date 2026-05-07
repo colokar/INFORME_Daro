@@ -18,7 +18,7 @@ try:
     from flask_cors import CORS
     CORS(app, resources={r"/*": {"origins": "*"}})
 except ImportError:
-    print("⚠️ Flask-CORS no instalado. Ejecuta: pip install flask-cors")
+    print(" Flask-CORS no instalado. Ejecuta: pip install flask-cors")
 
 # =========================================================
 # FUNCIONES AUXILIARES (Títulos y Normalización)
@@ -113,7 +113,7 @@ if __name__ == "__main__":
     if not archivos_excel:
         print(f"✗ No se encontraron archivos Excel en {carpeta_excels}")
     else:
-        print(f"📁 Archivos detectados: {len(archivos_excel)}")
+        print(f" Archivos detectados: {len(archivos_excel)}")
         
         dfs = []
         for archivo in archivos_excel:
@@ -180,7 +180,7 @@ if __name__ == "__main__":
             with open(os.path.join(BASE_DIR, "datos.json"), "w", encoding="utf-8") as f:
                 json.dump(salida, f, indent=2, ensure_ascii=False)
             
-            print(f"\n✅ Proceso completado. {len(registros)} registros guardados en datos.json")
+            print(f"\n Proceso completado. {len(registros)} registros guardados en datos.json")
 
     # Iniciar Servidor
     subtitulo("INICIANDO SERVIDOR WEB")
@@ -339,7 +339,7 @@ if not archivos_excel:
     exit()
 
 titulo("DETECCIÓN DE ARCHIVOS FUENTE")
-print(f"📁 Archivos detectados: {len(archivos_excel)}\n")
+print(f" Archivos detectados: {len(archivos_excel)}\n")
 for idx, archivo in enumerate(archivos_excel, 1):
     print(f"   [{idx}] {os.path.basename(archivo)}")
 print()
@@ -376,13 +376,13 @@ print(f"    [A] = 1 registro por fila (dominios en lista)")
 print(f"    [B] = 1 registro por dominio (expansión)\n")
 
 if fecha_desde or fecha_hasta:
-    print("📅 FILTRO DE FECHAS:")
+    print(" FILTRO DE FECHAS:")
     if fecha_desde:
         print(f"    Desde: {fecha_desde}")
     if fecha_hasta:
         print(f"    Hasta: {fecha_hasta}")
 else:
-    print("📅 FILTRO DE FECHAS: ✗ SIN FILTRO (se procesarán TODOS los datos)")
+    print(" FILTRO DE FECHAS: ✗ SIN FILTRO (se procesarán TODOS los datos)")
 print()
 
 
@@ -425,8 +425,8 @@ if not dfs:
     exit()
 
 df = pd.concat(dfs, ignore_index=True)
-print(f"\n   📊 TOTAL ACUMULADO: {total_filas:,} filas")
-print(f"   📊 TOTAL CONSOLIDADO: {df.shape[0]:,} filas\n")
+print(f"\n    TOTAL ACUMULADO: {total_filas:,} filas")
+print(f"    TOTAL CONSOLIDADO: {df.shape[0]:,} filas\n")
 
 
 # =========================================================
@@ -459,7 +459,7 @@ df["REGION_NORMALIZADA"] = df["REGIONAL"].apply(normalizar_region)
 df["REGION_NORMALIZADA"] = df["REGION_NORMALIZADA"].str.strip().str.upper()
 
 sin_region_count = int((df["REGION_NORMALIZADA"] == "SIN_REGION").sum())
-print(f"🔎 Registros sin región mapeada: {sin_region_count:,}")
+print(f" Registros sin región mapeada: {sin_region_count:,}")
 if sin_region_count > 0:
     print("    Ejemplos de regionales no mapeadas:")
     for reg in sorted(set(df.loc[df["REGION_NORMALIZADA"] == "SIN_REGION", "REGIONAL"]))[:20]:
@@ -470,7 +470,7 @@ df_valid = df[df["REGION_NORMALIZADA"] != "SIN_REGION"]
 total_valid = len(df_valid)
 total_groupby = df_valid.groupby("REGION_NORMALIZADA").size().sum()
 
-print(f"✅ Validación de agrupamiento:")
+print(f" Validación de agrupamiento:")
 print(f"    Registros válidos: {total_valid:,}")
 print(f"    Suma del groupby: {total_groupby:,}")
 
@@ -505,7 +505,7 @@ for val in sorted(df["REGION_NORMALIZADA"].unique()):
     print(f"  {val}: {count}")
 
 subtitulo("ESTRUCTURA DE DATOS")
-print(f"📋 COLUMNAS DISPONIBLES ({len(df.columns)}):\n")
+print(f" COLUMNAS DISPONIBLES ({len(df.columns)}):\n")
 for col in df.columns:
     print(f"    • {col}")
 print()
@@ -536,7 +536,7 @@ if fecha_desde or fecha_hasta:
         print(f"🔍 Filtro de fechas aplicado: {df_original_rows:,} → {df.shape[0]:,} registros\n")
 
     except Exception as e:
-        print(f"⚠️  Error al aplicar filtro de fechas: {e}\n")
+        print(f"  Error al aplicar filtro de fechas: {e}\n")
 
 print(f"✓ DF listo para procesamiento: {df.shape[0]:,} filas\n")
 
@@ -821,28 +821,28 @@ with open(datos_json_path, "w", encoding="utf-8") as f:
 
 titulo("RESUMEN GENERAL DE PROCESAMIENTO")
 
-print(f"⚙️  MODO DE PROCESAMIENTO: {modo}\n")
-print(f"📊 DATOS PROCESADOS:")
+print(f"  MODO DE PROCESAMIENTO: {modo}\n")
+print(f" DATOS PROCESADOS:")
 print(f"    • Filas Excel: {df.shape[0]:,}")
 print(f"    • Registros generados: {len(registros):,}")
 print(f"    • Dominios válidos totales: {total_dominios:,}\n")
 
-print(f"🚗 VEHÍCULOS CONTROLADOS:")
+print(f" VEHÍCULOS CONTROLADOS:")
 print(f"    • Total VC: {total_vehiculos:,}")
 print(f"    • Cargas: {total_cargas:,} ({porc_cargas}%)")
 print(f"    • Pasajeros: {total_pasajeros:,} ({porc_pasajeros}%)\n")
 
-print(f"📝 ACTAS:")
+print(f" ACTAS:")
 print(f"    • Total actas: {salida['actas']['total']}")
 print(f"    • Cargas: {salida['actas']['cargas']}")
 print(f"    • Pasajeros: {salida['actas']['pasajeros']}\n")
 
-print(f"🛑 RETENCIONES:")
+print(f" RETENCIONES:")
 print(f"    • Total retenciones: {total_retenciones}")
 print(f"    • Cargas: {salida['retenciones']['cargas']}")
 print(f"    • Pasajeros: {salida['retenciones']['pasajeros']}\n")
 
-print(f"⚠️  INCIDENCIAS CRÍTICAS:")
+print(f"  INCIDENCIAS CRÍTICAS:")
 print(f"    • Alcoholemia positiva: {incidencias_alcoholemia}")
 print(f"    • Sustancias positivas: {incidencias_sustancias}")
 print(f"    • Registros con incidencia: {len(detalles_incidencias)}\n")
@@ -856,7 +856,7 @@ subtitulo("DEBUG PROCESAMIENTO")
 regionales_en_registros = sorted(set(r.get('regional', '') for r in registros if r.get('regional')))
 transportes_en_registros = sorted(set(r.get('transporte', '') for r in registros if r.get('transporte')))
 
-print(f"📍 Regionales presentes:")
+print(f" Regionales presentes:")
 if regionales_en_registros:
     for reg in regionales_en_registros:
         count = sum(1 for r in registros if r.get('regional') == reg)
@@ -885,7 +885,7 @@ for region in sorted(regiones_detectadas):
     total_actas = r["total"]["actas"]
     total_ret = r["total"]["ret"]
     
-    print(f"📍 {region.upper()}")
+    print(f" {region.upper()}")
     print(f"    Total    → VC: {total_vc:,} | Actas: {total_actas:,} | Ret: {total_ret:,}")
     print(f"    Cargas   → VC: {r['cargas']['vc']:,} | Actas: {r['cargas']['actas']:,} | Ret: {r['cargas']['ret']:,}")
     print(f"    Pasajeros→ VC: {r['pasajeros']['vc']:,} | Actas: {r['pasajeros']['actas']:,} | Ret: {r['pasajeros']['ret']:,}\n")
@@ -904,9 +904,9 @@ print(f"    • Total registros con regional válida: {total_registros_validos:,
 print(f"    • Suma VC por regiones: {suma_vc_regiones:,}")
 
 if suma_vc_regiones == total_registros_validos:
-    print(f"    ✅ OK - Los datos son consistentes\n")
+    print(f"     OK - Los datos son consistentes\n")
 else:
-    print(f"    ⚠️  ERROR - Discrepancia detectada ({total_registros_validos:,} vs {suma_vc_regiones:,})\n")
+    print(f"      ERROR - Discrepancia detectada ({total_registros_validos:,} vs {suma_vc_regiones:,})\n")
 
 # =========================================================
 # BLOQUE E: REGIONES NO MAPEADAS
@@ -914,10 +914,10 @@ else:
 
 if regiones_no_mapeadas:
     subtitulo("REGIONES NO MAPEADAS (POSIBLES VALORES INVÁLIDOS)")
-    print("⚠️  Las siguientes regiones fueron encontradas pero no están en el mapa de normalización:\n")
+    print("  Las siguientes regiones fueron encontradas pero no están en el mapa de normalización:\n")
     for reg in sorted(regiones_no_mapeadas):
         count = len([r for r in registros if r.get('regional') == reg])
-        print(f"    ⊘ {reg:20} → {count:,} registros ignorados")
+        print(f"     {reg:20} → {count:,} registros ignorados")
     print()
 
 # =========================================================
@@ -926,17 +926,17 @@ if regiones_no_mapeadas:
 
 titulo("RESUMEN FINAL")
 
-print(f"✅ Archivo generado exitosamente\n")
-print(f"📁 Ubicación: {datos_json_path}\n")
+print(f" Archivo generado exitosamente\n")
+print(f" Ubicación: {datos_json_path}\n")
 
 if fecha_desde or fecha_hasta:
-    print(f"🕐 Período de datos:")
+    print(f" Período de datos:")
     if fecha_desde:
         print(f"    Desde: {fecha_desde}")
     if fecha_hasta:
         print(f"    Hasta: {fecha_hasta}\n")
 
-print(f"📊 RESUMEN CONSOLIDADO:")
+print(f" RESUMEN CONSOLIDADO:")
 print(f"    • Vehículos Controlados: {total_vehiculos:,}")
 print(f"      - Cargas: {total_cargas:,} ({porc_cargas}%)")
 print(f"      - Pasajeros: {total_pasajeros:,} ({porc_pasajeros}%)")
@@ -945,4 +945,4 @@ print(f"    • Retenciones: {total_retenciones}")
 print(f"    • Incidencias Alcoholemia: {incidencias_alcoholemia}")
 print(f"    • Incidencias Sustancias: {incidencias_sustancias}")
 print(f"    • Registros Generados: {len(registros):,}\n")
-print(f"🕐 Timestamp: {salida['metadata']['fecha_generacion']}\n")
+print(f" Timestamp: {salida['metadata']['fecha_generacion']}\n")

@@ -1645,3 +1645,52 @@ SEPARADOR VERTICAL ROJO
     margin-left: -50px;
   }
 }
+
+/* ======================================================
+   ESTILOS PARA LA SECCION COMPARATIVA DASHBOARD
+   ====================================================== */
+
+  /* --- Estilos para la Nueva Sección de Comparativas --- */
+
+  .summary-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+    max-width: 1600px;
+    margin: 1.5rem auto;
+    padding: 0 2rem;
+    z-index: 10;
+}
+
+.summary-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-glass);
+    border-radius: var(--radius);
+    padding: 1.25rem 1.5rem;
+    backdrop-filter: blur(12px);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Las barras de colores de arriba de las tarjetas */
+.summary-card:nth-child(1)::before { background: var(--gradient-primary); content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+.summary-card:nth-child(2)::before { background: var(--gradient-secondary); content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+.summary-card:nth-child(3)::before { background: var(--gradient-warm); content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+
+.charts-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    max-width: 1600px;
+    margin: 1.5rem auto;
+    padding: 0 2rem 3rem;
+}
+
+.chart-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-glass);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    backdrop-filter: blur(12px);
+}
