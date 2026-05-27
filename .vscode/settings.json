@@ -1,0 +1,9 @@
+{
+    "chat.tools.terminal.autoApprove": {
+        "/^python -c \"import pandas as pd; path=r'c:\\\\Users\\\\dmolina\\\\Desktop\\\\INFORME\\\\INFORME\\\\Excel\\\\Fiscalizacion 20 al 24\\.xls'; df=pd\\.read_excel\\(path, engine='xlrd'\\); print\\('shape', df\\.shape\\); print\\(list\\(df\\.columns\\)\\); mask=df\\.astype\\(str\\)\\.apply\\(lambda col: col\\.str\\.contains\\('284', case=False, na=False\\)\\)\\.any\\(axis=1\\); print\\('rows with 284', mask\\.sum\\(\\)\\); print\\(df\\[mask\\]\\.iloc\\[:5\\]\\.to_dict\\(orient='records'\\)\\)\"$/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "New-Item": true
+    }
+}

@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>INFORME REFACTORIZADO</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 2rem; background: #f4f4f4; color: #222; }
+    h1 { color: #0b4f6c; }
+    pre { background: #fff; padding: 1rem; border: 1px solid #ccc; }
+    .badge { display: inline-block; padding: 0.25rem 0.5rem; background: #0b4f6c; color: #fff; border-radius: 4px; margin-right: 0.5rem; }
+  </style>
+</head>
+<body>
+  <h1>INFORME_REFACTORIZADO</h1>
+  <p>Sistema modular CNRT listo para procesar Excel y exponer el resultado en <code>/resumen</code>.</p>
+  <p>Ejecute primero <code>python procesador.py --modo A</code>, luego abra el servidor con <code>python app.py</code>.</p>
+  <div class="badge">Rutas</div> <code>/</code> | <code>/resumen</code>
+  <h2>Ejemplo de API</h2>
+  <pre id="json-output">Cargando /resumen...</pre>
+  <script>
+    fetch('/resumen', {cache: 'no-store'})
+      .then(resp => resp.json())
+      .then(data => {
+        document.getElementById('json-output').textContent = JSON.stringify(data, null, 2);
+      })
+      .catch(err => {
+        document.getElementById('json-output').textContent = 'Error: ' + err.message;
+      });
+  </script>
+</body>
+</html>

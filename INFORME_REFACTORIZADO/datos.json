@@ -1,0 +1,29 @@
+{
+  "registros": [],
+  "incidencias": {
+    "alcoholemia_positiva": 0,
+    "sustancias_positivas": 0,
+    "retenciones_alcoholemia": 0,
+    "retenciones_sustancias": 0
+  },
+  "detalle_incidencias": [],
+  "metadata": {
+    "total_registros": 0,
+    "total_cargas": 0,
+    "total_pasajeros": 0,
+    "total_retenciones": 0,
+    "registros_con_incidencia": 0,
+    "fecha_generacion": null
+  },
+  "actas": {
+    "total": 0,
+    "cargas": 0,
+    "pasajeros": 0
+  },
+  "retenciones": {
+    "total": 0,
+    "cargas": 0,
+    "pasajeros": 0
+  },
+  "regiones": {}
+}
