@@ -1,16 +1,5 @@
 # =========================================================
-# GENERADOR.PY - ORQUESTADOR PRINCIPAL
-# =========================================================
-# 
-# Este archivo actúa como orquestador principal del proyecto.
-# Coordina la ejecución de diferentes módulos sin mezclar lógica.
-# 
-# Flujo:
-# 1. Descargar reportes (OPCIONAL)
-# 2. Limpiar y leer Excel
-# 3. Procesar datos y calcular métricas
-# 4. Exportar a JSON
-# 5. Iniciar servidor Flask
+# GENERADOR_NUEVO.PY - ORQUESTADOR PRINCIPAL RECONSTRUIDO
 # =========================================================
 
 import sys
@@ -31,7 +20,7 @@ from procesamiento import (
 from exportacion import exportar_json
 from automatizacion import descargar_reportes_cnrt
 
-# Inicializar logger
+# Inicializar logger oficial
 logger = setup_logger("Generador")
 
 class Orquestador:
@@ -40,241 +29,163 @@ class Orquestador:
     def __init__(self, descargar: bool = False, 
                  fecha_desde: Optional[str] = None,
                  fecha_hasta: Optional[str] = None):
-        """
-        Inicializa el orquestador.
-        
-        Args:
-            descargar: Si descargar reportes antes de procesar
-            fecha_desde: Fecha desde (YYYY-MM-DD)
-            fecha_hasta: Fecha hasta (YYYY-MM-DD)
-        """
         self.descargar = descargar
         self.fecha_desde = fecha_desde
         self.fecha_hasta = fecha_hasta
         self.resultados = None
     
     async def ejecutar(self) -> bool:
-        """
-        Ejecuta el flujo completo de procesamiento.
-        
-        Returns:
-            True si fue exitoso
-        """
+        """Ejecuta el flujo de procesamiento controlado."""
         try:
-            titulo("PROCESAMIENTO CNRT - INICIO")
+            titulo("PROCESAMIENTO OPERATIVO CNRT - INICIO")
             
-            # Paso 1: Descargar reportes (opcional)
+            # Paso 1: Descargar reportes (Opcional)
             if self.descargar:
-                await self._paso_descargar()
+                subtitulo("PASO 1: DESCARGA AUTOMÁTICA DE REPORTES")
+                logger.info("Iniciando descarga por Playwright...")
+                exitoso, descargas = await descargar_reportes_cnrt(
+                    fecha_desde=self.fecha_desde,
+                    fecha_hasta=self.fecha_hasta
+                )
+                if exitoso:
+                    logger.info("✓ Descargas de red finalizadas.")
+                else:
+                    logger.warning("✗ Problemas en la descarga automatizada.")
             
-            # Paso 2: Limpiar y leer Excel
-            df = await self._paso_limpiar_excel()
-            if df is None:
-                return False
-            
-            # Paso 3: Procesar datos
-            self.resultados = self._paso_procesar_datos(df)
-            
-            # Paso 4: Exportar JSON
-            exitoso = self._paso_exportar()
-            
-            if exitoso:
-                titulo("PROCESAMIENTO COMPLETADO ✓")
-            else:
-                logger.error("Error en exportación")
-                return False
-            
-            return True
-        
-        except Exception as e:
-            logger.error(f"Error fatal: {e}", exc_info=True)
-            return False
-    
-    async def _paso_descargar(self):
-        """Descarga reportes del sistema CNRT."""
-        try:
-            subtitulo("PASO 1: DESCARGA DE REPORTES")
-            logger.info("Iniciando descarga automática de reportes...")
-            
-            # Descargar todos los reportes disponibles
-            exitoso, resultados = await descargar_reportes_cnrt(
-                fecha_desde=self.fecha_desde,
-                fecha_hasta=self.fecha_hasta
-            )
-            
-            if exitoso:
-                logger.info("✓ Descargas completadas")
-                for delegacion, ok in resultados.items():
-                    status = "✓" if ok else "✗"
-                    logger.info(f"  {status} {delegacion}")
-            else:
-                logger.error("✗ Error en descargas")
-        
-        except Exception as e:
-            logger.error(f"Error en descarga: {e}")
-    
-    def _paso_limpiar_excel(self):
-        """Lee y limpia archivos Excel."""
-        try:
-            subtitulo("PASO 2: LECTURA Y LIMPIEZA DE EXCEL")
-            
-            # Obtener archivos
+            # Paso 2: Limpiar y leer Excel Local
+            subtitulo("PASO 2: LECTURA Y LIMPIEZA SINCRO DE EXCEL")
             archivos = obtener_archivos_excel(EXCEL_DIR)
             
             if not archivos:
-                logger.error(f"No se encontraron archivos Excel en {EXCEL_DIR}")
-                return None
-            
-            logger.info(f"Archivos encontrados: {len(archivos)}")
-            for archivo in archivos:
-                logger.info(f"  • {archivo.name}")
-            
-            # Combinar Excel
-            df, total_filas = combinar_excels(archivos)
-            
-            # Aplicar filtro de fechas
-            if self.fecha_desde or self.fecha_hasta:
-                logger.info(f"Aplicando filtro de fechas...")
-                df = aplicar_filtro_fechas(df, self.fecha_desde, self.fecha_hasta)
-            
-            # Validar integridad
-            stats = validar_integridad(df)
-            log_estadisticas_excel(df, stats)
-            
-            logger.info(f"✓ {len(df):,} registros listos para procesar")
-            
-            return df
-        
-        except Exception as e:
-            logger.error(f"Error en limpieza de Excel: {e}")
-            return None
-    
-    def _paso_procesar_datos(self, df) -> Optional[dict]:
-        """Procesa datos y calcula métricas."""
-        try:
-            subtitulo("PASO 3: PROCESAMIENTO Y CÁLCULO DE MÉTRICAS")
-            
-            logger.info(f"Modo de procesamiento: {MODO_PROCESAMIENTO}")
-            
-            resultados = procesar_datos(df, modo=MODO_PROCESAMIENTO)
-            
-            # Mostrar resumen
-            metricas = resultados.get("metricas", {})
-            logger.info(f"\nResumen de procesamiento:")
-            logger.info(f"  • Total cargas: {metricas.get('total_cargas', 0):,}")
-            logger.info(f"  • Total pasajeros: {metricas.get('total_pasajeros', 0):,}")
-            logger.info(f"  • Total retenciones: {metricas.get('total_retenciones', 0):,}")
-            logger.info(f"  • Total incidencias: {metricas.get('incidencias_alcoholemia', 0) + metricas.get('incidencias_sustancias', 0):,}")
-            logger.info(f"    - Alcoholemia: {metricas.get('incidencias_alcoholemia', 0):,}")
-            logger.info(f"    - Sustancias: {metricas.get('incidencias_sustancias', 0):,}")
-            
-            return resultados
-        
-        except Exception as e:
-            logger.error(f"Error en procesamiento: {e}")
-            return None
-    
-    def _paso_exportar(self) -> bool:
-        """Exporta resultados a JSON."""
-        try:
-            subtitulo("PASO 4: EXPORTACIÓN A JSON")
-            
-            if self.resultados is None:
-                logger.error("No hay resultados para exportar")
+                logger.error(f"No se detectaron archivos Excel en la ruta: {EXCEL_DIR}")
                 return False
+                
+            logger.info(f"Archivos en proceso ({len(archivos)}):")
+            for arc in archivos:
+                logger.info(f"   • {arc.name}")
+                
+            # Combinación de las tablas Excel
+            df, _ = combinar_excels(archivos)
             
+            if self.fecha_desde or self.fecha_hasta:
+                logger.info(f"Filtrando rango temporal solicitado...")
+                df = aplicar_filtro_fechas(df, self.fecha_desde, self.fecha_hasta)
+                
+            # Estadísticas de lectura en bruto
+            stats_integridad = validar_integridad(df)
+            log_estadisticas_excel(df, stats_integridad)
+            
+            # Paso 3: Procesamiento Core y Saneamiento Estricto
+            subtitulo("PASO 3: SANEAMIENTO ESPECÍFICO Y MÉTRICAS")
+            logger.info(f"Modo operativo seleccionado: {MODO_PROCESAMIENTO}")
+            
+            # Llamada al procesador orientado a objetos que modificamos en calculos.py
+            self.resultados = procesar_datos(df, modo=MODO_PROCESAMIENTO)
+            
+            if not self.resultados:
+                logger.error("El motor de procesamiento retornó un set vacío.")
+                return False
+                
+            # =========================================================
+            # IMPRESIÓN REVISADA DE RESULTADOS EN CONSOLA
+            # =========================================================
+            metricas = self.resultados.get("metricas", {})
+            regiones_stats = self.resultados.get("regiones", {})
+            
+            total_vc = metricas.get('total_vehiculos', 0)
+            total_cargas = metricas.get('total_cargas', 0)
+            total_pasajeros = metricas.get('total_pasajeros', 0)
+            
+            porc_cargas = round((total_cargas / total_vc) * 100, 1) if total_vc > 0 else 0
+            porc_pasajeros = round((total_pasajeros / total_vc) * 100, 1) if total_vc > 0 else 0
+
+            titulo("RESUMEN CONSOLIDADO FINAL (DATOS SANEADOS)")
+            print(f" • Vehículos Controlados Fiscales netos: {total_vc:,}")
+            print(f"   - Transporte de Cargas:  {total_cargas:,} ({porc_cargas}%)")
+            print(f"   - Transporte Pasajeros:  {total_pasajeros:,} ({porc_pasajeros}%)")
+            print(f" • Actas de Infracción Labradas:  {metricas.get('total_actas', 0):,}")
+            print(f" • Unidades con Retención Física: {metricas.get('total_retenciones', 0):,}")
+            print(f" • Controles de Conducción Positivos (Alcoholemia/Sustancias): {metricas.get('incidencias_alcoholemia', 0) + metricas.get('incidencias_sustancias', 0):,}")
+            
+            print(f"\n ⚠️ SECCIÓN INCUMPLIMIENTOS / AUDITORÍA:")
+            print(f"   - Registros de Gendarmería / Confección aislados: {metricas.get('gendarmeria_confeccion_apartados', 0):,}")
+            
+            if regiones_stats:
+                subtitulo("TABLA DE REGIONES COMPATIBLE CON DASHBOARD HTML")
+                print(f"{'REGIÓN':<12} | {'CARGAS (VC/ACTAS/RET)':<22} | {'PASAJEROS (VC/ACTAS/RET)':<25}")
+                print("-" * 65)
+                for reg in ["AMBA", "CEN", "CUY", "NEA", "NOA", "COSTA", "PAT"]:
+                    if reg in regiones_stats:
+                        c = regiones_stats[reg].get('cargas', {'vc':0,'actas':0,'ret':0})
+                        p = regiones_stats[reg].get('pasajeros', {'vc':0,'actas':0,'ret':0})
+                        print(f"{reg:<12} | {c['vc']}/{c['actas']}/{c['ret']:<16} | {p['vc']}/{p['actas']}/{p['ret']}")
+                print("=" * 65 + "\n")
+            # =========================================================
+            
+            # Paso 4: Exportación de Datos Directa al JSON
+            subtitulo("PASO 4: EXPORTACIÓN DE ESTRUCTURA COMPATIBLE")
             exitoso = exportar_json(self.resultados, JSON_SALIDA)
             
             if exitoso:
-                logger.info("✓ Exportación completada")
+                titulo("PROCESAMIENTO COMPLETADO EXITOSAMENTE ✓")
                 return True
             else:
-                logger.error("✗ Error en exportación")
+                logger.error("Falló la escritura del archivo JSON de salida.")
                 return False
-        
+                
         except Exception as e:
-            logger.error(f"Error en exportación: {e}")
+            logger.error(f"Error crítico en la ejecución del flujo: {e}", exc_info=True)
             return False
-    
+            
     def iniciar_servidor(self):
-        """Inicia el servidor Flask."""
+        """Inicializa la interfaz del Dashboard en Flask."""
         try:
             from app import app
-            
-            subtitulo("INICIANDO SERVIDOR WEB")
-            logger.info(f"Servidor escuchando en http://{FLASK_HOST}:{FLASK_PORT}")
-            logger.info("Presiona Ctrl+C para detener")
+            subtitulo("INICIANDO SERVIDOR DE VISUALIZACIÓN WEB")
+            logger.info(f"Dashboard disponible en: http://{FLASK_HOST}:{FLASK_PORT}")
+            logger.info("Para apagar el servidor presiona de forma continua: Ctrl + C")
             
             app.run(
                 host=FLASK_HOST,
                 port=FLASK_PORT,
                 debug=FLASK_DEBUG
             )
-        
         except ImportError:
-            logger.error("No se pudo importar app.py")
+            logger.error("No se pudo cargar el archivo app.py del servidor Flask.")
         except Exception as e:
-            logger.error(f"Error iniciando servidor: {e}")
+            logger.error(f"Error al levantar el servicio web: {e}")
 
 # =========================================================
-# PUNTO DE ENTRADA
+# ENTRADA DEL PROGRAMA
 # =========================================================
-
 async def main():
-    """Función principal."""
     import argparse
-    
-    parser = argparse.ArgumentParser(
-        description="Orquestador del procesamiento CNRT"
-    )
-    parser.add_argument(
-        "--descargar",
-        action="store_true",
-        help="Descargar reportes del sistema CNRT antes de procesar"
-    )
-    parser.add_argument(
-        "--desde",
-        type=str,
-        help="Fecha desde (YYYY-MM-DD)"
-    )
-    parser.add_argument(
-        "--hasta",
-        type=str,
-        help="Fecha hasta (YYYY-MM-DD)"
-    )
-    parser.add_argument(
-        "--solo-procesar",
-        action="store_true",
-        help="Solo procesar Excel sin iniciar servidor"
-    )
+    parser = argparse.ArgumentParser(description="Orquestador del procesamiento CNRT")
+    parser.add_argument("--descargar", action="store_true", help="Descarga web vía Playwright")
+    parser.add_argument("--desde", type=str, help="Filtro Fecha Inicial (YYYY-MM-DD)")
+    parser.add_argument("--hasta", type=str, help="Filtro Fecha Final (YYYY-MM-DD)")
+    parser.add_argument("--solo-procesar", action="store_true", help="Evita levantar Flask")
     
     args = parser.parse_args()
     
-    # Crear orquestador
     orquestador = Orquestador(
         descargar=args.descargar,
         fecha_desde=args.desde,
         fecha_hasta=args.hasta
     )
     
-    # Ejecutar procesamiento
     exitoso = await orquestador.ejecutar()
     
     if not exitoso:
-        logger.error("Procesamiento fallido")
+        logger.error("El proceso se detuvo por errores internos previos.")
         sys.exit(1)
-    
-    # Iniciar servidor si no es modo solo-procesar
+        
     if not args.solo_procesar:
         orquestador.iniciar_servidor()
 
 if __name__ == "__main__":
-    # Ejecutar con soporte para async si es necesario
     try:
         asyncio.run(main())
     except KeyboardInterrupt:
-        logger.info("\n✓ Proceso interrumpido por el usuario")
+        logger.info("\n✓ Sistema cerrado a solicitud del operador.")
         sys.exit(0)
-    except Exception as e:
-        logger.error(f"Error fatal: {e}")
-        sys.exit(1)

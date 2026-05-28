@@ -1,0 +1,599 @@
+2026-05-27 13:00:28 - Generador - INFO - Archivos encontrados: 1
+2026-05-27 13:00:28 - Generador - INFO -   • 18 al 24 Mayo.xls
+2026-05-27 13:00:28 - procesamiento.limpiar_excel - INFO - Leyendo 1 archivo(s) Excel...
+2026-05-27 13:00:28 - procesamiento.limpiar_excel - INFO -   [1] 18 al 24 Mayo.xls
+2026-05-27 13:00:29 - procesamiento.limpiar_excel - INFO -       ✓ 22,941 filas leídas
+2026-05-27 13:00:30 - procesamiento.limpiar_excel - INFO - Total combinado: 22,941 filas
+2026-05-27 13:00:30 - procesamiento.limpiar_excel - INFO - Total después de limpieza: 22,941 filas
+2026-05-27 13:00:30 - procesamiento.limpiar_excel - INFO - 
+============================================================
+2026-05-27 13:00:30 - procesamiento.limpiar_excel - INFO - ESTADÍSTICAS DE INTEGRIDAD
+2026-05-27 13:00:30 - procesamiento.limpiar_excel - INFO - ============================================================
+2026-05-27 13:00:30 - procesamiento.limpiar_excel - INFO - Total de filas: 22,941
+2026-05-27 13:00:30 - procesamiento.limpiar_excel - INFO - Filas válidas: 22,937
+2026-05-27 13:00:30 - procesamiento.limpiar_excel - INFO - Filas inválidas: 4
+2026-05-27 13:00:30 - procesamiento.limpiar_excel - INFO - Regiones sin mapear: 2,222
+2026-05-27 13:00:30 - procesamiento.limpiar_excel - INFO - 
+Distribución por región:
+2026-05-27 13:00:30 - procesamiento.limpiar_excel - INFO -   AMBA: 7,927
+2026-05-27 13:00:30 - procesamiento.limpiar_excel - INFO -   CEN: 4,143
+2026-05-27 13:00:30 - procesamiento.limpiar_excel - INFO -   COSTA: 646
+2026-05-27 13:00:30 - procesamiento.limpiar_excel - INFO -   CUY: 1,676
+2026-05-27 13:00:30 - procesamiento.limpiar_excel - INFO -   NEA: 2,643
+2026-05-27 13:00:30 - procesamiento.limpiar_excel - INFO -   NOA: 2,764
+2026-05-27 13:00:30 - procesamiento.limpiar_excel - INFO -   PAT: 920
+2026-05-27 13:00:30 - Generador - INFO - ✓ 22,941 registros listos para procesar
+2026-05-27 13:00:30 - Generador - ERROR - Error fatal: 'DataFrame' object can't be awaited
+Traceback (most recent call last):
+  File "C:\Users\dmolina\Desktop\INFORME\INFORME\generador_nuevo.py", line 71, in ejecutar
+    df = await self._paso_limpiar_excel()
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'DataFrame' object can't be awaited
+2026-05-27 13:00:30 - Generador - ERROR - Procesamiento fallido
+2026-05-27 13:02:10 - Generador - INFO - Archivos encontrados: 1
+2026-05-27 13:02:10 - Generador - INFO -   • 18 al 24 Mayo.xls
+2026-05-27 13:02:10 - procesamiento.limpiar_excel - INFO - Leyendo 1 archivo(s) Excel...
+2026-05-27 13:02:10 - procesamiento.limpiar_excel - INFO -   [1] 18 al 24 Mayo.xls
+2026-05-27 13:02:11 - procesamiento.limpiar_excel - INFO -       ✓ 22,941 filas leídas
+2026-05-27 13:02:12 - procesamiento.limpiar_excel - INFO - Total combinado: 22,941 filas
+2026-05-27 13:02:12 - procesamiento.limpiar_excel - INFO - Total después de limpieza: 22,941 filas
+2026-05-27 13:02:12 - procesamiento.limpiar_excel - INFO - 
+============================================================
+2026-05-27 13:02:12 - procesamiento.limpiar_excel - INFO - ESTADÍSTICAS DE INTEGRIDAD
+2026-05-27 13:02:12 - procesamiento.limpiar_excel - INFO - ============================================================
+2026-05-27 13:02:12 - procesamiento.limpiar_excel - INFO - Total de filas: 22,941
+2026-05-27 13:02:12 - procesamiento.limpiar_excel - INFO - Filas válidas: 22,937
+2026-05-27 13:02:12 - procesamiento.limpiar_excel - INFO - Filas inválidas: 4
+2026-05-27 13:02:12 - procesamiento.limpiar_excel - INFO - Regiones sin mapear: 2,222
+2026-05-27 13:02:12 - procesamiento.limpiar_excel - INFO - 
+Distribución por región:
+2026-05-27 13:02:12 - procesamiento.limpiar_excel - INFO -   AMBA: 7,927
+2026-05-27 13:02:12 - procesamiento.limpiar_excel - INFO -   CEN: 4,143
+2026-05-27 13:02:12 - procesamiento.limpiar_excel - INFO -   COSTA: 646
+2026-05-27 13:02:12 - procesamiento.limpiar_excel - INFO -   CUY: 1,676
+2026-05-27 13:02:12 - procesamiento.limpiar_excel - INFO -   NEA: 2,643
+2026-05-27 13:02:12 - procesamiento.limpiar_excel - INFO -   NOA: 2,764
+2026-05-27 13:02:12 - procesamiento.limpiar_excel - INFO -   PAT: 920
+2026-05-27 13:02:12 - Generador - INFO - ✓ 22,941 registros listos para procesar
+2026-05-27 13:02:12 - Generador - ERROR - Error fatal: 'DataFrame' object can't be awaited
+Traceback (most recent call last):
+  File "C:\Users\dmolina\Desktop\INFORME\INFORME\generador_nuevo.py", line 71, in ejecutar
+    df = await self._paso_limpiar_excel()
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'DataFrame' object can't be awaited
+2026-05-27 13:02:12 - Generador - ERROR - Procesamiento fallido
+2026-05-27 13:02:46 - Generador - INFO - Archivos encontrados: 1
+2026-05-27 13:02:46 - Generador - INFO -   • 18 al 24 Mayo.xls
+2026-05-27 13:02:46 - procesamiento.limpiar_excel - INFO - Leyendo 1 archivo(s) Excel...
+2026-05-27 13:02:46 - procesamiento.limpiar_excel - INFO -   [1] 18 al 24 Mayo.xls
+2026-05-27 13:02:47 - procesamiento.limpiar_excel - INFO -       ✓ 22,941 filas leídas
+2026-05-27 13:02:48 - procesamiento.limpiar_excel - INFO - Total combinado: 22,941 filas
+2026-05-27 13:02:48 - procesamiento.limpiar_excel - INFO - Total después de limpieza: 22,941 filas
+2026-05-27 13:02:48 - procesamiento.limpiar_excel - INFO - 
+============================================================
+2026-05-27 13:02:48 - procesamiento.limpiar_excel - INFO - ESTADÍSTICAS DE INTEGRIDAD
+2026-05-27 13:02:48 - procesamiento.limpiar_excel - INFO - ============================================================
+2026-05-27 13:02:48 - procesamiento.limpiar_excel - INFO - Total de filas: 22,941
+2026-05-27 13:02:48 - procesamiento.limpiar_excel - INFO - Filas válidas: 22,937
+2026-05-27 13:02:48 - procesamiento.limpiar_excel - INFO - Filas inválidas: 4
+2026-05-27 13:02:48 - procesamiento.limpiar_excel - INFO - Regiones sin mapear: 2,222
+2026-05-27 13:02:48 - procesamiento.limpiar_excel - INFO - 
+Distribución por región:
+2026-05-27 13:02:48 - procesamiento.limpiar_excel - INFO -   AMBA: 7,927
+2026-05-27 13:02:48 - procesamiento.limpiar_excel - INFO -   CEN: 4,143
+2026-05-27 13:02:48 - procesamiento.limpiar_excel - INFO -   COSTA: 646
+2026-05-27 13:02:48 - procesamiento.limpiar_excel - INFO -   CUY: 1,676
+2026-05-27 13:02:48 - procesamiento.limpiar_excel - INFO -   NEA: 2,643
+2026-05-27 13:02:48 - procesamiento.limpiar_excel - INFO -   NOA: 2,764
+2026-05-27 13:02:48 - procesamiento.limpiar_excel - INFO -   PAT: 920
+2026-05-27 13:02:48 - Generador - INFO - ✓ 22,941 registros listos para procesar
+2026-05-27 13:02:48 - Generador - ERROR - Error fatal: 'DataFrame' object can't be awaited
+Traceback (most recent call last):
+  File "C:\Users\dmolina\Desktop\INFORME\INFORME\generador_nuevo.py", line 71, in ejecutar
+    df = await self._paso_limpiar_excel()
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'DataFrame' object can't be awaited
+2026-05-27 13:02:48 - Generador - ERROR - Procesamiento fallido
+2026-05-27 13:04:43 - Generador - INFO - Archivos encontrados: 1
+2026-05-27 13:04:43 - Generador - INFO -   • 18 al 24 Mayo.xls
+2026-05-27 13:04:43 - procesamiento.limpiar_excel - INFO - Leyendo 1 archivo(s) Excel...
+2026-05-27 13:04:43 - procesamiento.limpiar_excel - INFO -   [1] 18 al 24 Mayo.xls
+2026-05-27 13:04:44 - procesamiento.limpiar_excel - INFO -       ✓ 22,941 filas leídas
+2026-05-27 13:04:45 - procesamiento.limpiar_excel - INFO - Total combinado: 22,941 filas
+2026-05-27 13:04:45 - procesamiento.limpiar_excel - INFO - Total después de limpieza: 22,941 filas
+2026-05-27 13:04:45 - procesamiento.limpiar_excel - INFO - 
+============================================================
+2026-05-27 13:04:45 - procesamiento.limpiar_excel - INFO - ESTADÍSTICAS DE INTEGRIDAD
+2026-05-27 13:04:45 - procesamiento.limpiar_excel - INFO - ============================================================
+2026-05-27 13:04:45 - procesamiento.limpiar_excel - INFO - Total de filas: 22,941
+2026-05-27 13:04:45 - procesamiento.limpiar_excel - INFO - Filas válidas: 22,937
+2026-05-27 13:04:45 - procesamiento.limpiar_excel - INFO - Filas inválidas: 4
+2026-05-27 13:04:45 - procesamiento.limpiar_excel - INFO - Regiones sin mapear: 2,222
+2026-05-27 13:04:45 - procesamiento.limpiar_excel - INFO - 
+Distribución por región:
+2026-05-27 13:04:45 - procesamiento.limpiar_excel - INFO -   AMBA: 7,927
+2026-05-27 13:04:45 - procesamiento.limpiar_excel - INFO -   CEN: 4,143
+2026-05-27 13:04:45 - procesamiento.limpiar_excel - INFO -   COSTA: 646
+2026-05-27 13:04:45 - procesamiento.limpiar_excel - INFO -   CUY: 1,676
+2026-05-27 13:04:45 - procesamiento.limpiar_excel - INFO -   NEA: 2,643
+2026-05-27 13:04:45 - procesamiento.limpiar_excel - INFO -   NOA: 2,764
+2026-05-27 13:04:45 - procesamiento.limpiar_excel - INFO -   PAT: 920
+2026-05-27 13:04:45 - Generador - INFO - ✓ 22,941 registros listos para procesar
+2026-05-27 13:04:45 - Generador - ERROR - Error fatal: 'DataFrame' object can't be awaited
+Traceback (most recent call last):
+  File "C:\Users\dmolina\Desktop\INFORME\INFORME\generador_nuevo.py", line 71, in ejecutar
+    df = await self._paso_limpiar_excel()
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'DataFrame' object can't be awaited
+2026-05-27 13:04:45 - Generador - ERROR - Procesamiento fallido
+2026-05-27 13:31:24 - Generador - INFO - Archivos encontrados: 2
+2026-05-27 13:31:24 - Generador - INFO -   • 18 al 24 Mayo.xls
+2026-05-27 13:31:24 - Generador - INFO -   • Mayo 18 al 24.xlsx
+2026-05-27 13:31:24 - procesamiento.limpiar_excel - INFO - Leyendo 2 archivo(s) Excel...
+2026-05-27 13:31:24 - procesamiento.limpiar_excel - INFO -   [1] 18 al 24 Mayo.xls
+2026-05-27 13:31:25 - procesamiento.limpiar_excel - INFO -       ✓ 22,941 filas leídas
+2026-05-27 13:31:25 - procesamiento.limpiar_excel - INFO -   [2] Mayo 18 al 24.xlsx
+2026-05-27 13:31:25 - procesamiento.limpiar_excel - ERROR - Error leyendo Mayo 18 al 24.xlsx: `Import openpyxl` failed.  Use pip or conda to install the openpyxl package.
+2026-05-27 13:31:26 - procesamiento.limpiar_excel - INFO - Total combinado: 22,941 filas
+2026-05-27 13:31:26 - procesamiento.limpiar_excel - INFO - Total después de limpieza: 22,941 filas
+2026-05-27 13:31:26 - procesamiento.limpiar_excel - INFO - 
+============================================================
+2026-05-27 13:31:26 - procesamiento.limpiar_excel - INFO - ESTADÍSTICAS DE INTEGRIDAD
+2026-05-27 13:31:26 - procesamiento.limpiar_excel - INFO - ============================================================
+2026-05-27 13:31:26 - procesamiento.limpiar_excel - INFO - Total de filas: 22,941
+2026-05-27 13:31:26 - procesamiento.limpiar_excel - INFO - Filas válidas: 22,937
+2026-05-27 13:31:26 - procesamiento.limpiar_excel - INFO - Filas inválidas: 4
+2026-05-27 13:31:26 - procesamiento.limpiar_excel - INFO - Regiones sin mapear: 2,222
+2026-05-27 13:31:26 - procesamiento.limpiar_excel - INFO - 
+Distribución por región:
+2026-05-27 13:31:26 - procesamiento.limpiar_excel - INFO -   AMBA: 7,927
+2026-05-27 13:31:26 - procesamiento.limpiar_excel - INFO -   CEN: 4,143
+2026-05-27 13:31:26 - procesamiento.limpiar_excel - INFO -   COSTA: 646
+2026-05-27 13:31:26 - procesamiento.limpiar_excel - INFO -   CUY: 1,676
+2026-05-27 13:31:26 - procesamiento.limpiar_excel - INFO -   NEA: 2,643
+2026-05-27 13:31:26 - procesamiento.limpiar_excel - INFO -   NOA: 2,764
+2026-05-27 13:31:26 - procesamiento.limpiar_excel - INFO -   PAT: 920
+2026-05-27 13:31:26 - Generador - INFO - ✓ 22,941 registros listos para procesar
+2026-05-27 13:31:26 - Generador - ERROR - Error fatal: 'DataFrame' object can't be awaited
+Traceback (most recent call last):
+  File "C:\Users\dmolina\Desktop\INFORME\INFORME\generador_nuevo.py", line 71, in ejecutar
+    df = await self._paso_limpiar_excel()
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'DataFrame' object can't be awaited
+2026-05-27 13:31:26 - Generador - ERROR - Procesamiento fallido
+2026-05-27 16:40:42 - Generador - INFO - Archivos encontrados: 2
+2026-05-27 16:40:42 - Generador - INFO -   • 18 al 24 Mayo.xls
+2026-05-27 16:40:42 - Generador - INFO -   • Mayo 18 al 24.xlsx
+2026-05-27 16:40:42 - procesamiento.limpiar_excel - INFO - Leyendo 2 archivo(s) Excel...
+2026-05-27 16:40:42 - procesamiento.limpiar_excel - INFO -   [1] 18 al 24 Mayo.xls
+2026-05-27 16:40:43 - procesamiento.limpiar_excel - INFO -       ✓ 22,941 filas leídas
+2026-05-27 16:40:43 - procesamiento.limpiar_excel - INFO -   [2] Mayo 18 al 24.xlsx
+2026-05-27 16:40:43 - procesamiento.limpiar_excel - ERROR - Error leyendo Mayo 18 al 24.xlsx: `Import openpyxl` failed.  Use pip or conda to install the openpyxl package.
+2026-05-27 16:40:44 - procesamiento.limpiar_excel - INFO - Total combinado: 22,941 filas
+2026-05-27 16:40:44 - procesamiento.limpiar_excel - INFO - Total después de limpieza: 22,941 filas
+2026-05-27 16:40:44 - procesamiento.limpiar_excel - INFO - 
+============================================================
+2026-05-27 16:40:44 - procesamiento.limpiar_excel - INFO - ESTADÍSTICAS DE INTEGRIDAD
+2026-05-27 16:40:44 - procesamiento.limpiar_excel - INFO - ============================================================
+2026-05-27 16:40:44 - procesamiento.limpiar_excel - INFO - Total de filas: 22,941
+2026-05-27 16:40:44 - procesamiento.limpiar_excel - INFO - Filas válidas: 22,937
+2026-05-27 16:40:44 - procesamiento.limpiar_excel - INFO - Filas inválidas: 4
+2026-05-27 16:40:44 - procesamiento.limpiar_excel - INFO - Regiones sin mapear: 2,222
+2026-05-27 16:40:44 - procesamiento.limpiar_excel - INFO - 
+Distribución por región:
+2026-05-27 16:40:44 - procesamiento.limpiar_excel - INFO -   AMBA: 7,927
+2026-05-27 16:40:44 - procesamiento.limpiar_excel - INFO -   CEN: 4,143
+2026-05-27 16:40:44 - procesamiento.limpiar_excel - INFO -   COSTA: 646
+2026-05-27 16:40:44 - procesamiento.limpiar_excel - INFO -   CUY: 1,676
+2026-05-27 16:40:44 - procesamiento.limpiar_excel - INFO -   NEA: 2,643
+2026-05-27 16:40:44 - procesamiento.limpiar_excel - INFO -   NOA: 2,764
+2026-05-27 16:40:44 - procesamiento.limpiar_excel - INFO -   PAT: 920
+2026-05-27 16:40:44 - Generador - INFO - ✓ 22,941 registros listos para procesar
+2026-05-27 16:40:44 - Generador - ERROR - Error fatal: 'DataFrame' object can't be awaited
+Traceback (most recent call last):
+  File "C:\Users\dmolina\Desktop\INFORME\INFORME\generador_nuevo.py", line 71, in ejecutar
+    df = await self._paso_limpiar_excel()
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'DataFrame' object can't be awaited
+2026-05-27 16:40:44 - Generador - ERROR - Procesamiento fallido
+2026-05-27 16:50:19 - Generador - INFO - Archivos encontrados: 1
+2026-05-27 16:50:19 - Generador - INFO -   • 18 al 24 Mayo.xls
+2026-05-27 16:50:19 - procesamiento.limpiar_excel - INFO - Leyendo 1 archivo(s) Excel...
+2026-05-27 16:50:19 - procesamiento.limpiar_excel - INFO -   [1] 18 al 24 Mayo.xls
+2026-05-27 16:50:19 - procesamiento.limpiar_excel - INFO -       ✓ 21,014 filas leídas
+2026-05-27 16:50:20 - procesamiento.limpiar_excel - INFO - Total combinado: 21,014 filas
+2026-05-27 16:50:20 - procesamiento.limpiar_excel - INFO - Total después de limpieza: 21,014 filas
+2026-05-27 16:50:20 - procesamiento.limpiar_excel - INFO - 
+============================================================
+2026-05-27 16:50:20 - procesamiento.limpiar_excel - INFO - ESTADÍSTICAS DE INTEGRIDAD
+2026-05-27 16:50:20 - procesamiento.limpiar_excel - INFO - ============================================================
+2026-05-27 16:50:20 - procesamiento.limpiar_excel - INFO - Total de filas: 21,014
+2026-05-27 16:50:20 - procesamiento.limpiar_excel - INFO - Filas válidas: 21,014
+2026-05-27 16:50:20 - procesamiento.limpiar_excel - INFO - Filas inválidas: 0
+2026-05-27 16:50:20 - procesamiento.limpiar_excel - INFO - Regiones sin mapear: 293
+2026-05-27 16:50:20 - procesamiento.limpiar_excel - INFO - 
+Distribución por región:
+2026-05-27 16:50:20 - procesamiento.limpiar_excel - INFO -   AMBA: 7,931
+2026-05-27 16:50:20 - procesamiento.limpiar_excel - INFO -   CEN: 4,142
+2026-05-27 16:50:20 - procesamiento.limpiar_excel - INFO -   COSTA: 646
+2026-05-27 16:50:20 - procesamiento.limpiar_excel - INFO -   CUY: 1,676
+2026-05-27 16:50:20 - procesamiento.limpiar_excel - INFO -   NEA: 2,643
+2026-05-27 16:50:20 - procesamiento.limpiar_excel - INFO -   NOA: 2,763
+2026-05-27 16:50:20 - procesamiento.limpiar_excel - INFO -   PAT: 920
+2026-05-27 16:50:20 - Generador - INFO - ✓ 21,014 registros listos para procesar
+2026-05-27 16:50:20 - Generador - ERROR - Error fatal: 'DataFrame' object can't be awaited
+Traceback (most recent call last):
+  File "C:\Users\dmolina\Desktop\INFORME\INFORME\generador_nuevo.py", line 71, in ejecutar
+    df = await self._paso_limpiar_excel()
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'DataFrame' object can't be awaited
+2026-05-27 16:50:20 - Generador - ERROR - Procesamiento fallido
+2026-05-28 09:42:31 - Generador - INFO - Archivos encontrados: 1
+2026-05-28 09:42:31 - Generador - INFO -   • Fiscalizaciones por delegacion desde 18-05-2026 hasta 24-05-2026.xls
+2026-05-28 09:42:31 - procesamiento.limpiar_excel - INFO - Leyendo 1 archivo(s) Excel...
+2026-05-28 09:42:31 - procesamiento.limpiar_excel - INFO -   [1] Fiscalizaciones por delegacion desde 18-05-2026 hasta 24-05-2026.xls
+2026-05-28 09:42:31 - procesamiento.limpiar_excel - ERROR - Error leyendo Fiscalizaciones por delegacion desde 18-05-2026 hasta 24-05-2026.xls: Unsupported format, or corrupt file: Expected BOF record; found b'<html><h'
+2026-05-28 09:42:31 - procesamiento.limpiar_excel - ERROR - No se pudo leer ningún archivo Excel
+2026-05-28 09:42:31 - Generador - ERROR - Error en limpieza de Excel: No hay datos para procesar
+2026-05-28 09:42:31 - Generador - ERROR - Error fatal: 'NoneType' object can't be awaited
+Traceback (most recent call last):
+  File "C:\Users\dmolina\Desktop\INFORME\INFORME\generador_nuevo.py", line 71, in ejecutar
+    df = await self._paso_limpiar_excel()
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'NoneType' object can't be awaited
+2026-05-28 09:42:31 - Generador - ERROR - Procesamiento fallido
+2026-05-28 09:42:56 - Generador - INFO - Archivos encontrados: 1
+2026-05-28 09:42:56 - Generador - INFO -   • Fiscalizaciones por delegacion desde 18-05-2026 hasta 24-05-2026.xls
+2026-05-28 09:42:56 - procesamiento.limpiar_excel - INFO - Leyendo 1 archivo(s) Excel...
+2026-05-28 09:42:56 - procesamiento.limpiar_excel - INFO -   [1] Fiscalizaciones por delegacion desde 18-05-2026 hasta 24-05-2026.xls
+2026-05-28 09:42:56 - procesamiento.limpiar_excel - ERROR - Error leyendo Fiscalizaciones por delegacion desde 18-05-2026 hasta 24-05-2026.xls: Unsupported format, or corrupt file: Expected BOF record; found b'<html><h'
+2026-05-28 09:42:56 - procesamiento.limpiar_excel - ERROR - No se pudo leer ningún archivo Excel
+2026-05-28 09:42:56 - Generador - ERROR - Error en limpieza de Excel: No hay datos para procesar
+2026-05-28 09:42:56 - Generador - ERROR - Error fatal: 'NoneType' object can't be awaited
+Traceback (most recent call last):
+  File "C:\Users\dmolina\Desktop\INFORME\INFORME\generador_nuevo.py", line 71, in ejecutar
+    df = await self._paso_limpiar_excel()
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'NoneType' object can't be awaited
+2026-05-28 09:42:56 - Generador - ERROR - Procesamiento fallido
+2026-05-28 10:20:22 - Generador - INFO - Archivos encontrados: 1
+2026-05-28 10:20:22 - Generador - INFO -   • Fiscalizaciones por delegacion desde 18-05-2026 hasta 24-05-2026.xls
+2026-05-28 10:20:22 - procesamiento.limpiar_excel - INFO - Leyendo 1 archivo(s) Excel...
+2026-05-28 10:20:22 - procesamiento.limpiar_excel - INFO -   [1] Fiscalizaciones por delegacion desde 18-05-2026 hasta 24-05-2026.xls
+2026-05-28 10:20:22 - procesamiento.limpiar_excel - ERROR - Error leyendo Fiscalizaciones por delegacion desde 18-05-2026 hasta 24-05-2026.xls: Unsupported format, or corrupt file: Expected BOF record; found b'<html><h'
+2026-05-28 10:20:22 - procesamiento.limpiar_excel - ERROR - No se pudo leer ningún archivo Excel
+2026-05-28 10:20:22 - Generador - ERROR - Error en limpieza de Excel: No hay datos para procesar
+2026-05-28 10:20:22 - Generador - ERROR - Error fatal: 'NoneType' object can't be awaited
+Traceback (most recent call last):
+  File "C:\Users\dmolina\Desktop\INFORME\INFORME\generador_nuevo.py", line 71, in ejecutar
+    df = await self._paso_limpiar_excel()
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'NoneType' object can't be awaited
+2026-05-28 10:20:22 - Generador - ERROR - Procesamiento fallido
+2026-05-28 10:59:00 - Generador - INFO - Archivos encontrados: 1
+2026-05-28 10:59:00 - Generador - INFO -   • Fiscalizaciones por delegacion desde 18-05-2026 hasta 24-05-2026.xls
+2026-05-28 10:59:00 - procesamiento.limpiar_excel - INFO - Leyendo 1 archivo(s) Excel...
+2026-05-28 10:59:00 - procesamiento.limpiar_excel - INFO -   [1] Fiscalizaciones por delegacion desde 18-05-2026 hasta 24-05-2026.xls
+2026-05-28 10:59:00 - procesamiento.limpiar_excel - ERROR - Error leyendo Fiscalizaciones por delegacion desde 18-05-2026 hasta 24-05-2026.xls: Unsupported format, or corrupt file: Expected BOF record; found b'<html><h'
+2026-05-28 10:59:00 - procesamiento.limpiar_excel - ERROR - No se pudo leer ningún archivo Excel
+2026-05-28 10:59:00 - Generador - ERROR - Error en limpieza de Excel: No hay datos para procesar
+2026-05-28 10:59:00 - Generador - ERROR - Procesamiento fallido
+2026-05-28 11:03:07 - Generador - INFO - Archivos encontrados: 1
+2026-05-28 11:03:07 - Generador - INFO -   • Fiscalizaciones por delegacion desde 18-05-2026 hasta 24-05-2026.xls
+2026-05-28 11:03:07 - procesamiento.limpiar_excel - INFO - Leyendo 1 archivo(s) Excel...
+2026-05-28 11:03:07 - procesamiento.limpiar_excel - INFO -   [1] Fiscalizaciones por delegacion desde 18-05-2026 hasta 24-05-2026.xls
+2026-05-28 11:03:07 - procesamiento.limpiar_excel - ERROR - Error leyendo Fiscalizaciones por delegacion desde 18-05-2026 hasta 24-05-2026.xls: Unsupported format, or corrupt file: Expected BOF record; found b'<html><h'
+2026-05-28 11:03:07 - procesamiento.limpiar_excel - ERROR - No se pudo leer ningún archivo Excel
+2026-05-28 11:03:07 - Generador - ERROR - Error en limpieza de Excel: No hay datos para procesar
+2026-05-28 11:03:07 - Generador - ERROR - Procesamiento fallido
+2026-05-28 11:13:10 - Generador - INFO - Archivos encontrados: 1
+2026-05-28 11:13:10 - Generador - INFO -   • Fiscalizaciones 18-05-2026 hasta 24-05-2026.xls
+2026-05-28 11:13:10 - procesamiento.limpiar_excel - INFO - Leyendo 1 archivo(s) Excel...
+2026-05-28 11:13:10 - procesamiento.limpiar_excel - INFO -   [1] Fiscalizaciones 18-05-2026 hasta 24-05-2026.xls
+2026-05-28 11:13:11 - procesamiento.limpiar_excel - INFO -       ✓ 23,248 filas leídas
+2026-05-28 11:13:12 - procesamiento.limpiar_excel - INFO - Total combinado: 23,248 filas
+2026-05-28 11:13:12 - procesamiento.limpiar_excel - INFO - Total después de limpieza: 23,248 filas
+2026-05-28 11:13:12 - procesamiento.limpiar_excel - INFO - 
+============================================================
+2026-05-28 11:13:12 - procesamiento.limpiar_excel - INFO - ESTADÍSTICAS DE INTEGRIDAD
+2026-05-28 11:13:12 - procesamiento.limpiar_excel - INFO - ============================================================
+2026-05-28 11:13:12 - procesamiento.limpiar_excel - INFO - Total de filas: 23,248
+2026-05-28 11:13:12 - procesamiento.limpiar_excel - INFO - Filas válidas: 23,244
+2026-05-28 11:13:12 - procesamiento.limpiar_excel - INFO - Filas inválidas: 4
+2026-05-28 11:13:12 - procesamiento.limpiar_excel - INFO - Regiones sin mapear: 2,247
+2026-05-28 11:13:12 - procesamiento.limpiar_excel - INFO - 
+Distribución por región:
+2026-05-28 11:13:12 - procesamiento.limpiar_excel - INFO -   AMBA: 8,118
+2026-05-28 11:13:12 - procesamiento.limpiar_excel - INFO -   CEN: 4,143
+2026-05-28 11:13:12 - procesamiento.limpiar_excel - INFO -   COSTA: 646
+2026-05-28 11:13:12 - procesamiento.limpiar_excel - INFO -   CUY: 1,755
+2026-05-28 11:13:12 - procesamiento.limpiar_excel - INFO -   NEA: 2,653
+2026-05-28 11:13:12 - procesamiento.limpiar_excel - INFO -   NOA: 2,765
+2026-05-28 11:13:12 - procesamiento.limpiar_excel - INFO -   PAT: 921
+2026-05-28 11:13:12 - Generador - INFO - ✓ 23,248 registros listos para procesar
+2026-05-28 11:13:12 - Generador - INFO - Modo de procesamiento: A
+2026-05-28 11:13:12 - procesamiento.calcular_metricas - INFO - Procesando 23,248 filas en modo A...
+2026-05-28 11:13:13 - procesamiento.calcular_metricas - INFO - Procesamiento completado: 23,248 registros generados
+2026-05-28 11:13:13 - Generador - INFO - 
+Resumen de procesamiento:
+2026-05-28 11:13:13 - Generador - INFO -   • Total cargas: 14,832
+2026-05-28 11:13:13 - Generador - INFO -   • Total pasajeros: 8,412
+2026-05-28 11:13:13 - Generador - INFO -   • Total retenciones: 111
+2026-05-28 11:13:13 - Generador - INFO -   • Total incidencias: 1
+2026-05-28 11:13:13 - Generador - INFO -     - Alcoholemia: 1
+2026-05-28 11:13:13 - Generador - INFO -     - Sustancias: 0
+2026-05-28 11:13:13 - exportacion.generar_json - INFO - Generando estructura JSON para dashboard...
+2026-05-28 11:13:13 - exportacion.generar_json - INFO - ✓ JSON guardado: C:\Users\dmolina\Desktop\INFORME\INFORME\datos.json
+2026-05-28 11:13:13 - exportacion.generar_json - INFO -   Tamaño: 8876.7 KB
+2026-05-28 11:13:13 - Generador - INFO - ✓ Exportación completada
+2026-05-28 11:13:14 - Generador - ERROR - Error iniciando servidor: module 'sqlalchemy' has no attribute '__all__'
+2026-05-28 11:31:14 - Generador - INFO - Archivos en proceso (1):
+2026-05-28 11:31:14 - Generador - INFO -    • Fiscalizaciones 18-05-2026 hasta 24-05-2026.xls
+2026-05-28 11:31:14 - procesamiento.limpiar_excel - INFO - Leyendo 1 archivo(s) Excel...
+2026-05-28 11:31:14 - procesamiento.limpiar_excel - INFO -   [1] Fiscalizaciones 18-05-2026 hasta 24-05-2026.xls
+2026-05-28 11:31:15 - procesamiento.limpiar_excel - INFO -       ✓ 23,248 filas leídas
+2026-05-28 11:31:16 - procesamiento.limpiar_excel - INFO - Total combinado: 23,248 filas
+2026-05-28 11:31:16 - procesamiento.limpiar_excel - INFO - Total después de limpieza: 23,248 filas
+2026-05-28 11:31:16 - procesamiento.limpiar_excel - INFO - 
+============================================================
+2026-05-28 11:31:16 - procesamiento.limpiar_excel - INFO - ESTADÍSTICAS DE INTEGRIDAD
+2026-05-28 11:31:16 - procesamiento.limpiar_excel - INFO - ============================================================
+2026-05-28 11:31:16 - procesamiento.limpiar_excel - INFO - Total de filas: 23,248
+2026-05-28 11:31:16 - procesamiento.limpiar_excel - INFO - Filas válidas: 23,244
+2026-05-28 11:31:16 - procesamiento.limpiar_excel - INFO - Filas inválidas: 4
+2026-05-28 11:31:16 - procesamiento.limpiar_excel - INFO - Regiones sin mapear: 2,247
+2026-05-28 11:31:16 - procesamiento.limpiar_excel - INFO - 
+Distribución por región:
+2026-05-28 11:31:16 - procesamiento.limpiar_excel - INFO -   AMBA: 8,118
+2026-05-28 11:31:16 - procesamiento.limpiar_excel - INFO -   CEN: 4,143
+2026-05-28 11:31:16 - procesamiento.limpiar_excel - INFO -   COSTA: 646
+2026-05-28 11:31:16 - procesamiento.limpiar_excel - INFO -   CUY: 1,755
+2026-05-28 11:31:16 - procesamiento.limpiar_excel - INFO -   NEA: 2,653
+2026-05-28 11:31:16 - procesamiento.limpiar_excel - INFO -   NOA: 2,765
+2026-05-28 11:31:16 - procesamiento.limpiar_excel - INFO -   PAT: 921
+2026-05-28 11:31:16 - Generador - INFO - Modo operativo seleccionado: A
+2026-05-28 11:31:16 - procesamiento.calcular_metricas - INFO - Saneamiento: 1,954 filas de Gendamería apartadas.
+2026-05-28 11:31:16 - procesamiento.calcular_metricas - INFO - Saneamiento: 21,294 filas sin fiscalizador eliminadas.
+2026-05-28 11:31:16 - procesamiento.calcular_metricas - INFO - Procesando 0 filas limpias en modo A...
+2026-05-28 11:31:16 - procesamiento.calcular_metricas - INFO - Procesamiento completado: 0 registros generados
+2026-05-28 11:31:16 - exportacion.generar_json - INFO - Generando estructura JSON para dashboard...
+2026-05-28 11:31:16 - exportacion.generar_json - INFO - ✓ JSON guardado: C:\Users\dmolina\Desktop\INFORME\INFORME\datos.json
+2026-05-28 11:31:16 - exportacion.generar_json - INFO -   Tamaño: 2.7 KB
+2026-05-28 11:31:16 - Generador - INFO - Dashboard disponible en: http://127.0.0.1:5000
+2026-05-28 11:31:16 - Generador - INFO - Para apagar el servidor presiona de forma continua: Ctrl + C
+2026-05-28 11:31:17 - Generador - INFO - Archivos en proceso (1):
+2026-05-28 11:31:17 - Generador - INFO -    • Fiscalizaciones 18-05-2026 hasta 24-05-2026.xls
+2026-05-28 11:31:17 - procesamiento.limpiar_excel - INFO - Leyendo 1 archivo(s) Excel...
+2026-05-28 11:31:17 - procesamiento.limpiar_excel - INFO -   [1] Fiscalizaciones 18-05-2026 hasta 24-05-2026.xls
+2026-05-28 11:31:18 - procesamiento.limpiar_excel - INFO -       ✓ 23,248 filas leídas
+2026-05-28 11:31:19 - procesamiento.limpiar_excel - INFO - Total combinado: 23,248 filas
+2026-05-28 11:31:19 - procesamiento.limpiar_excel - INFO - Total después de limpieza: 23,248 filas
+2026-05-28 11:31:19 - procesamiento.limpiar_excel - INFO - 
+============================================================
+2026-05-28 11:31:19 - procesamiento.limpiar_excel - INFO - ESTADÍSTICAS DE INTEGRIDAD
+2026-05-28 11:31:19 - procesamiento.limpiar_excel - INFO - ============================================================
+2026-05-28 11:31:19 - procesamiento.limpiar_excel - INFO - Total de filas: 23,248
+2026-05-28 11:31:19 - procesamiento.limpiar_excel - INFO - Filas válidas: 23,244
+2026-05-28 11:31:19 - procesamiento.limpiar_excel - INFO - Filas inválidas: 4
+2026-05-28 11:31:19 - procesamiento.limpiar_excel - INFO - Regiones sin mapear: 2,247
+2026-05-28 11:31:19 - procesamiento.limpiar_excel - INFO - 
+Distribución por región:
+2026-05-28 11:31:19 - procesamiento.limpiar_excel - INFO -   AMBA: 8,118
+2026-05-28 11:31:19 - procesamiento.limpiar_excel - INFO -   CEN: 4,143
+2026-05-28 11:31:19 - procesamiento.limpiar_excel - INFO -   COSTA: 646
+2026-05-28 11:31:19 - procesamiento.limpiar_excel - INFO -   CUY: 1,755
+2026-05-28 11:31:19 - procesamiento.limpiar_excel - INFO -   NEA: 2,653
+2026-05-28 11:31:19 - procesamiento.limpiar_excel - INFO -   NOA: 2,765
+2026-05-28 11:31:19 - procesamiento.limpiar_excel - INFO -   PAT: 921
+2026-05-28 11:31:19 - Generador - INFO - Modo operativo seleccionado: A
+2026-05-28 11:31:19 - procesamiento.calcular_metricas - INFO - Saneamiento: 1,954 filas de Gendamería apartadas.
+2026-05-28 11:31:19 - procesamiento.calcular_metricas - INFO - Saneamiento: 21,294 filas sin fiscalizador eliminadas.
+2026-05-28 11:31:19 - procesamiento.calcular_metricas - INFO - Procesando 0 filas limpias en modo A...
+2026-05-28 11:31:19 - procesamiento.calcular_metricas - INFO - Procesamiento completado: 0 registros generados
+2026-05-28 11:31:19 - exportacion.generar_json - INFO - Generando estructura JSON para dashboard...
+2026-05-28 11:31:19 - exportacion.generar_json - INFO - ✓ JSON guardado: C:\Users\dmolina\Desktop\INFORME\INFORME\datos.json
+2026-05-28 11:31:19 - exportacion.generar_json - INFO -   Tamaño: 2.7 KB
+2026-05-28 11:31:19 - Generador - INFO - Dashboard disponible en: http://127.0.0.1:5000
+2026-05-28 11:31:19 - Generador - INFO - Para apagar el servidor presiona de forma continua: Ctrl + C
+2026-05-28 11:43:42 - Generador - INFO - 
+✓ Sistema cerrado a solicitud del operador.
+2026-05-28 11:51:52 - Generador - INFO - Archivos en proceso (1):
+2026-05-28 11:51:52 - Generador - INFO -    • Fiscalizaciones 18-05-2026 hasta 24-05-2026.xls
+2026-05-28 11:51:52 - procesamiento.limpiar_excel - INFO - Leyendo 1 archivo(s) Excel...
+2026-05-28 11:51:52 - procesamiento.limpiar_excel - INFO -   [1] Fiscalizaciones 18-05-2026 hasta 24-05-2026.xls
+2026-05-28 11:51:53 - procesamiento.limpiar_excel - INFO -       ✓ 23,248 filas leídas
+2026-05-28 11:51:54 - procesamiento.limpiar_excel - INFO - Total combinado: 23,248 filas
+2026-05-28 11:51:54 - procesamiento.limpiar_excel - INFO - Total después de limpieza: 23,248 filas
+2026-05-28 11:51:54 - procesamiento.limpiar_excel - INFO - 
+============================================================
+2026-05-28 11:51:54 - procesamiento.limpiar_excel - INFO - ESTADÍSTICAS DE INTEGRIDAD
+2026-05-28 11:51:54 - procesamiento.limpiar_excel - INFO - ============================================================
+2026-05-28 11:51:54 - procesamiento.limpiar_excel - INFO - Total de filas: 23,248
+2026-05-28 11:51:54 - procesamiento.limpiar_excel - INFO - Filas válidas: 23,244
+2026-05-28 11:51:54 - procesamiento.limpiar_excel - INFO - Filas inválidas: 4
+2026-05-28 11:51:54 - procesamiento.limpiar_excel - INFO - Regiones sin mapear: 2,247
+2026-05-28 11:51:54 - procesamiento.limpiar_excel - INFO - 
+Distribución por región:
+2026-05-28 11:51:54 - procesamiento.limpiar_excel - INFO -   AMBA: 8,118
+2026-05-28 11:51:54 - procesamiento.limpiar_excel - INFO -   CEN: 4,143
+2026-05-28 11:51:54 - procesamiento.limpiar_excel - INFO -   COSTA: 646
+2026-05-28 11:51:54 - procesamiento.limpiar_excel - INFO -   CUY: 1,755
+2026-05-28 11:51:54 - procesamiento.limpiar_excel - INFO -   NEA: 2,653
+2026-05-28 11:51:54 - procesamiento.limpiar_excel - INFO -   NOA: 2,765
+2026-05-28 11:51:54 - procesamiento.limpiar_excel - INFO -   PAT: 921
+2026-05-28 11:51:54 - Generador - INFO - Modo operativo seleccionado: A
+2026-05-28 11:51:54 - procesamiento.calcular_metricas - INFO - Saneamiento: 1,954 filas de Gendamería apartadas.
+2026-05-28 11:51:54 - procesamiento.calcular_metricas - INFO - Saneamiento: 21,294 filas sin fiscalizador eliminadas.
+2026-05-28 11:51:54 - procesamiento.calcular_metricas - INFO - Procesando 0 filas limpias en modo A...
+2026-05-28 11:51:54 - procesamiento.calcular_metricas - INFO - Procesamiento completado: 0 registros generados
+2026-05-28 11:51:54 - exportacion.generar_json - INFO - Generando estructura JSON para dashboard...
+2026-05-28 11:51:54 - exportacion.generar_json - INFO - ✓ JSON guardado: C:\Users\dmolina\Desktop\INFORME\INFORME\datos.json
+2026-05-28 11:51:54 - exportacion.generar_json - INFO -   Tamaño: 2.7 KB
+2026-05-28 11:51:54 - Generador - INFO - Dashboard disponible en: http://127.0.0.1:5000
+2026-05-28 11:51:54 - Generador - INFO - Para apagar el servidor presiona de forma continua: Ctrl + C
+2026-05-28 11:51:55 - Generador - INFO - Archivos en proceso (1):
+2026-05-28 11:51:55 - Generador - INFO -    • Fiscalizaciones 18-05-2026 hasta 24-05-2026.xls
+2026-05-28 11:51:55 - procesamiento.limpiar_excel - INFO - Leyendo 1 archivo(s) Excel...
+2026-05-28 11:51:55 - procesamiento.limpiar_excel - INFO -   [1] Fiscalizaciones 18-05-2026 hasta 24-05-2026.xls
+2026-05-28 11:51:56 - procesamiento.limpiar_excel - INFO -       ✓ 23,248 filas leídas
+2026-05-28 11:51:56 - procesamiento.limpiar_excel - INFO - Total combinado: 23,248 filas
+2026-05-28 11:51:56 - procesamiento.limpiar_excel - INFO - Total después de limpieza: 23,248 filas
+2026-05-28 11:51:57 - procesamiento.limpiar_excel - INFO - 
+============================================================
+2026-05-28 11:51:57 - procesamiento.limpiar_excel - INFO - ESTADÍSTICAS DE INTEGRIDAD
+2026-05-28 11:51:57 - procesamiento.limpiar_excel - INFO - ============================================================
+2026-05-28 11:51:57 - procesamiento.limpiar_excel - INFO - Total de filas: 23,248
+2026-05-28 11:51:57 - procesamiento.limpiar_excel - INFO - Filas válidas: 23,244
+2026-05-28 11:51:57 - procesamiento.limpiar_excel - INFO - Filas inválidas: 4
+2026-05-28 11:51:57 - procesamiento.limpiar_excel - INFO - Regiones sin mapear: 2,247
+2026-05-28 11:51:57 - procesamiento.limpiar_excel - INFO - 
+Distribución por región:
+2026-05-28 11:51:57 - procesamiento.limpiar_excel - INFO -   AMBA: 8,118
+2026-05-28 11:51:57 - procesamiento.limpiar_excel - INFO -   CEN: 4,143
+2026-05-28 11:51:57 - procesamiento.limpiar_excel - INFO -   COSTA: 646
+2026-05-28 11:51:57 - procesamiento.limpiar_excel - INFO -   CUY: 1,755
+2026-05-28 11:51:57 - procesamiento.limpiar_excel - INFO -   NEA: 2,653
+2026-05-28 11:51:57 - procesamiento.limpiar_excel - INFO -   NOA: 2,765
+2026-05-28 11:51:57 - procesamiento.limpiar_excel - INFO -   PAT: 921
+2026-05-28 11:51:57 - Generador - INFO - Modo operativo seleccionado: A
+2026-05-28 11:51:57 - procesamiento.calcular_metricas - INFO - Saneamiento: 1,954 filas de Gendamería apartadas.
+2026-05-28 11:51:57 - procesamiento.calcular_metricas - INFO - Saneamiento: 21,294 filas sin fiscalizador eliminadas.
+2026-05-28 11:51:57 - procesamiento.calcular_metricas - INFO - Procesando 0 filas limpias en modo A...
+2026-05-28 11:51:57 - procesamiento.calcular_metricas - INFO - Procesamiento completado: 0 registros generados
+2026-05-28 11:51:57 - exportacion.generar_json - INFO - Generando estructura JSON para dashboard...
+2026-05-28 11:51:57 - exportacion.generar_json - INFO - ✓ JSON guardado: C:\Users\dmolina\Desktop\INFORME\INFORME\datos.json
+2026-05-28 11:51:57 - exportacion.generar_json - INFO -   Tamaño: 2.7 KB
+2026-05-28 11:51:57 - Generador - INFO - Dashboard disponible en: http://127.0.0.1:5000
+2026-05-28 11:51:57 - Generador - INFO - Para apagar el servidor presiona de forma continua: Ctrl + C
+2026-05-28 12:47:34 - Generador - INFO - Archivos en proceso (1):
+2026-05-28 12:47:34 - Generador - INFO -    • Fiscalizaciones 18-05-2026 hasta 24-05-2026.xls
+2026-05-28 12:47:34 - procesamiento.limpiar_excel - INFO - Leyendo 1 archivo(s) Excel...
+2026-05-28 12:47:34 - procesamiento.limpiar_excel - INFO -   [1] Fiscalizaciones 18-05-2026 hasta 24-05-2026.xls
+2026-05-28 12:47:35 - procesamiento.limpiar_excel - INFO -       ✓ 23,248 filas leídas
+2026-05-28 12:47:36 - procesamiento.limpiar_excel - INFO - Total combinado: 23,248 filas
+2026-05-28 12:47:36 - procesamiento.limpiar_excel - INFO - Total después de limpieza: 23,248 filas
+2026-05-28 12:47:36 - procesamiento.limpiar_excel - INFO - 
+============================================================
+2026-05-28 12:47:36 - procesamiento.limpiar_excel - INFO - ESTADÍSTICAS DE INTEGRIDAD
+2026-05-28 12:47:36 - procesamiento.limpiar_excel - INFO - ============================================================
+2026-05-28 12:47:36 - procesamiento.limpiar_excel - INFO - Total de filas: 23,248
+2026-05-28 12:47:36 - procesamiento.limpiar_excel - INFO - Filas válidas: 23,244
+2026-05-28 12:47:36 - procesamiento.limpiar_excel - INFO - Filas inválidas: 4
+2026-05-28 12:47:36 - procesamiento.limpiar_excel - INFO - Regiones sin mapear: 2,247
+2026-05-28 12:47:36 - procesamiento.limpiar_excel - INFO - 
+Distribución por región:
+2026-05-28 12:47:36 - procesamiento.limpiar_excel - INFO -   AMBA: 8,118
+2026-05-28 12:47:36 - procesamiento.limpiar_excel - INFO -   CEN: 4,143
+2026-05-28 12:47:36 - procesamiento.limpiar_excel - INFO -   COSTA: 646
+2026-05-28 12:47:36 - procesamiento.limpiar_excel - INFO -   CUY: 1,755
+2026-05-28 12:47:36 - procesamiento.limpiar_excel - INFO -   NEA: 2,653
+2026-05-28 12:47:36 - procesamiento.limpiar_excel - INFO -   NOA: 2,765
+2026-05-28 12:47:36 - procesamiento.limpiar_excel - INFO -   PAT: 921
+2026-05-28 12:47:36 - Generador - INFO - Modo operativo seleccionado: A
+2026-05-28 12:47:36 - procesamiento.calcular_metricas - INFO - Saneamiento: 1,954 filas de Gendamería apartadas.
+2026-05-28 12:47:36 - procesamiento.calcular_metricas - INFO - Saneamiento: 21,294 filas sin fiscalizador eliminadas.
+2026-05-28 12:47:36 - procesamiento.calcular_metricas - INFO - Procesando 0 filas limpias en modo A...
+2026-05-28 12:47:36 - procesamiento.calcular_metricas - INFO - Procesamiento completado: 0 registros generados
+2026-05-28 12:47:36 - exportacion.generar_json - INFO - Generando estructura JSON para dashboard...
+2026-05-28 12:47:36 - exportacion.generar_json - INFO - ✓ JSON guardado: C:\Users\dmolina\Desktop\INFORME\INFORME\datos.json
+2026-05-28 12:47:36 - exportacion.generar_json - INFO -   Tamaño: 2.7 KB
+2026-05-28 12:47:36 - Generador - ERROR - No se pudo cargar el archivo app.py del servidor Flask.
+2026-05-28 12:47:52 - Generador - INFO - Archivos en proceso (1):
+2026-05-28 12:47:52 - Generador - INFO -    • Fiscalizaciones 18-05-2026 hasta 24-05-2026.xls
+2026-05-28 12:47:52 - procesamiento.limpiar_excel - INFO - Leyendo 1 archivo(s) Excel...
+2026-05-28 12:47:52 - procesamiento.limpiar_excel - INFO -   [1] Fiscalizaciones 18-05-2026 hasta 24-05-2026.xls
+2026-05-28 12:47:53 - procesamiento.limpiar_excel - INFO -       ✓ 23,248 filas leídas
+2026-05-28 12:47:54 - procesamiento.limpiar_excel - INFO - Total combinado: 23,248 filas
+2026-05-28 12:47:54 - procesamiento.limpiar_excel - INFO - Total después de limpieza: 23,248 filas
+2026-05-28 12:47:54 - procesamiento.limpiar_excel - INFO - 
+============================================================
+2026-05-28 12:47:54 - procesamiento.limpiar_excel - INFO - ESTADÍSTICAS DE INTEGRIDAD
+2026-05-28 12:47:54 - procesamiento.limpiar_excel - INFO - ============================================================
+2026-05-28 12:47:54 - procesamiento.limpiar_excel - INFO - Total de filas: 23,248
+2026-05-28 12:47:54 - procesamiento.limpiar_excel - INFO - Filas válidas: 23,244
+2026-05-28 12:47:54 - procesamiento.limpiar_excel - INFO - Filas inválidas: 4
+2026-05-28 12:47:54 - procesamiento.limpiar_excel - INFO - Regiones sin mapear: 2,247
+2026-05-28 12:47:54 - procesamiento.limpiar_excel - INFO - 
+Distribución por región:
+2026-05-28 12:47:54 - procesamiento.limpiar_excel - INFO -   AMBA: 8,118
+2026-05-28 12:47:54 - procesamiento.limpiar_excel - INFO -   CEN: 4,143
+2026-05-28 12:47:54 - procesamiento.limpiar_excel - INFO -   COSTA: 646
+2026-05-28 12:47:54 - procesamiento.limpiar_excel - INFO -   CUY: 1,755
+2026-05-28 12:47:54 - procesamiento.limpiar_excel - INFO -   NEA: 2,653
+2026-05-28 12:47:54 - procesamiento.limpiar_excel - INFO -   NOA: 2,765
+2026-05-28 12:47:54 - procesamiento.limpiar_excel - INFO -   PAT: 921
+2026-05-28 12:47:54 - Generador - INFO - Modo operativo seleccionado: A
+2026-05-28 12:47:54 - procesamiento.calcular_metricas - INFO - Saneamiento: 1,954 filas de Gendamería apartadas.
+2026-05-28 12:47:54 - procesamiento.calcular_metricas - INFO - Saneamiento: 21,294 filas sin fiscalizador eliminadas.
+2026-05-28 12:47:54 - procesamiento.calcular_metricas - INFO - Procesando 0 filas limpias en modo A...
+2026-05-28 12:47:54 - procesamiento.calcular_metricas - INFO - Procesamiento completado: 0 registros generados
+2026-05-28 12:47:54 - exportacion.generar_json - INFO - Generando estructura JSON para dashboard...
+2026-05-28 12:47:54 - exportacion.generar_json - INFO - ✓ JSON guardado: C:\Users\dmolina\Desktop\INFORME\INFORME\datos.json
+2026-05-28 12:47:54 - exportacion.generar_json - INFO -   Tamaño: 2.7 KB
+2026-05-28 12:47:55 - Generador - ERROR - No se pudo cargar el archivo app.py del servidor Flask.
+2026-05-28 12:49:13 - Generador - INFO - Archivos en proceso (1):
+2026-05-28 12:49:13 - Generador - INFO -    • Fiscalizaciones 18-05-2026 hasta 24-05-2026.xls
+2026-05-28 12:49:13 - procesamiento.limpiar_excel - INFO - Leyendo 1 archivo(s) Excel...
+2026-05-28 12:49:13 - procesamiento.limpiar_excel - INFO -   [1] Fiscalizaciones 18-05-2026 hasta 24-05-2026.xls
+2026-05-28 12:49:14 - procesamiento.limpiar_excel - INFO -       ✓ 23,248 filas leídas
+2026-05-28 12:49:15 - procesamiento.limpiar_excel - INFO - Total combinado: 23,248 filas
+2026-05-28 12:49:15 - procesamiento.limpiar_excel - INFO - Total después de limpieza: 23,248 filas
+2026-05-28 12:49:15 - procesamiento.limpiar_excel - INFO - 
+============================================================
+2026-05-28 12:49:15 - procesamiento.limpiar_excel - INFO - ESTADÍSTICAS DE INTEGRIDAD
+2026-05-28 12:49:15 - procesamiento.limpiar_excel - INFO - ============================================================
+2026-05-28 12:49:15 - procesamiento.limpiar_excel - INFO - Total de filas: 23,248
+2026-05-28 12:49:15 - procesamiento.limpiar_excel - INFO - Filas válidas: 23,244
+2026-05-28 12:49:15 - procesamiento.limpiar_excel - INFO - Filas inválidas: 4
+2026-05-28 12:49:15 - procesamiento.limpiar_excel - INFO - Regiones sin mapear: 2,247
+2026-05-28 12:49:15 - procesamiento.limpiar_excel - INFO - 
+Distribución por región:
+2026-05-28 12:49:15 - procesamiento.limpiar_excel - INFO -   AMBA: 8,118
+2026-05-28 12:49:15 - procesamiento.limpiar_excel - INFO -   CEN: 4,143
+2026-05-28 12:49:15 - procesamiento.limpiar_excel - INFO -   COSTA: 646
+2026-05-28 12:49:15 - procesamiento.limpiar_excel - INFO -   CUY: 1,755
+2026-05-28 12:49:15 - procesamiento.limpiar_excel - INFO -   NEA: 2,653
+2026-05-28 12:49:15 - procesamiento.limpiar_excel - INFO -   NOA: 2,765
+2026-05-28 12:49:15 - procesamiento.limpiar_excel - INFO -   PAT: 921
+2026-05-28 12:49:15 - Generador - INFO - Modo operativo seleccionado: A
+2026-05-28 12:49:15 - procesamiento.calcular_metricas - INFO - Saneamiento: 1,954 filas de Gendamería apartadas.
+2026-05-28 12:49:15 - procesamiento.calcular_metricas - INFO - Saneamiento: 21,294 filas sin fiscalizador eliminadas.
+2026-05-28 12:49:15 - procesamiento.calcular_metricas - INFO - Procesando 0 filas limpias en modo A...
+2026-05-28 12:49:15 - procesamiento.calcular_metricas - INFO - Procesamiento completado: 0 registros generados
+2026-05-28 12:49:15 - exportacion.generar_json - INFO - Generando estructura JSON para dashboard...
+2026-05-28 12:49:15 - exportacion.generar_json - INFO - ✓ JSON guardado: C:\Users\dmolina\Desktop\INFORME\INFORME\datos.json
+2026-05-28 12:49:15 - exportacion.generar_json - INFO -   Tamaño: 2.7 KB
+2026-05-28 12:49:16 - Generador - ERROR - No se pudo cargar el archivo app.py del servidor Flask.
+2026-05-28 12:51:06 - Generador - INFO - Archivos en proceso (1):
+2026-05-28 12:51:06 - Generador - INFO -    • Fiscalizaciones 18-05-2026 hasta 24-05-2026.xls
+2026-05-28 12:51:06 - procesamiento.limpiar_excel - INFO - Leyendo 1 archivo(s) Excel...
+2026-05-28 12:51:06 - procesamiento.limpiar_excel - INFO -   [1] Fiscalizaciones 18-05-2026 hasta 24-05-2026.xls
+2026-05-28 12:51:06 - procesamiento.limpiar_excel - INFO -       ✓ 23,248 filas leídas
+2026-05-28 12:51:07 - procesamiento.limpiar_excel - INFO - Total combinado: 23,248 filas
+2026-05-28 12:51:07 - procesamiento.limpiar_excel - INFO - Total después de limpieza: 23,248 filas
+2026-05-28 12:51:08 - procesamiento.limpiar_excel - INFO - 
+============================================================
+2026-05-28 12:51:08 - procesamiento.limpiar_excel - INFO - ESTADÍSTICAS DE INTEGRIDAD
+2026-05-28 12:51:08 - procesamiento.limpiar_excel - INFO - ============================================================
+2026-05-28 12:51:08 - procesamiento.limpiar_excel - INFO - Total de filas: 23,248
+2026-05-28 12:51:08 - procesamiento.limpiar_excel - INFO - Filas válidas: 23,244
+2026-05-28 12:51:08 - procesamiento.limpiar_excel - INFO - Filas inválidas: 4
+2026-05-28 12:51:08 - procesamiento.limpiar_excel - INFO - Regiones sin mapear: 2,247
+2026-05-28 12:51:08 - procesamiento.limpiar_excel - INFO - 
+Distribución por región:
+2026-05-28 12:51:08 - procesamiento.limpiar_excel - INFO -   AMBA: 8,118
+2026-05-28 12:51:08 - procesamiento.limpiar_excel - INFO -   CEN: 4,143
+2026-05-28 12:51:08 - procesamiento.limpiar_excel - INFO -   COSTA: 646
+2026-05-28 12:51:08 - procesamiento.limpiar_excel - INFO -   CUY: 1,755
+2026-05-28 12:51:08 - procesamiento.limpiar_excel - INFO -   NEA: 2,653
+2026-05-28 12:51:08 - procesamiento.limpiar_excel - INFO -   NOA: 2,765
+2026-05-28 12:51:08 - procesamiento.limpiar_excel - INFO -   PAT: 921
+2026-05-28 12:51:08 - Generador - INFO - Modo operativo seleccionado: A
+2026-05-28 12:51:08 - procesamiento.calcular_metricas - INFO - Saneamiento: 1,954 filas de Gendamería apartadas.
+2026-05-28 12:51:08 - procesamiento.calcular_metricas - INFO - Saneamiento: 21,294 filas sin fiscalizador eliminadas.
+2026-05-28 12:51:08 - procesamiento.calcular_metricas - INFO - Procesando 0 filas limpias en modo A...
+2026-05-28 12:51:08 - procesamiento.calcular_metricas - INFO - Procesamiento completado: 0 registros generados
+2026-05-28 12:51:08 - exportacion.generar_json - INFO - Generando estructura JSON para dashboard...
+2026-05-28 12:51:08 - exportacion.generar_json - INFO - ✓ JSON guardado: C:\Users\dmolina\Desktop\INFORME\INFORME\datos.json
+2026-05-28 12:51:08 - exportacion.generar_json - INFO -   Tamaño: 2.7 KB
+2026-05-28 12:51:08 - Generador - ERROR - No se pudo cargar el archivo app.py del servidor Flask.
