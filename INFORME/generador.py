@@ -619,24 +619,24 @@ for _, fila in df.iterrows():
     if es_retencion:
         total_retenciones += 1
 
-        # =========================================================
-        # RECUENTO ESPECIAL DE ARTÍCULOS (TU BIBLIOTECA EXTERNA)
-        # =========================================================
-        texto_items = str(row.get("ITEMS INFRACCION", ""))
+    # =========================================================
+    # RECUENTO ESPECIAL DE ARTÍCULOS (TU BIBLIOTECA EXTERNA)
+    # =========================================================
+    texto_items = str(row.get("ITEMS INFRACCION", ""))
         
-        # Le mandamos el texto de la celda a tu archivo de consultas
-        articulos_encontrados = contar_articulos_en_fila(texto_items)
+    # Le mandamos el texto de la celda a tu archivo de consultas
+    articulos_encontrados = contar_articulos_en_fila(texto_items)
         
-        # Inicializamos los contadores globales por si no existen arriba
-        if 'global_art_105' not in locals() and 'global_art_105' not in globals():
-            global_art_105 = global_art_108 = global_art_110 = global_art_18 = global_art_22 = 0
+    # Inicializamos los contadores globales por si no existen arriba
+    if 'global_art_105' not in locals() and 'global_art_105' not in globals():
+        global_art_105 = global_art_108 = global_art_110 = global_art_18 = global_art_22 = 0
         
-        # Sumamos 1 si tu biblioteca detectó el artículo en esta fila
-        global_art_105 += articulos_encontrados.get("105", 0)
-        global_art_108 += articulos_encontrados.get("108", 0)
-        global_art_110 += articulos_encontrados.get("110", 0)
-        global_art_18  += articulos_encontrados.get("18", 0)
-        global_art_22  += articulos_encontrados.get("22", 0)
+    # Sumamos 1 si tu biblioteca detectó el artículo en esta fila
+    global_art_105 += articulos_encontrados.get("105", 0)
+    global_art_108 += articulos_encontrados.get("108", 0)
+    global_art_110 += articulos_encontrados.get("110", 0)
+    global_art_18  += articulos_encontrados.get("18", 0)
+    global_art_22  += articulos_encontrados.get("22", 0)
         # =========================================================
 
     # CONTADOR DE CARGAS Y PASAJEROS (depende del modo)

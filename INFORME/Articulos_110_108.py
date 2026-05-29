@@ -1,43 +1,64 @@
-# =========================================================
-# BIBLIOTECA CENTRAL DE CONSULTAS DE ARTÍCULOS
-# =========================================================
+# =========================================================================
+# CNRT - BIBLIOTECA DE CONSULTAS ESPECÍFICA DE ARTÍCULOS (PASAJEROS Y CARGAS)
+# Basado en los Decretos Estatales 1395/1998 y 1035/2002
+# =========================================================================
 
-def contar_articulos_en_fila(texto_items):
+def contar_articulos_en_fila(texto_items, tipo_transporte):
     """
-    Recibe el texto de 'ITEMS INFRACCION' de una fila.
-    Busca de forma independiente cada artículo y devuelve un diccionario
-    con cuáles sumaron en este control.
-    """
-    texto = str(texto_items).strip()
+    Analiza el texto de 'ITEMS INFRACCION' cruzándolo con el tipo de transporte.
+    Devuelve un diccionario indicando qué artículos específicos se configuraron.
     
-    # Armamos un diccionario con los contadores en 0 para esta fila
+    tipo_transporte: Espera 'PA' (Pasajeros) o 'CA' (Cargas).
+    """
+    # Normalizamos los textos para evitar fallos por espacios o minúsculas
+    texto = str(texto_items).strip()
+    transporte = str(tipo_transporte).strip().upper()[:2]
+    
+    # Glosario inicializado en 0 para esta fila
     conteo_fila = {
-        "105": 0,
-        "108": 0,
-        "110": 0,
-        "18": 0,
-        "22": 0,
-        # Podés seguir agregando acá abajo los artículos que quieras de la lista de tu compañero
+        "105": 0,  # Dec 1395/98 - Pasajeros: Seguridad / Carrocería
+        "108": 0,  # Dec 1395/98 - Pasajeros: Higiene
+        "110": 0,  # Dec 1395/98 - Pasajeros: Falta RTO / VTV
+        "18": 0,   # Dec 1035/02 - Cargas: Falta RTO / VTV
+        "22": 0    # Dec 1035/02 - Cargas: Conductor sin LNH
     }
     
-    # Si la celda está vacía, no buscamos nada
-    if not texto or texto.lower() == "nan":
+    # Si la celda está vacía, no hay nada que buscar
+    if not texto or texto.lower() == "nan" or texto == "":
         return conteo_fila
 
-    # Buscamos cada artículo por separado (para que si hay más de uno, sume ambos)
-    if "105" in texto:
-        conteo_fila["105"] = 1
-        
-    if "108" in texto:
-        conteo_fila["108"] = 1
-        
-    if "110" in texto:
-        conteo_fila["110"] = 1
-        
-    if "18" in texto:
-        conteo_fila["18"] = 1
-        
-    if "22" in texto:
-        conteo_fila["22"] = 1
+    # ---------------------------------------------------------------------
+    # 🚍 RAMAL PASAJEROS (PA) - Aplicación estricta Decreto 1395/98
+    # ---------------------------------------------------------------------
+    if transporte == "PA":
+        if "105" in texto:
+            conteo_fila["105"] = 1
+            
+        if "108" in texto:
+            conteo_fila["108"] = 1
+            
+        if "110" in texto:
+            conteo_fila["110"] = 1
+
+    # ---------------------------------------------------------------------
+    # 🚚 RAMAL CARGAS (CA) - Aplicación estricta Decreto 1035/02 (Anexo II)
+    # ---------------------------------------------------------------------
+    elif transporte == "CA":
+        if "18" in texto:
+            conteo_fila["18"] = 1
+            
+        if "22" in texto:
+            conteo_fila["22"] = 1
+            
+    # ---------------------------------------------------------------------
+    # CASO DE CONTINGENCIA (Si el transporte no está claro en la celda)
+    # ---------------------------------------------------------------------
+    else:
+        # Si por error el sistema no cargó 'PA' o 'CA', busca por texto puro
+        if "105" in texto: conteo_fila["105"] = 1
+        if "108" in texto: conteo_fila["108"] = 1
+        if "110" in texto: conteo_fila["110"] = 1
+        if "18" in texto:  conteo_fila["18"] = 1
+        if "22" in texto:  conteo_fila["22"] = 1
 
     return conteo_fila
