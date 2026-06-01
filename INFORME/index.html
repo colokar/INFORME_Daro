@@ -702,6 +702,22 @@
                         <td id="amba_total_ret">0</td>
                         </tr>
 
+                        <td class="region-label">COSTA</td>
+                        <td class="region-label">TOTAL</td>
+
+                        <td id="costa_cargas_vc">0</td>
+                        <td id="costa_cargas_actas">0</td>
+                        <td id="costa_cargas_ret">0</td>
+
+                        <td id="costa_pasajeros_vc">0</td>
+                        <td id="costa_pasajeros_actas">0</td>
+                        <td id="costa_pasajeros_ret">0</td>
+
+                        <td id="costa_total_vc">0</td>
+                        <td id="costa_total_actas">0</td>
+                        <td id="costa_total_ret">0</td>
+                        </tr>
+
                         <tr>
                         <td class="region-label">CEN</td>
                         <td class="region-label">TOTAL CENTRO</td>
@@ -1107,11 +1123,11 @@ function setPrincipalInfraccionesTotal(totalActas) {
 }
 
 function populateRegionTable(regiones) {
-    const lista = ['AMBA','CEN','CUY','NEA','NOA','COSTA','PAT'];
+    const lista = ['AMBA', 'COSTA', 'CEN','CUY','NEA','NOA','COSTA','PAT'];
     lista.forEach(r => {
         const key = r.toUpperCase();
         const data = regiones[key];
-        const idBase = r.toLowerCase();
+        const idBase = r.toLowerCase() + '_' ;
         if (data) {
             escribir(idBase + 'cargas_vc', data.cargas.vc);
             escribir(idBase + 'cargas_actas', data.cargas.actas);
