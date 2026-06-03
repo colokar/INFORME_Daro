@@ -973,162 +973,144 @@
                     </div>
 
                 
-       <!-- =========================================================================
-             ================= CONTROLES DE NAVEGACIÓN INSTITUCIONAL =================
-             ========================================================================= -->
-        <div class="header-controls" style="display: flex; justify-content: center; margin: 30px 0; width: 100%;">
-            <div id="sectionSelector" class="section-selector" style="background: var(--azul-oscuro); padding: 6px; border-radius: 10px; display: inline-flex; gap: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.15);">
-                
-                <!-- Interacción 1: Dashboard Base -->
-                <button id="btn-operativo" 
-                        class="section-btn active" 
-                        style="background: var(--dorado); color: var(--azul-oscuro); border: none; padding: 10px 20px; font-family: 'Lora', serif; font-weight: bold; border-radius: 6px; cursor: pointer; transition: all 0.3s ease;"
-                        onclick="cambiarInteraccion('operativo')">
-                    📊 Vista Operativa (CNRT)
-                </button>
-                
-                <!-- Interacción 2: Cruce Interfuerzas GNA (Totalmente separado) -->
-                <button id="btn-comparativa" 
-                        class="section-btn" 
-                        style="background: transparent; color: var(--blanco); border: none; padding: 10px 20px; font-family: 'Lora', serif; font-weight: bold; border-radius: 6px; cursor: pointer; transition: all 0.3s ease;"
-                        onclick="cambiarInteraccion('comparativa')">
-                    ⚔️ Vista Comparativa (GNA)
-                </button>
-                
-                <!-- Interacción 3: Módulo Escuelas RES 284 (Totalmente separado) -->
-                <button id="btn-res284" 
-                        class="section-btn" 
-                        style="background: transparent; color: var(--blanco); border: none; padding: 10px 20px; font-family: 'Lora', serif; font-weight: bold; border-radius: 6px; cursor: pointer; transition: all 0.3s ease;"
-                        onclick="cambiarInteraccion('res284')">
-                    📜 Módulo RES 284 (Colegios)
-                </button>
+      <div class="header-controls" style="display: flex; justify-content: center; margin: 25px 0;">
+    <div id="sectionSelector" class="section-selector" style="background: rgba(0, 0, 0, 0.05); padding: 5px; border-radius: 8px; display: inline-flex; gap: 5px;">
+        
+        <button id="btn-operativo" 
+                class="section-btn active" 
+                onclick="intercambiarSeccion('operativo')">
+            📊 Vista Operativa (CNRT)
+        </button>
+        
+        <button id="btn-comparativa" 
+                class="section-btn" 
+                onclick="intercambiarSeccion('comparativa')">
+            ⚔️ Vista Comparativa (GNA)
+        </button>
+        
+        <button id="btn-res284" 
+                class="section-btn" 
+                onclick="intercambiarSeccion('res284')">
+            📜 Módulo RES 284 (Colegios)
+        </button>
 
-            </div>
-        </div>
+    </div>
+</div>
 
-        <!-- =========================================================================
-             =================== INTERACCIÓN 2: SECCIÓN COMPARATIVA GNA ================
-             ========================================================================= -->
-        <div id="seccion-comparativa" class="main-box" style="display: none; background: var(--blanco); padding: 30px; border-radius: 8px; border-left: 5px solid var(--azul-medio); margin-bottom: 25px;">
-            <header style="border-bottom: 2px solid var(--gris-claro); margin-bottom: 20px; padding-bottom: 10px;">
-                <h2 style="color: var(--azul-oscuro); font-family: 'Lora', serif;">▸ Análisis Comparativo Interfuerzas</h2>
-                <p style="color: var(--gris-azulado); font-size: 0.9rem;">Materia Prima Cruzada y Volumen de Fiscalización Conjunta: CNRT — Gendarmería Nacional</p>
-            </header>
-            
-            <!-- Contenedor para Gráficos de GNA -->
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
-                <div style="border: 1px solid var(--gris-claro); padding: 15px; border-radius: 6px;">
-                    <h3 style="font-size: 1.1rem; color: var(--azul-medio); margin-bottom: 10px;">Volumen Global Actas Emitidas</h3>
+<div id="seccion-operativo" class="dashboard-dinamico" style="display: block;">
+    </div>
+
+
+<div id="seccion-comparativa" class="comparativas-section" style="display: none;">
+    
+    <div class="main-box" style="background: #ffffff; padding: 30px; border-radius: 8px; border-left: 5px solid var(--azul-medio); margin-bottom: 25px;">
+        <header style="border-bottom: 2px solid var(--gris-claro); margin-bottom: 20px; padding-bottom: 10px;">
+            <h2 style="color: var(--azul-oscuro); font-family: 'Lora', serif; margin: 0;">▸ Análisis Comparativo Interfuerzas</h2>
+            <p style="color: var(--gris-azulado); font-size: 0.9rem; margin-top: 5px;">Materia Prima Cruzada y Volumen de Fiscalización Conjunta: CNRT — Gendarmería Nacional</p>
+        </header>
+        
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 25px;">
+            <div class="chart-card" style="border: 1px solid var(--gris-claro); padding: 20px; border-radius: 6px;">
+                <h3 style="font-size: 1.1rem; color: var(--azul-medio); margin-bottom: 15px;">Vehículos controlados</h3>
+                <div style="position: relative; height: 300px;">
                     <canvas id="chartCumulative"></canvas>
+
+                    
+
                 </div>
-                <div style="border: 1px solid var(--gris-claro); padding: 15px; border-radius: 6px;">
-                    <h3 style="font-size: 1.1rem; color: var(--azul-medio); margin-bottom: 10px;">Efectividad de Sanciones (GNA vs CNRT)</h3>
+            </div>
+            
+
+
+            
+
+            <div class="chart-card" style="border: 1px solid var(--gris-claro); padding: 20px; border-radius: 6px;">
+                <h3 style="font-size: 1.1rem; color: var(--azul-medio); margin-bottom: 15px;">Efectividad de Sanciones (GNA vs CNRT)</h3>
+                <div style="position: relative; height: 300px;">
                     <canvas id="chartInfraccionesDist"></canvas>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- =========================================================================
-             =================== INTERACCIÓN 3: SECCIÓN RESOLUCIÓN 284 ================
-             ========================================================================= -->
-        <div id="seccion-res284" class="main-box" style="display: none; background: var(--blanco); padding: 30px; border-radius: 8px; border-left: 5px solid var(--dorado); margin-bottom: 25px;">
-            <header style="border-bottom: 2px solid var(--gris-claro); margin-bottom: 20px; padding-bottom: 10px;">
-                <h2 style="color: var(--azul-oscuro); font-family: 'Lora', serif;">▸ Fiscalización Establecimientos Educativos — RES 284</h2>
-                <p style="color: var(--gris-azulado); font-size: 0.9rem;">Control de Unidades y Habilitaciones de Transporte Escolar e Instituciones</p>
-            </header>
+</div>
 
-            <!-- Tarjetas de Impacto RES 284 -->
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 25px;">
-                <div style="background: var(--gris-claro); padding: 15px; border-radius: 6px; border-top: 3px solid var(--azul-oscuro);">
-                    <span style="font-size: 0.8rem; text-transform: uppercase; color: var(--azul-medio); font-weight: bold;">Colegios Auditados</span>
-                    <div style="font-size: 1.8rem; font-weight: bold; color: var(--azul-oscuro);">—</div>
-                </div>
-                <div style="background: var(--gris-claro); padding: 15px; border-radius: 6px; border-top: 3px solid var(--dorado);">
-                    <span style="font-size: 0.8rem; text-transform: uppercase; color: var(--azul-medio); font-weight: bold;">Controles Concedidos</span>
-                    <div style="font-size: 1.8rem; font-weight: bold; color: var(--azul-oscuro);">—</div>
-                </div>
-                <div style="background: var(--gris-claro); padding: 15px; border-radius: 6px; border-top: 3px solid var(--azul-medio);">
-                    <span style="font-size: 0.8rem; text-transform: uppercase; color: var(--azul-medio); font-weight: bold;">Actas / Rechazos</span>
-                    <div style="font-size: 1.8rem; font-weight: bold; color: var(--azul-oscuro);">—</div>
-                </div>
+
+<div id="seccion-res284" class="res284-section" style="display: none;">
+    
+    <div class="main-box" style="background: #ffffff; padding: 30px; border-radius: 8px; border-left: 5px solid var(--dorado); margin-bottom: 25px;">
+        <header style="border-bottom: 2px solid var(--gris-claro); margin-bottom: 20px; padding-bottom: 10px;">
+            <h2 style="color: var(--azul-oscuro); font-family: 'Lora', serif; margin: 0;">▸ Fiscalización Establecimientos Educativos — RES 284</h2>
+            <p style="color: var(--gris-azulado); font-size: 0.9rem; margin-top: 5px;">Control de Unidades y Habilitaciones de Transporte Escolar e Instituciones</p>
+        </header>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 25px;">
+            
+            <div style="background: var(--gris-claro); padding: 20px; border-radius: 6px; border-top: 3px solid var(--azul-oscuro);">
+                <span style="font-size: 0.85rem; text-transform: uppercase; color: var(--azul-medio); font-weight: bold;">Colegios Controlados</span>
+                <div id="res284-colegios" style="font-size: 2rem; font-weight: bold; color: var(--azul-oscuro); margin-top: 5px;">0</div>
             </div>
             
-            <p style="font-size: 0.95rem; color: var(--azul-oscuro);">Módulo reservado para la auditoría y control de viajes de egresados, excursiones y transporte regulado bajo normativa escolar de la CNRT.</p>
+            <div style="background: var(--gris-claro); padding: 20px; border-radius: 6px; border-top: 3px solid var(--dorado);">
+                <span style="font-size: 0.85rem; text-transform: uppercase; color: var(--azul-medio); font-weight: bold;">Controles Concedidos</span>
+                <div id="res284-controles" style="font-size: 2rem; font-weight: bold; color: var(--azul-oscuro); margin-top: 5px;">0</div>
+            </div>
+
+            <div style="background: #fdf2f2; padding: 20px; border-radius: 6px; border-top: 3px solid #dc2626;">
+                <span style="font-size: 0.85rem; text-transform: uppercase; color: #b91c1c; font-weight: bold;">🚨 Hitos (Sustancias/Alc)</span>
+                <div id="res284-hitos" style="font-size: 2rem; font-weight: bold; color: #991b1b; margin-top: 5px;">0</div>
+            </div>
+            
+            <div style="background: var(--gris-claro); padding: 20px; border-radius: 6px; border-top: 3px solid var(--azul-medio);">
+                <span style="font-size: 0.85rem; text-transform: uppercase; color: var(--azul-medio); font-weight: bold;">📋 Alertas / Técnicas</span>
+                <div id="res284-tecnicas" style="font-size: 2rem; font-weight: bold; color: var(--azul-oscuro); margin-top: 5px;">0</div>
+            </div>
+
         </div>
-
-        <!-- === FOOTER INSTITUCIONAL === -->
-        <div class="footer" style="margin-top: 30px; text-align: center; padding: 20px; border-top: 1px solid var(--azul-medio);">
-            <p>Área de departamento operativo, Gerencia de Fiscalización del Transporte Automotor</p>
-            <p>&copy; 2026 CNRT - Control del Transporte</p>
-        </div>
-
-    </div> <!-- FIN INFORME -->
-
-    <!-- DEPENDENCIAS -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
-    <!-- CONTROLADOR JAVASCRIPT EXCLUSIVO PARA LAS 3 INTERACCIONES -->
-    <script>
-    function cambiarInteraccion(interaccionSeleccionada) {
-        // Capturar los tres bloques de contenido
-        const divOperativo = document.getElementById('informe').querySelector('.vc-grupo-unificado')?.parentElement; 
-        const divComparativa = document.getElementById('seccion-comparativa');
-        const divRes284 = document.getElementById('seccion-res284');
         
-        // Elementos alternativos si tu jerarquía estructural cambia
-        const fallbackOperativo = document.getElementById('seccion-operativo') || document.querySelector('.vc-grupo-unificado');
+        <p style="font-size: 1rem; color: var(--azul-oscuro); line-height: 1.6;">Módulo reservado para la auditoría y control de viajes de egresados, excursiones y transporte regulado bajo normativa escolar de la CNRT.</p>
+    </div>
 
-        // Ocultar de manera absoluta todo antes de prender la interacción correcta
-        if (divOperativo) divOperativo.style.display = 'none';
-        if (fallbackOperativo) fallbackOperativo.style.display = 'none';
-        divComparativa.style.display = 'none';
-        divRes284.style.display = 'none';
+</div>
 
-        // Desactivar estilos de todos los botones y devolverlos a transparente institucional
-        const botones = document.querySelectorAll('.section-btn');
-        botones.forEach(btn => {
-            btn.style.background = 'transparent';
-            btn.style.color = 'var(--blanco)';
-            btn.classList.remove('active');
-        });
+<div class="footer" style="margin-top: 30px; text-align: center; padding: 20px; border-top: 1px solid var(--azul-medio);">
+    <p>Área de departamento operativo, Gerencia de Fiscalización del Transporte Automotor</p>
+    <p>&copy; 2026 CNRT - Control del Transporte</p>
+</div>
 
-        // Activar la vista e interacción correspondiente
-        if (interaccionSeleccionada === 'operativo') {
-            if (divOperativo) divOperativo.style.display = 'block';
-            if (fallbackOperativo) fallbackOperativo.style.display = 'block';
-            
-            const btn = document.getElementById('btn-operativo');
-            btn.style.background = 'var(--dorado)';
-            btn.style.color = 'var(--azul-oscuro)';
-            btn.classList.add('active');
-            
-        } else if (interaccionSeleccionada === 'comparativa') {
-            divComparativa.style.display = 'block';
-            
-            const btn = document.getElementById('btn-comparativa');
-            btn.style.background = 'var(--dorado)';
-            btn.style.color = 'var(--azul-oscuro)';
-            btn.classList.add('active');
-            actualizarDashboard(); // Llama a tu fetch original para renderizar gráficos
-            
-        } else if (interaccionSeleccionada === 'res284') {
-            divRes284.style.display = 'block';
-            
-            const btn = document.getElementById('btn-res284');
-            btn.style.background = 'var(--dorado)';
-            btn.style.color = 'var(--azul-oscuro)';
-            btn.classList.add('active');
+<script>
+function intercambiarSeccion(nombreSeccion) {
+    const op = document.getElementById('seccion-operativo');
+    const comp = document.getElementById('seccion-comparativa');
+    const res = document.getElementById('seccion-res284');
+
+    if (op) op.style.display = 'none';
+    if (comp) comp.style.display = 'none';
+    if (res) res.style.display = 'none';
+
+    if (nombreSeccion === 'operativo') {
+        if (op) op.style.display = 'block';
+    } else if (nombreSeccion === 'comparativa') {
+        if (comp) comp.style.display = 'block';
+        if (typeof actualizarDashboard === 'function') {
+            actualizarDashboard(); 
         }
+    } else if (nombreSeccion === 'res284') {
+        if (res) res.style.display = 'block';
     }
 
-    // Sobrescribimos o extendemos la función vieja por seguridad para que use el nuevo sistema de 3 vías
-    function mostrarSeccion(nombre) {
-        cambiarInteraccion(nombre);
-    }
-    </script>
+    document.getElementById('btn-operativo')?.classList.toggle('active', nombreSeccion === 'operativo');
+    document.getElementById('btn-comparativa')?.classList.toggle('active', nombreSeccion === 'comparativa');
+    document.getElementById('btn-res284')?.classList.toggle('active', nombreSeccion === 'res284');
+}
 
+function mostrarSeccion(nombre) {
+    if (nombre === 'operativo' || nombre === 'comparativa' || nombre === 'res284') {
+        intercambiarSeccion(nombre);
+    }
+}
+</script>
 
 
 
@@ -1235,6 +1217,7 @@ function populateRegionTable(regiones) {
     });
 }
 
+
 async function actualizarDashboard(desde, hasta) {
     try {
         // `generador.py` expone /resumen que devuelve datos.json
@@ -1318,6 +1301,16 @@ async function actualizarDashboard(desde, hasta) {
 
         // Poblamos la tabla de regiones
         populateRegionTable(regiones);
+
+        if (data.RES284_DATA) {
+            escribir('Res284-colegios', data.RES284_DATA.colegios || 0);
+            escribir('Res284-controles', data.RES284_DATA.controles || 0);
+            escribir('Res284-rechazos', data.RES284_DATA.rechazos || 0);
+        } else {
+            escribir('Res284-colegios', 0);
+            escribir('Res284-controles', 0);
+            escribir('Res284-rechazos', 0);
+        }
 
         console.log('Dashboard actualizado desde /resumen');
     } catch (err) {

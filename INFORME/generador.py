@@ -8,8 +8,73 @@ import sys
 from datetime import datetime
 from flask import Flask, jsonify, send_from_directory
 
+
+
 # Importamos la biblioteca que acabamos de armar  (NOOOOO lleva .py al final)
 from Articulos_110_108 import contar_articulos_en_fila
+
+
+import re
+
+import pandas as pd
+import re
+
+def procesar_resolucion_escuelas(ruta_csv):
+    try:
+        df = pd.read_csv(ruta_csv, encoding='utf-8')
+    except Exception:
+        return {"colegios": 0, "controles": 0, "hitos_graves": 0, "deficiencias_tecnicas": 0}
+    
+    total_colegios_auditados = 0
+    total_controles_concedidos = 0
+    hitos_graves = 0        # Alcoholemia / Sustancias positivas
+    deficiencias_tecnicas = 0 # Documentación, cubiertas, carrocería, faltante de habilitación
+    
+    patron_res284 = re.compile(r'(res|reso|resoluci[oó]n)\s*[\.\-]*\s*284', re.IGNORECASE)
+    
+    # Palabras clave comunes que redactan los fiscalizadores ante fallas mecánicas o papeles
+    patron_tecnico = re.compile(r'(vencid|seguro|habilitaci|licencia|cubierta|neumatic|tenic|revision|vtv|rto|carrocer|chasis|freno|luces|matafuego|parabris|tacograf)', re.IGNORECASE)
+
+    for index, fila in df.iterrows():
+        acta_obs = str(fila.get('ACTA OBS', '')).strip()
+        pl_obs = str(fila.get('PL OBS', '')).strip()
+        texto_completo = f"{acta_obs} {pl_obs}"
+        
+        if patron_res284.search(texto_completo):
+            # Regla de operativos individuales
+            total_controles_concedidos += 1
+            total_colegios_auditados += 1
+            
+            # 1. EVALUACIÓN DE HITOS GRAVES (Sustancias / Alcohol)
+            alc_1 = str(fila.get('ALCOHOLEMIA CHOFER 1', '')).strip().upper()
+            sus_1 = str(fila.get('SUSTANCIAS CHOFER 1', '')).strip().upper()
+            
+            es_positivo_alc = alc_1 != '' and alc_1 != 'NAN' and alc_1 != 'NEG' and alc_1 != '0' and alc_1 != '0.0'
+            es_positivo_sus = sus_1 != '' and sus_1 != 'NAN' and sus_1 != 'NEG' and sus_1 != '0'
+            
+            # Si en la observación escrita mencionan explícitamente alcohol o droga
+            mencion_sustancias = any(p in texto_completo.lower() for p in ['alcoholemia', 'positivo', 'narco', 'sustancia', 'droga', 'testigo'])
+
+            if es_positivo_alc or es_positivo_sus or (mencion_sustancias and str(fila.get('RETIENE', '')).strip().upper() == 'SI'):
+                hitos_graves += 1
+                continue # Si ya es hito grave, no lo contamos como deficiencia común
+            
+            # 2. EVALUACIÓN DE DEFICIENCIAS TÉCNICAS / DOCUMENTALES
+            retiene = str(fila.get('RETIENE', '')).strip().upper()
+            tiene_acta = str(fila.get('ACTA N°', '')).strip()
+            es_acta_valida = tiene_acta and tiene_acta != 'nan' and tiene_acta != '0'
+
+            # Si el vehículo fue retenido o tiene acta labrada por cuestiones técnicas/papeles
+            if retiene == 'SI' or es_acta_valida or patron_tecnico.search(texto_completo):
+                deficiencias_tecnicas += 1
+
+    return {
+        "colegios": total_colegios_auditados,
+        "controles": total_controles_concedidos,
+        "hitos_graves": hitos_graves,
+        "deficiencias_tecnicas": deficiencias_tecnicas
+    }
+
 
 # =========================================================
 # CONFIGURACIÓN DE RUTAS Y FLASK
@@ -22,6 +87,7 @@ try:
     CORS(app, resources={r"/*": {"origins": "*"}})
 except ImportError:
     print(" Flask-CORS no instalado. Ejecuta: pip install flask-cors")
+
 
 # =========================================================
 # FUNCIONES AUXILIARES (Títulos y Normalización)
