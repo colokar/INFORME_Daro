@@ -1009,12 +1009,41 @@
             <p style="color: var(--gris-azulado); font-size: 0.9rem; margin-top: 5px;">Materia Prima Cruzada y Volumen de Fiscalización Conjunta: CNRT — Gendarmería Nacional</p>
         </header>
         
-        
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 25px;">
-            <div class="chart-card" style="border: 1px solid var(--gris-claro); padding: 20px; border-radius: 6px;">
+            
+            <div class="chart-card" style="border: 1px solid var(--gris-claro); padding: 20px; border-radius: 6px; background: #ffffff;">
                 <h3 style="font-size: 1.1rem; color: var(--azul-medio); margin-bottom: 15px;">Vehículos controlados</h3>
-                <div style="position: relative; height: 300px;">
-                    <canvas id="chartCumulative"></canvas>
+                
+                <div class="chart-container-grid">
+                    <div class="chart-grid-bars">
+                        <div id="bar-vc-cnrt" class="bar-pure-css cnrt-blue"></div>
+                        <div id="bar-vc-gna" class="bar-pure-css gna-green"></div>
+                    </div>
+                    
+                    <div class="chart-eje-x">
+                        <div>🔵 CNRT (<span id="pct-txt-vc-cnrt">0%</span>)</div>
+                        <div>🟢 GNA (<span id="pct-txt-vc-gna">0%</span>)</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart-card" style="border: 1px solid var(--gris-claro); padding: 20px; border-radius: 6px; background: #ffffff;">
+                <h3 style="font-size: 1.1rem; color: var(--azul-medio); margin-bottom: 15px;">Efectividad de Sanciones (GNA vs CNRT)</h3>
+                
+                <div class="chart-container-grid">
+                    <div class="chart-grid-bars">
+                        <div id="bar-actas-cnrt" class="bar-pure-css cnrt-blue"></div>
+                        <div id="bar-actas-gna" class="bar-pure-css gna-green"></div>
+                    </div>
+                    
+                    <div class="chart-eje-x">
+                        <div>🔵 CNRT (<span id="pct-txt-actas-cnrt">0%</span>)</div>
+                        <div>🟢 GNA (<span id="pct-txt-actas-gna">0%</span>)</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
 
                     
 
@@ -1227,23 +1256,77 @@ async function actualizarDashboard(desde, hasta) {
         const data = await resp.json();
 
         // Estructura generada por generador.py
-        // data.metadata.{total_registros,total_retenciones}
-        // data.regiones -> objeto por región
         const meta = data.metadata || {};
         const regiones = data.regiones || {};
 
         const totalVC = Number(meta.total_registros || 0);
         const totalRet = Number(meta.total_retenciones || 0);
 
-        // Sumamos cargas/pasajeros desde regiones
+        // Sumamos cargas/pasajeros desde regiones de forma dinámica
         let totalCargas = 0, totalPasajeros = 0, totalActas = 0;
         Object.keys(regiones).forEach(k => {
             const r = regiones[k];
             if (!r) return;
             totalCargas += Number(r.cargas?.vc || 0);
             totalPasajeros += Number(r.pasajeros?.vc || 0);
-            totalActas += Number(r.total?.actas || 0);
+            totalActas += Number(r.total?.actas || 0); 
         });
+
+        // ====================================================================
+        // 🚀 NUEVO: ACTUALIZACIÓN DINÁMICA DE LOS GRÁFICOS NATIVOS INTERFUERZAS
+        // (Se ejecuta acá afuera aprovechando los acumuladores limpios)
+        // ====================================================================
+
+        // 1. Gráfico de Vehículos Controlados
+        // Sumamos dinámicamente Cargas + Pasajeros que se procesaron del CSV
+        const vcCNRT_Dinamico = totalCargas + totalPasajeros;
+        const vcGNA_Historico = 54698; // Base estática de Gendarmería
+        const globalInterVC = vcCNRT_Dinamico + vcGNA_Historico;
+
+        if (globalInterVC > 0) {
+            const pctVcCnrt = Math.round((vcCNRT_Dinamico / globalInterVC) * 100);
+            const pctVcGna = Math.round((vcGNA_Historico / globalInterVC) * 100);
+            
+            const barVcCnrt = document.getElementById('bar-vc-cnrt');
+            const barVcGna = document.getElementById('bar-vc-gna');
+            
+            if (barVcCnrt && barVcGna) {
+                // Modifica la altura vertical de forma proporcional a los datos reales
+                barVcCnrt.style.height = pctVcCnrt + '%';
+                barVcGna.style.height = pctVcGna + '%';
+                
+                // Actualiza los indicadores numéricos del eje X
+                document.getElementById('pct-txt-vc-cnrt').innerText = pctVcCnrt + '%';
+                document.getElementById('pct-txt-vc-gna').innerText = pctVcGna + '%';
+            }
+        }
+
+        // 2. Gráfico de Efectividad de Sanciones (Actas Labradas)
+        const actasCNRT_Dinamico = totalActas;
+        const actasGNA_Historico = 15716; // Base estática de Gendarmería
+        const globalInterActas = actasCNRT_Dinamico + actasGNA_Historico;
+
+        if (globalInterActas > 0) {
+            const pctActasCnrt = Math.round((actasCNRT_Dinamico / globalInterActas) * 100);
+            const pctActasGna = Math.round((actasGNA_Historico / globalInterActas) * 100);
+            
+            const barActasCnrt = document.getElementById('bar-actas-cnrt');
+            const barActasGna = document.getElementById('bar-actas-gna');
+            
+            if (barActasCnrt && barActasGna) {
+                // Modifica la altura vertical de forma proporcional a los datos reales
+                barActasCnrt.style.height = pctActasCnrt + '%';
+                barActasGna.style.height = pctActasGna + '%';
+                
+                // Actualiza los indicadores numéricos del eje X
+                document.getElementById('pct-txt-actas-cnrt').innerText = pctActasCnrt + '%';
+                document.getElementById('pct-txt-actas-gna').innerText = pctActasGna + '%';
+            }
+        }
+
+        // ====================================================================
+        // CONTINUACIÓN DE TU LÓGICA ORIGINAL DE VISTA OPERATIVA
+        // ====================================================================
 
         // Escribir totales globales
         escribir('vc_total', totalVC);
@@ -1259,7 +1342,6 @@ async function actualizarDashboard(desde, hasta) {
         setBar('vc_pasajeros_pct', pctPasajeros);
 
         // Actualizar otras barras por sección (actas, retenciones, infracciones)
-        // Calculamos totales para cada categoría desde regiones
         let actas_cargas = 0, actas_pasajeros = 0;
         let ret_cargas = 0, ret_pasajeros = 0;
         Object.values(regiones).forEach(r => {
@@ -1278,7 +1360,7 @@ async function actualizarDashboard(desde, hasta) {
         setBar('retenciones_cargas_pct', Math.round((ret_cargas/totalRetAll)*100));
         setBar('retenciones_pasajeros_pct', Math.round((ret_pasajeros/totalRetAll)*100));
 
-        // Infracciones (si existe): reutilizamos métricas de actas
+        // Infracciones
         const infraccionesPctCargas = Math.round((actas_cargas/totalActasAll)*100);
         const infraccionesPctPasajeros = Math.round((actas_pasajeros/totalActasAll)*100);
         setBar('infracciones_cargas_pct', infraccionesPctCargas);
@@ -1312,7 +1394,7 @@ async function actualizarDashboard(desde, hasta) {
             escribir('Res284-rechazos', 0);
         }
 
-        console.log('Dashboard actualizado desde /resumen');
+        console.log('Dashboard actualizado desde /resumen con graficos comparativos correctos.');
     } catch (err) {
         console.error('Error actualizando dashboard:', err);
         alert('Error al obtener datos: ' + err.message);

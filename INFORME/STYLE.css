@@ -1694,3 +1694,57 @@ SEPARADOR VERTICAL ROJO
     padding: 1.5rem;
     backdrop-filter: blur(12px);
 }
+
+/* ======================================================
+   Gráfico de Columnas Nativo con CSS Grid (X e Y)
+   ====================================================== */
+
+   /* --- Contenedor general del gráfico --- */
+.chart-container-grid {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-top: 15px;
+}
+
+/* Área del gráfico (Plano del Eje X e Y) */
+.chart-grid-bars {
+    display: flex !important;
+    justify-content: space-around !important;
+    align-items: flex-end !important; /* Fuerza el crecimiento desde el piso */
+    height: 220px !important;         /* Altura fija del contenedor */
+    padding: 15px 30px 0 !important;
+    background: rgba(0, 0, 0, 0.03) !important; /* Fondo sutil de referencia */
+    border-radius: 6px !important;
+    border-bottom: 2px solid #002f6c !important; /* Línea de base (Eje X) */
+}
+
+/* Estructura base de las barras verticales */
+.bar-pure-css {
+    display: block !important;
+    width: 35% !important;            /* Ancho de la columna */
+    border-radius: 4px 4px 0 0 !important;
+    height: 0%;                       /* Arranca en 0% hasta que JS le dé el valor real */
+    transition: height 0.6s ease-out; /* Animación fluida al actualizar */
+}
+
+/* Colores institucionales puros */
+.bar-pure-css.cnrt-blue {
+    background-color: #0056b3 !important;
+}
+
+.bar-pure-css.gna-green {
+    background-color: #28a745 !important;
+}
+
+/* Eje X (Etiquetas) */
+.chart-eje-x {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    grid-column-gap: 30px !important;
+    text-align: center !important;
+    margin-top: 10px !important;
+    font-size: 0.9rem !important;
+    font-weight: bold !important;
+    color: #002f6c !important;
+}
