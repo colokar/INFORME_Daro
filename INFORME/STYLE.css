@@ -724,161 +724,149 @@ input[type="date"]:focus {
 /* Estilo para el icono del calendario (Solo Webkit) */
 
 
-/* === Control Item - (Tarjeta resumen: icono + detalles) === */
-.control-item {
-  display: block;
-  width: 100%;
-  margin-top: 30px;
-  margin-bottom: 30px;
-  background: white;
-  padding: 20px;
-  border-radius: 5px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+/* ====================================================== */
+/* SECCIÓN: CONDUCTORES DESAFECTADOS (ESTILOS BLINDADOS)  */
+/* ====================================================== */
+
+.cd-contenedor-principal {
+    display: flex !important;
+    flex-direction: row !important;
+    background-color: #ffffff !important;
+    border-radius: 12px !important;
+    padding: 25px !important;
+    margin: 20px auto !important;
+    max-width: 1400px !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08) !important;
+    gap: 25px !important;
+    box-sizing: border-box !important;
 }
 
-/* Contenedor para poner dos cajas lado a lado (ej. Conductores + Retenciones) */
-.two-boxes {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-  margin-bottom: 30px;
+/* Sub-bloque Izquierdo: Métricas y Datos */
+.cd-bloque-datos {
+    flex: 1.3 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 20px !important;
 }
 
-/* === Inner Box - .inner-box (Cuadros internos en Retenciones) === */
-.inner-box {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
+.cd-fila-superior {
+    display: flex !important;
+    gap: 20px !important;
 }
 
-/* Ajustes para que las dos cajas principales se vean del mismo tamaño */
-.two-boxes .control-item {
-  min-height: 180px;
+.cd-tarjeta-mini {
+    flex: 1 !important;
+    background-color: #ffffff !important;
+    border: 1px solid #e0e0e0 !important;
+    border-radius: 8px !important;
+    padding: 15px !important;
+    text-align: center !important;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.02) !important;
+    position: relative;
 }
 
-/* CONTENEDOR PRINCIPAL DEL BLOQUE */
-
-/* ===== COLOR SOLO NUMEROS ===== */
-
-.control-item .item-numero {
-  color: #2d4a87;
-  font-weight: bold;
+/* Separador dorado vertical icónico a la izquierda de las mini tarjetas */
+.cd-tarjeta-mini::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 15%;
+    bottom: 15%;
+    width: 3px;
+    background: var(--dorado);
 }
 
-.control-item .detalle-valor {
-  color: #2d4a87;
+.cd-tarjeta-label {
+    font-size: 0.9rem !important;
+    color: #666666 !important;
+    font-weight: 600 !important;
+    margin-top: 8px !important;
 }
 
-.control-item .detalle-porcentaje {
-  color: #2d4a87;
+.cd-tarjeta-valor {
+    font-size: 1.8rem !important;
+    font-weight: bold !important;
+    color: #2d4a87 !important;
+    margin-top: 5px !important;
 }
 
-/* ICONO + DONUT */
-
-/* ===== GRAFICOS DONUT EN DETALLES ===== */
-
-/* ===== DETALLE FLEX ===== */
-
-/* ===== CONTENEDOR DONUT ===== */
-
-/* ===== CANVAS ===== */
-
-/* ===== ICONO + NUMERO ===== */
-.item-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  /* Centrado para que acompañe al donut */
-  gap: 12px;
-  margin-bottom: 10px;
+/* Fila Inferior: Icono central + GFTAU / SFDR */
+.cd-fila-inferior-detalles {
+    display: flex !important;
+    background: #f9f9f9 !important;
+    padding: 20px !important;
+    border-radius: 8px !important;
+    align-items: center !important;
+    gap: 20px !important;
+    border: 1px solid #eaeaea !important;
 }
 
-
-/* =========================================
-   CONTENEDOR PRINCIPAL
-   CARGAS | GRAFICO | PASAJEROS
-========================================= */
-
-.item-detalles {
-
-  flex: 1;
-
-  display: grid;
-  /* columnas automaticas responsive */
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-
-  align-items: center;
-
-  gap: 30px;
-
-  padding: 10px 20px;
-
-  width: 100%;
-  box-sizing: border-box;
-
+.cd-icono-central {
+    position: relative !important;
+    flex-shrink: 0 !important;
 }
 
-/* GRAFICOS MINI (TORTA) */
-
-/* === Barras separadoras ROJO === */
-
-/* ========================================
-DETALLE DE TRANSPORTE
-CARGAS / PASAJEROS
-CONTROLA EL SEPARADOR ROJO
-======================================== */
-
-.detalle {
-
-  position: relative;
-
-  background: #f9f9f9;
-
-  padding: 40px 40px 40px 40px;
-
-  border-radius: 3px;
-
+.cd-numero-centro {
+    position: absolute !important;
+    top: 52% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    font-size: 1.6rem !important;
+    font-weight: bold !important;
+    color: #2d4a87 !important;
 }
 
-/* ========================================
-SEPARADOR VERTICAL ROJO
-======================================== */
-
-.detalle::before {
-
-  content: "";
-
-  position: absolute;
-
-  left: 10px;
-
-  top: 0;
-  bottom: 0;
-
-  width: 2px;
-
-  background: #e6b85f;
-
+.cd-bloque-organismos {
+    display: flex !important;
+    flex: 1 !important;
+    justify-content: space-around !important;
+    gap: 15px !important;
 }
 
-.detalle-label {
-  font-size: 0.85em;
-  color: #666;
-  margin-bottom: 5px;
+.cd-tarjeta-gftau-sfdr {
+    display: flex !important;
+    flex-direction: column !important;
 }
 
-.detalle-valor {
-  font-size: 1.5em;
-  font-weight: bold;
-  color: #333;
+.cd-tarjeta-porcentaje {
+    font-size: 0.85rem !important;
+    color: #2d4a87 !important;
+    font-weight: 600;
 }
 
-.detalle-porcentaje {
-  font-size: 0.9em;
-  color: #3f4aac;
-  margin-top: 5px;
+/* Sub-bloque Derecho: Gráficos de Dona */
+.cd-bloque-graficos {
+    flex: 1 !important;
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 20px !important;
+    border-left: 2px solid #e8ecf1 !important;
+    padding-left: 25px !important;
+    justify-content: center !important;
+    align-items: center !important;
+}
+
+.cd-grafico-item {
+    flex: 1 !important;
+    text-align: center !important;
+}
+
+.cd-donut-titulo {
+    font-size: 0.85rem !important;
+    color: var(--azul-oscuro) !important;
+    font-weight: bold !important;
+    margin-bottom: 15px !important;
+    min-height: 34px !important;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.cd-canvas-holder {
+    position: relative !important;
+    width: 100% !important;
+    max-width: 150px !important;
+    height: 150px !important;
+    margin: 0 auto !important;
 }
 
 .organismo {
@@ -903,12 +891,18 @@ SEPARADOR VERTICAL ROJO
 }
 
 .footer {
-  margin-top: 50px;
-  padding: 20px;
+  margin-top: -9px;
+  padding:12px 20px;
   text-align: center;
   font-size: 0.85em;
-  color: #666;
-  border-top: 1px solid #e0e0e0;
+  background-color: #292a4e;    /* Azul oscuro institucional CNRT */
+  color: #ffffff;               /* Letras blancas para que contrasten */
+  border-top: 2px solid #ffffff; /* Línea azul viva destacada arriba */
+}
+
+.footer p {
+    color: #ffffff !important;
+    margin: 5px 0;
 }
 
 .tabla-regiones {

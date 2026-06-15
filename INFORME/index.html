@@ -605,59 +605,71 @@
         <!-- === Sección - Conductores Desafectados 2 cajas) === -->
         <div class="seccion-titulo">Conductores Desafectados</div>
 
-        <!-- === Contenedor dos cajas - (izquierda: Conductores / derecha: Retenciones) === -->
-        <div class="two-boxes">
+<div class="cd-contenedor-principal">   
+    
+    <div class="cd-bloque-datos">
+        
+        <div class="cd-fila-superior">
+            <div class="cd-tarjeta-mini">
+                <img src="IMAGENES/alcoholimetro_azul.png" width="100" height="90">
+                <div class="cd-tarjeta-label">Alcoholemia Positiva</div>
+                <div class="cd-tarjeta-valor" id="alc_pos">00</div>
+            </div>
 
-            <!-- Caja: Conductores Desafectados (lado izquierdo) -->
-            <div class="control-item">
-                <div class="item-icon">
-                    <img src="IMAGENES/retencion_azul.png" alt="Conductores Desafectados" width="200" height="210">
-                    <div class="item-numero">00</div>
-                </div>
-                <div class="item-detalles">
-                    <div class="detalle">
-                        <div class="detalle-label">GFTAU</div>
-                        <div class="detalle-valor">00</div>
-                        <div class="detalle-porcentaje">00.00%</div>
-                        <div style="margin-top: 10px;">
-                            <span class="organismo gftau">000 (00%)</span>
-                            <span class="organismo gftau">000 (00%)</span>
-                        </div>
+            <div class="cd-tarjeta-mini">
+                <img src="IMAGENES/Sustancias_azul.png" width="100" height="90">
+                <div class="cd-tarjeta-label">Sustancias Positivas</div>
+                <div class="cd-tarjeta-valor" id="sus_pos">00</div>
+            </div>
+        </div>
+
+        <div class="cd-fila-inferior-detalles">
+            <div class="cd-icono-central">
+                <img src="IMAGENES/retencion_azul.png" alt="Conductores Desafectados" width="130" height="140">
+                <div class="cd-numero-centro">00</div>
+            </div>
+            
+            <div class="cd-bloque-organismos">
+                <div class="cd-tarjeta-gftau-sfdr">
+                    <div class="cd-tarjeta-label">GFTAU</div>
+                    <div class="cd-tarjeta-valor">00</div>
+                    <div class="cd-tarjeta-porcentaje">00.00%</div>
+                    <div style="margin-top: 5px; display: flex; gap: 5px;">
+                        <span class="organismo gftau">000 (00%)</span>
+                        <span class="organismo gftau">000 (00%)</span>
                     </div>
-                    <div class="detalle">
-                        <div class="detalle-label">SFDR</div>
-                        <div class="detalle-valor">00</div>
-                        <div class="detalle-porcentaje">0000%</div>
-                        <div style="margin-top: 10px;">
-                            <span class="organismo sfdr">000 (00%)</span>
-                            <span class="organismo sfdr">000 (00%)</span>
-                        </div>
+                </div>
+                <div class="cd-tarjeta-gftau-sfdr">
+                    <div class="cd-tarjeta-label">SFDR</div>
+                    <div class="cd-tarjeta-valor">00</div>
+                    <div class="cd-tarjeta-porcentaje">0000%</div>
+                    <div style="margin-top: 5px; display: flex; gap: 5px;">
+                        <span class="organismo sfdr">000 (00%)</span>
+                        <span class="organismo sfdr">000 (00%)</span>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <!-- Caja: Retenciones (lado derecho) - contiene los dos cuadritos internos -->
-            <div class="control-item">
-                <div class="item-icon">
-                </div>
-                <div class="item-detalles">
+    </div>
 
-                    <!-- Alcoholemia y Sustancias -->
-                    <div class="detalle inner-box">
-                        <img src="IMAGENES/alcoholimetro_azul.png"  width="100" height="90">
-                        <div class="detalle-label">Alcoholemia Positiva</div>
-                        <div class="detalle-valor" id="alc_pos">00</div>
-                    </div>
-
-                    <div class="detalle inner-box">
-                        <img src="IMAGENES/Sustancias_azul.png" width="100" height="90">
-                        <div class="detalle-label">Sustancias Positivas</div>
-                        <div class="detalle-valor" id="sus_pos">00</div>
-                    </div>
-                    </div>
-                    </div>
-                </div>
+    <div class="cd-bloque-graficos">
+        <div class="cd-grafico-item">
+            <div class="cd-donut-titulo">Control a Conductores</div>
+            <div class="cd-canvas-holder">
+                <canvas id="chartControlConductores"></canvas>
             </div>
+        </div>
+        <div class="cd-grafico-item">
+            <div class="cd-donut-titulo">Resultados Positivos de Controles</div>
+            <div class="cd-canvas-holder">
+                <canvas id="chartResultadosControles"></canvas>
+            </div>
+        </div>
+    </div>
+
+</div>
+
         </div>
 
         <!-- ===TABLA DE REGIONES=== -->
@@ -1103,12 +1115,21 @@
 
 </div>
 
-<div class="footer" style="margin-top: 30px; text-align: center; padding: 20px; border-top: 1px solid var(--azul-medio);">
+<div class="footer">
     <p>Área de departamento operativo, Gerencia de Fiscalización del Transporte Automotor</p>
     <p>&copy; 2026 CNRT - Control del Transporte</p>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="data.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
 <script>
+// Configuración de la API local (Flask Server)
+const API_BASE = 'http://127.0.0.1:5000';
+
+// NAVEGACIÓN: Control de Secciones e intercambio de solapas
 function intercambiarSeccion(nombreSeccion) {
     const op = document.getElementById('seccion-operativo');
     const comp = document.getElementById('seccion-comparativa');
@@ -1139,34 +1160,8 @@ function mostrarSeccion(nombre) {
         intercambiarSeccion(nombre);
     }
 }
-</script>
 
-
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="data.js"></script>
-            </div>
-        </div>
-
-        <!-- === Footer - .footer (Información institucional y créditos) === -->
-        <div class="footer">
-            <p>Área de departamento operativo
-                , Gerencia de Fiscalización del Transporte Automotor</p>
-            <p>&copy; 2026 CNRT - Control del Transporte</p>
-        </div>
-
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
-<script>
-// Consolidated dashboard script: lee la salida de `generador.py` (/resumen -> datos.json)
-// For development we force the API to the Flask server (port 5000).
-// If you deploy to production, replace this with the proper env-aware URL.
-const API_BASE = 'http://127.0.0.1:5000';
-
+// FORMATEO: Escritura de valores numéricos tipo local
 function escribir(id, valor) {
     const el = document.getElementById(id);
     if (!el) return;
@@ -1174,6 +1169,7 @@ function escribir(id, valor) {
     el.textContent = n.toLocaleString('es-AR');
 }
 
+// BARRAS: Control de barras de progreso horizontal
 function setBar(id, percent) {
     const el = document.getElementById(id);
     if (!el) return;
@@ -1214,12 +1210,13 @@ function setPrincipalInfraccionesTotal(totalActas) {
     }
 }
 
+// TABLA REGIONAL: Renderizado dinámico de datos de fiscalización
 function populateRegionTable(regiones) {
-    const lista = ['AMBA', 'COSTA', 'CEN','CUY','NEA','NOA','COSTA','PAT'];
+    const lista = ['AMBA', 'COSTA', 'CEN', 'CUY', 'NEA', 'NOA', 'PAT']; // Corregido duplicado de COSTA
     lista.forEach(r => {
         const key = r.toUpperCase();
         const data = regiones[key];
-        const idBase = r.toLowerCase() + '_' ;
+        const idBase = r.toLowerCase() + '_';
         if (data) {
             escribir(idBase + 'cargas_vc', data.cargas.vc);
             escribir(idBase + 'cargas_actas', data.cargas.actas);
@@ -1246,41 +1243,32 @@ function populateRegionTable(regiones) {
     });
 }
 
-
+// BACKEND: Captura de datos desde endpoint /resumen (Flask)
 async function actualizarDashboard(desde, hasta) {
     try {
-        // `generador.py` expone /resumen que devuelve datos.json
         const url = `${API_BASE}/resumen`;
         const resp = await fetch(url, {cache: 'no-store'});
         if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
         const data = await resp.json();
 
-        // Estructura generada por generador.py
         const meta = data.metadata || {};
         const regiones = data.regiones || {};
 
         const totalVC = Number(meta.total_registros || 0);
         const totalRet = Number(meta.total_retenciones || 0);
 
-        // Sumamos cargas/pasajeros desde regiones de forma dinámica
         let totalCargas = 0, totalPasajeros = 0, totalActas = 0;
         Object.keys(regiones).forEach(k => {
             const r = regiones[k];
             if (!r) return;
             totalCargas += Number(r.cargas?.vc || 0);
             totalPasajeros += Number(r.pasajeros?.vc || 0);
-            totalActas += Number(r.total?.actas || 0); 
+            totalActas += Number(r.actas || 0); 
         });
 
-        // ====================================================================
-        // 🚀 NUEVO: ACTUALIZACIÓN DINÁMICA DE LOS GRÁFICOS NATIVOS INTERFUERZAS
-        // (Se ejecuta acá afuera aprovechando los acumuladores limpios)
-        // ====================================================================
-
-        // 1. Gráfico de Vehículos Controlados
-        // Sumamos dinámicamente Cargas + Pasajeros que se procesaron del CSV
+        // 1. Gráfico Interfuerzas: Vehículos Controlados
         const vcCNRT_Dinamico = totalCargas + totalPasajeros;
-        const vcGNA_Historico = 54698; // Base estática de Gendarmería
+        const vcGNA_Historico = 54698;
         const globalInterVC = vcCNRT_Dinamico + vcGNA_Historico;
 
         if (globalInterVC > 0) {
@@ -1291,19 +1279,19 @@ async function actualizarDashboard(desde, hasta) {
             const barVcGna = document.getElementById('bar-vc-gna');
             
             if (barVcCnrt && barVcGna) {
-                // Modifica la altura vertical de forma proporcional a los datos reales
                 barVcCnrt.style.height = pctVcCnrt + '%';
                 barVcGna.style.height = pctVcGna + '%';
                 
-                // Actualiza los indicadores numéricos del eje X
-                document.getElementById('pct-txt-vc-cnrt').innerText = pctVcCnrt + '%';
-                document.getElementById('pct-txt-vc-gna').innerText = pctVcGna + '%';
+                const txtCnrt = document.getElementById('pct-txt-vc-cnrt');
+                const txtGna = document.getElementById('pct-txt-vc-gna');
+                if (txtCnrt) txtCnrt.innerText = pctVcCnrt + '%';
+                if (txtGna) txtGna.innerText = pctVcGna + '%';
             }
         }
 
-        // 2. Gráfico de Efectividad de Sanciones (Actas Labradas)
+        // 2. Gráfico Interfuerzas: Efectividad de Sanciones (Actas)
         const actasCNRT_Dinamico = totalActas;
-        const actasGNA_Historico = 15716; // Base estática de Gendarmería
+        const actasGNA_Historico = 15716;
         const globalInterActas = actasCNRT_Dinamico + actasGNA_Historico;
 
         if (globalInterActas > 0) {
@@ -1314,34 +1302,28 @@ async function actualizarDashboard(desde, hasta) {
             const barActasGna = document.getElementById('bar-actas-gna');
             
             if (barActasCnrt && barActasGna) {
-                // Modifica la altura vertical de forma proporcional a los datos reales
                 barActasCnrt.style.height = pctActasCnrt + '%';
                 barActasGna.style.height = pctActasGna + '%';
                 
-                // Actualiza los indicadores numéricos del eje X
-                document.getElementById('pct-txt-actas-cnrt').innerText = pctActasCnrt + '%';
-                document.getElementById('pct-txt-actas-gna').innerText = pctActasGna + '%';
+                const txtActasCnrt = document.getElementById('pct-txt-actas-cnrt');
+                const txtActasGna = document.getElementById('pct-txt-actas-gna');
+                if (txtActasCnrt) txtActasCnrt.innerText = pctActasCnrt + '%';
+                if (txtActasGna) txtActasGna.innerText = pctActasGna + '%';
             }
         }
 
-        // ====================================================================
-        // CONTINUACIÓN DE TU LÓGICA ORIGINAL DE VISTA OPERATIVA
-        // ====================================================================
-
-        // Escribir totales globales
+        // Escritura de totales e indicadores operativos
         escribir('vc_total', totalVC);
         escribir('vc_ret_valor', totalRet);
         escribir('vc_actas_valor', totalActas);
         escribir('vc_cargas_un', totalCargas);
         escribir('vc_pasajeros_un', totalPasajeros);
 
-        // Actualizar barras horizontales principales
         const pctCargas = totalVC ? Math.round((totalCargas/totalVC)*100) : 0;
         const pctPasajeros = totalVC ? Math.round((totalPasajeros/totalVC)*100) : 0;
         setBar('vc_cargas_pct', pctCargas);
         setBar('vc_pasajeros_pct', pctPasajeros);
 
-        // Actualizar otras barras por sección (actas, retenciones, infracciones)
         let actas_cargas = 0, actas_pasajeros = 0;
         let ret_cargas = 0, ret_pasajeros = 0;
         Object.values(regiones).forEach(r => {
@@ -1356,15 +1338,11 @@ async function actualizarDashboard(desde, hasta) {
 
         setBar('actas_cargas_pct', Math.round((actas_cargas/totalActasAll)*100));
         setBar('actas_pasajeros_pct', Math.round((actas_pasajeros/totalActasAll)*100));
-
         setBar('retenciones_cargas_pct', Math.round((ret_cargas/totalRetAll)*100));
         setBar('retenciones_pasajeros_pct', Math.round((ret_pasajeros/totalRetAll)*100));
 
-        // Infracciones
-        const infraccionesPctCargas = Math.round((actas_cargas/totalActasAll)*100);
-        const infraccionesPctPasajeros = Math.round((actas_pasajeros/totalActasAll)*100);
-        setBar('infracciones_cargas_pct', infraccionesPctCargas);
-        setBar('infracciones_pasajeros_pct', infraccionesPctPasajeros);
+        setBar('infracciones_cargas_pct', Math.round((actas_cargas/totalActasAll)*100));
+        setBar('infracciones_pasajeros_pct', Math.round((actas_pasajeros/totalActasAll)*100));
 
         const principal = data.principal_infracciones || {};
         const cargasPrincipal = principal.cargas || {};
@@ -1374,14 +1352,13 @@ async function actualizarDashboard(desde, hasta) {
         if (Array.isArray(cargasPrincipal.motivos) && cargasPrincipal.motivos.length) {
             updatePrincipalMotivos('cargas', cargasPrincipal.motivos, Number(cargasPrincipal.totalActas || 0), Number(cargasPrincipal.totalPercent || 0), 'principal_cargas_subtitulo');
         }
-        if (Array.isArray(pasajerosPrincipal.motivos) && pasajerosPrincipal.motivos.length) {
+        if (Array.isArray(pasajerosPrincipal.motivos) && pasajerosPrincipal.pasajeros.length) {
             updatePrincipalMotivos('pasajeros', pasajerosPrincipal.motivos, Number(pasajerosPrincipal.totalActas || 0), Number(pasajerosPrincipal.totalPercent || 0), 'principal_pasajeros_subtitulo');
         }
         if (totalPrincipalActas != null) {
             setPrincipalInfraccionesTotal(totalPrincipalActas);
         }
 
-        // Poblamos la tabla de regiones
         populateRegionTable(regiones);
 
         if (data.RES284_DATA) {
@@ -1394,60 +1371,102 @@ async function actualizarDashboard(desde, hasta) {
             escribir('Res284-rechazos', 0);
         }
 
-        console.log('Dashboard actualizado desde /resumen con graficos comparativos correctos.');
+        console.log('Dashboard actualizado correctamente.');
     } catch (err) {
         console.error('Error actualizando dashboard:', err);
         alert('Error al obtener datos: ' + err.message);
     }
 }
 
-// Mantener compatibilidad con el botón existente
 function generarInforme() {
     const desde = document.getElementById('desde')?.value;
     const hasta = document.getElementById('hasta')?.value;
-    // Por ahora generador.py no filtra por fecha en /resumen; llamamos de todos modos
     actualizarDashboard(desde, hasta);
 }
 
-// Mantener mostrarSeccion sin cambiar IDs existentes
-function mostrarSeccion(nombre) {
-    const operativo = document.getElementById('seccion-operativo');
-    const comparativa = document.getElementById('seccion-comparativa');
-    const botones = document.querySelectorAll('.section-btn');
-
-    if (nombre === 'operativo') {
-        operativo.style.display = 'block';
-        comparativa.style.display = 'none';
-    } else {
-        operativo.style.display = 'none';
-        comparativa.style.display = 'block';
-        // Al mostrar comparativa, actualizamos los datos
-        actualizarDashboard();
+// DOCUMENTO: Conversión nativa y guardado en PDF
+function descargarPDF() {
+    // 1. Buscamos de forma inteligente la librería jsPDF
+    let jspdfInstance = null;
+    if (window.jspdf && window.jspdf.jsPDF) {
+        jspdfInstance = window.jspdf.jsPDF;
+    } else if (window.jsPDF) {
+        jspdfInstance = window.jsPDF;
+    } else if (window.jspdf) {
+        jspdfInstance = window.jspdf;
     }
 
-    botones.forEach(btn => {
-        btn.classList.toggle('active', btn.getAttribute('onclick')?.includes(nombre));
+    if (!jspdfInstance) {
+        console.error("Error: La librería jsPDF no está cargada.");
+        alert("No se pudo iniciar la descarga. Recargá con Ctrl + F5.");
+        return;
+    }
+
+    const elemento = document.getElementById('informe');
+    if (!elemento) {
+        console.error("No se encontró el contenedor principal #informe");
+        return;
+    }
+
+    // Mostramos un aviso temporal en la consola porque html2canvas puede tardar 2 segundos
+    console.log("Generando captura del reporte...");
+
+    // 2. Usamos html2canvas para fotografiar el contenedor exactamente como se ve
+    html2canvas(elemento, {
+        scale: 2,         // Mantiene la alta definición (texto nítido, no borroso)
+        useCORS: true,    // Clave para tus imágenes locales
+        allowTaint: true,
+        backgroundColor: "#f4f6f9" // Forzamos el fondo grisáceo/blanco del dashboard
+    }).then(canvas => {
+        // 3. Obtenemos la imagen en formato base64
+        const imgData = canvas.toDataURL('image/jpeg', 0.95);
+
+        // 4. Calculamos proporciones para que calce perfecto en una hoja A4 Horizontal (Landscape)
+        const pdfWidth = 297;  // Ancho A4 en mm
+        const pdfHeight = 210; // Alto A4 en mm
+        
+        // Calculamos el alto proporcional de tu dashboard según el ancho de la hoja
+        const canvasWidth = canvas.width;
+        const canvasHeight = canvas.height;
+        const imgHeightInPdf = (canvasHeight * pdfWidth) / canvasWidth;
+
+        // 5. Creamos el PDF en formato horizontal (landscape)
+        const doc = new jspdfInstance({
+            orientation: "landscape",
+            unit: "mm",
+            format: "a4"
+        });
+
+        // 6. Metemos la captura en la primera página
+        doc.addImage(imgData, 'JPEG', 0, 0, pdfWidth, imgHeightInPdf);
+
+        // Si el dashboard es muy largo hacia abajo, agregamos páginas extra automáticamente
+        let heightLeft = imgHeightInPdf - pdfHeight;
+        let position = -pdfHeight;
+
+        while (heightLeft > 0) {
+            doc.addPage();
+            doc.addImage(imgData, 'JPEG', 0, position, pdfWidth, imgHeightInPdf);
+            heightLeft -= pdfHeight;
+            position -= pdfHeight;
+        }
+
+        // 7. Descargamos el archivo final limpio
+        doc.save('Reporte_Estadistico_CNRT.pdf');
+    }).catch(err => {
+        console.error("Error en html2canvas:", err);
+        alert("Ocurrió un error al procesar los gráficos en el PDF.");
     });
 }
 
-
-// Inicialización al cargar la página
+// INICIALIZADOR: Escucha de carga inicial de pantalla
 window.addEventListener('load', () => {
-
-    // Inputs de fechas
     const desdeEl = document.getElementById('desde');
     const hastaEl = document.getElementById('hasta');
 
-    // Iniciar vacíos
     if (desdeEl) desdeEl.value = '';
     if (hastaEl) hastaEl.value = '';
-
-    // NO cargar dashboard automáticamente
-    // Esperar a que el usuario seleccione fechas
 });
-
 </script>
-
 </body>
-
 </html>

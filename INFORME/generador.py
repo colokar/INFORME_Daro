@@ -8,16 +8,11 @@ import sys
 from datetime import datetime
 from flask import Flask, jsonify, send_from_directory
 
-
-
 # Importamos la biblioteca que acabamos de armar  (NOOOOO lleva .py al final)
-from Articulos_110_108 import contar_articulos_en_fila
-
+from Articulos import contar_articulos_en_fila
 
 import re
 
-import pandas as pd
-import re
 
 def procesar_resolucion_escuelas(ruta_csv):
     try:
