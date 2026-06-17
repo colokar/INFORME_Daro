@@ -1,135 +1,56 @@
 import re
 
 # =========================================================================
-# CNRT - BIBLIOTECA DE CONSULTAS ESPECÍFICA DE ARTÍCULOS (PASAJEROS Y CARGAS)
-# Basado en los Decretos Estatales 1395/1998 y 1035/2002
+# CNRT - BIBLIOTECA SANEADA DE ARTÍCULOS PARA DASHBOARD
+# Basado en Decretos Estatales 1395/1998 (Pasajeros) y 1035/2002 (Cargas)
 # =========================================================================
 
-def contar_articulos_en_fila(texto_items, tipo_transporte):
+def agrupar_y_sanear_articulos(articulo_crudo, tipo_transporte):
     """
-    Analiza el texto de 'ITEMS INFRACCION' cruzándolo con el tipo de transporte.
-    Devuelve un diccionario indicando qué artículos específicos se configuraron.
-    
-    tipo_transporte: Espera 'PA' (Pasajeros) o 'CA' (Cargas).
+    Toma el artículo de la planilla (ej: 18, 105, '105') y el ramal (PA o CA).
+    Devuelve la categoría limpia y unificada para las 11 barras del Dashboard.
     """
-    # Normalizamos los textos para evitar fallos por espacios o minúsculas
-    texto = str(texto_items).strip()
+    # Limpiamos los datos de entrada para evitar fallas por formatos
+    art = str(articulo_crudo).strip()
     transporte = str(tipo_transporte).strip().upper()[:2]
-    
-    # Glosario inicializado en 0 para esta fila
-    conteo_fila = {
-        "105": 0,  # Dec 1395/98 - Pasajeros: Seguridad / Carrocería
-        "108": 0,  # Dec 1395/98 - Pasajeros: Higiene
-        "110": 0,  # Dec 1395/98 - Pasajeros: Falta RTO / VTV
-        "18": 0,   # Dec 1035/02 - Cargas: Falta RTO / VTV
-        "22": 0    # Dec 1035/02 - Cargas: Conductor sin LNH
-    }
-    
-    # Si la celda está vacía, no hay nada que buscar
-    if not texto or texto.lower() == "nan" or texto == "":
-        return conteo_fila
 
-    # ---------------------------------------------------------------------
-    # 🚍 RAMAL PASAJEROS (PA) - Aplicación estricta Decreto 1395/98
-    # ---------------------------------------------------------------------
+    # ==========================================
+    # RAMAL PASAJEROS (PA) - Top de Infracciones
+    # ==========================================
     if transporte == "PA":
-        if "105" in texto:
-            conteo_fila["105"] = 1
-            
-        if "108" in texto:
-            conteo_fila["108"] = 1
-            
-        if "110" in texto:
-            conteo_fila["110"] = 1
+        if art == "105":
+            return "Deficiencias mecánicas, de carrocería o instrumental"
+        elif art == "91":
+            return "Falta de documentación de servicio - DUT / LP"
+        elif art == "96":
+            return "Conductores sin descanso mínimo"
+        elif art == "112":
+            return "Libreta de trabajo / Control horario irregular"
+        elif art in ["136", "126"]:
+            return "Prestar servicios con vehículos o personal desafectados"
+        elif art in ["82", "83"]:
+            return "Incumplimiento de horarios y frecuencias"
+        elif art == "111":
+            return "Falta de documentos obligatorios a bordo"
+        else:
+            return "Otros"
 
-    # ---------------------------------------------------------------------
-    # 🚚 RAMAL CARGAS (CA) - Aplicación estricta Decreto 1035/02 (Anexo II)
-    # ---------------------------------------------------------------------
+    # ==========================================
+    # RAMAL CARGAS (CA) - Top de Infracciones
+    # ==========================================
     elif transporte == "CA":
-        if "18" in texto:
-            conteo_fila["18"] = 1
-            
-        if "22" in texto:
-            conteo_fila["22"] = 1
-            
-    # ---------------------------------------------------------------------
-    # CASO DE CONTINGENCIA (Si el transporte no está claro en la celda)
-    # ---------------------------------------------------------------------
-    else:
-        # Si por error el sistema no cargó 'PA' o 'CA', busca por texto puro
-        if "105" in texto: conteo_fila["105"] = 1
-        if "108" in texto: conteo_fila["108"] = 1
-        if "110" in texto: conteo_fila["110"] = 1
-        if "18" in texto:  conteo_fila["18"] = 1
-        if "22" in texto:  conteo_fila["22"] = 1
+        if art == "18":
+            return "Falta de Revisión Técnica Obligatoria (RTO)"
+        elif art == "22":
+            return "Conductor sin Licencia Nacional Habilitante (LNH)"
+        elif art == "26":
+            return "Falta de documentación de la carga (Carta de Porte / Remito)"
+        elif art in ["42", "34", "45", "49", "23", "24"]:
+            # Unifica todo el bloque operativo y de cargas peligrosas
+            return "Irregularidades en Transporte de Cargas"
+        elif art == "27":
+            return "Desobediencia a las órdenes de la Autoridad de Aplicación"
+        else:
+            return "Otros"
 
-    return conteo_fila
-
-# ---------------------------------------------------------------------
-# NORMALIZADOR DE MOTIVO DE INFRACCIONES 
-# ---------------------------------------------------------------------
-def normalizar_motivo_infraccion(texto_observacion, tipo_transporte):
-   """
-    Analiza el texto libre de observaciones o ítems de infracción
-    y lo agrupa en categorías limpias y estandarizadas para el Top 10.
-    """
-   texto = str(texto_observacion).lower().strip()
-   transporte = str(tipo_transporte).strip().upper()[:2] # 'CA' o 'PA'
-
-    # ---------------------------------------------------------------------
-    # CRITERIOS DE CATEGORIZACIÓN POR PALABRAS CLAVE
-    # ---------------------------------------------------------------------
-    
-    # 1. Alcoholemia / Sustancias
-   if re.search(r'(alcoh|substanc|sustanc|droga|positivo|pipeta|dosaj)', texto):
-        return "Alcoholemia / Sustancias Positiva"
-
-    # 2. Revisión Técnica (RTO / VTV)
-   if re.search(r'(rto|vtv|revision tecnica|vencida|sin rto|sin vtv|vencido)', texto):
-        return "Falta de Revisión Técnica (RTO / VTV)"
-
-    # 3. Licencia de Conducir / LNH
-   if re.search(r'(licencia|l\.n\.h|lnh|sin registro|conductor no habilitado|vencida|vencido)', texto) and 'chofer' in texto or 'lic' in texto:
-        return "Licencia de Conducir Inexistente / Vencida"
-
-    # 4. Tacógrafo / Limitador de velocidad
-   if re.search(r'(tacograf|disco|sin disco|velocidad|limitador|registro de veloc)', texto):
-        return "Tacógrafo Inoperante / Falta de Disco"
-
-    # 5. Medidas de Seguridad Críticas (Mecánica, matafuegos, luces)
-   if re.search(r'(matafuego|luces|neumat|cubiert|paragolp|cinturon|parabris|freno)', texto):
-        return "Deficiencias en Medidas de Seguridad Críticas"
-
-    # 6. Descanso de Choferes / Exceso de Jornada
-   if re.search(r'(descanso|jornada|exceso horas|sin relebo|relevo|diagrama)', texto):
-        return "Falta de Descanso Reglamentario de Choferes"
-
-    # 7. Falta de Habilitación / Permiso del vehículo
-   if re.search(r'(sin habilit|no habilit|permiso inexistente|sin cert|sin permiso)', texto):
-        return "Falta de Habilitación / Permiso de Circulación"
-
-    # 8. Seguros / Pólizas
-   if re.search(r'(seguro|poliza|vencido|sin seguro|comprobante de seguro)', texto):
-        return "Falta de Seguro Obligatorio / Póliza Vencida"
-
-    # ---------------------------------------------------------------------
-    # DIFERENCIACIÓN POR RAMAL (PASAJEROS vs CARGAS)
-    # ---------------------------------------------------------------------
-   if transporte == "PA":
-        # 9. Higiene / Confort (Pasajeros)
-        if re.search(r'(higiene|baño|limpiez|olor|asiento|aire|calefac)', texto):
-            return "Deficiencias de Higiene / Confort en Pasajeros"
-        # 10. Modalidad / Desvío de Tráfico (Pasajeros)
-        if re.search(r'(modalidad|desvio|fuera de ruta|linea|turismo)', texto):
-            return "Violación de Modalidad de Servicio Autorizado"
-    
-   elif transporte == "CA":
-        # 9. Remito / Porte / Manifiesto de Carga (Cargas)
-        if re.search(r'(remito|carta de porte|porte|manifiesto|guia|remit)', texto):
-            return "Falta de Documentación de Carga (Carta de Porte/Remito)"
-        # 10. Exceso de peso / Dimensiones (Cargas)
-        if re.search(r'(peso|exceso|balanza|kilos|dimension|sobrepeso)', texto):
-            return "Exceso de Peso / Dimensiones Permitidas"
-
-    # Categoría de respaldo para lo que no se logre encuadrar automáticamente
-   return "Otras Infracciones Operativas menores"
+    return "Otros"

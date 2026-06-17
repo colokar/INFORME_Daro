@@ -3,16 +3,12 @@ import glob
 import re
 import unicodedata
 import pandas as pd
+from Articulos import agrupar_y_sanear_articulos
 import json
 import sys
 from datetime import datetime
 from flask import Flask, jsonify, send_from_directory
-
-# Importamos la biblioteca que acabamos de armar  (NOOOOO lleva .py al final)
-from Articulos import contar_articulos_en_fila
-
-import re
-
+import sqlite3
 
 def procesar_resolucion_escuelas(ruta_csv):
     try:
@@ -70,6 +66,46 @@ def procesar_resolucion_escuelas(ruta_csv):
         "deficiencias_tecnicas": deficiencias_tecnicas
     }
 
+
+def procesar_top_articulos(ruta_csv):
+    try:
+        # 1. Leemos el mismo CSV que usás siempre
+        df = pd.read_csv(ruta_csv, encoding='utf-8')
+        
+        # Guardamos un respaldo por si las columnas vienen con minúsculas/espacios
+        df.columns = df.columns.str.strip()
+        
+        # 2. SANEAMIENTO AUTOMÁTICO: Creamos los títulos limpios (Agrupa el 18 de cargas, etc.)
+        df['Articulo_Limpio'] = df.apply(
+            lambda row: agrupar_y_sanear_articulos(row.get('Articulo', row.get('CATEGORIA', '')), row.get('TRANSPORTE', '')), 
+            axis=1
+        )
+        
+        # 3. Agrupamos por Transporte y el Artículo Saneado, contando cuántas filas hay
+        resumen = df.groupby(['TRANSPORTE', 'Articulo_Limpio']).size().reset_index(name='Cantidad')
+        
+        # 4. Filtramos y armamos el Top para Pasajeros (PA) ordenado de mayor a menor
+        df_pa = resumen[resumen['TRANSPORTE'] == 'PA'].sort_values(by='Cantidad', ascending=False)
+        
+        # 5. Filtramos y armamos el Top para Cargas (CA) ordenado de mayor a menor
+        df_ca = resumen[resumen['TRANSPORTE'] == 'CA'].sort_values(by='Cantidad', ascending=False)
+        
+        # 6. Lo convertimos a la estructura que va a leer tu JavaScript
+        resultado_json = {
+            "Pasajeros": df_pa[['Articulo_Limpio', 'Cantidad']].to_dict(orient='records'),
+            "Cargas": df_ca[['Articulo_Limpio', 'Cantidad']].to_dict(orient='records')
+        }
+        
+        # 7. Guardamos el archivo JSON que alimenta tu web
+        with open("top_articulos.json", "w", encoding="utf-8") as f:
+            json.dump(resultado_json, f, ensure_ascii=False, indent=4)
+            
+        print("¡JSON de artículos generado con éxito para el Dashboard!")
+        return True
+
+    except Exception as e:
+        print(f"Error al procesar el top de artículos: {e}")
+        return False
 
 # =========================================================
 # CONFIGURACIÓN DE RUTAS Y FLASK
@@ -416,9 +452,6 @@ print()
 # PARÁMETROS DE FILTRADO (FECHAS)
 # =========================================================
 
-import sys
-from datetime import datetime
-
 fecha_desde = None
 fecha_hasta = None
 
@@ -429,6 +462,30 @@ if len(sys.argv) > 2:
     fecha_hasta = sys.argv[2]
 
 # =========================================================
+# NUEVA FUNCIÓN: INICIALIZACIÓN DE BASE DE DATOS
+# (La ponemos acá para tenerla lista antes del procesamiento)
+# =========================================================
+def inicializar_base_de_datos():
+        """Crea la tabla en Fiscalizacion.db si no existe con formato estándar."""
+        conn = sqlite3.connect("Fiscalizacion.db")
+        cursor = conn.cursor()
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS actas_fiscalizacion (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                fecha TEXT,
+                transporte TEXT,
+                articulo_original TEXT,
+                articulo_limpio TEXT,
+                archivo_origen TEXT
+            )
+        ''')
+        conn.commit()
+        conn.close()
+
+# Llamamos a la función inmediatamente para asegurarnos de que el archivo .db exista
+inicializar_base_de_datos()
+
+# =========================================================
 # MODO DE PROCESAMIENTO DE DOMINIOS
 # "A": 1 registro por fila (dominios en lista)
 # "B": 1 registro por dominio (expansión)
@@ -437,7 +494,7 @@ if len(sys.argv) > 2:
 modo = "A"  # Cambiar a "B" para el modo expansión
 
 subtitulo("CONFIGURACIÓN INICIAL")
-print(f"⚙️  MODO DE PROCESAMIENTO: {modo}")
+print(f"  MODO DE PROCESAMIENTO: {modo}")
 print(f"    [A] = 1 registro por fila (dominios en lista)")
 print(f"    [B] = 1 registro por dominio (expansión)\n")
 
