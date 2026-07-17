@@ -1,0 +1,607 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Informe Operativo GFTAU / CNRT</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --azul-oscuro: #292a4e;
+    --azul-medio: #47658e;
+    --gris-azulado: #7e7f93;
+    --gris-claro: #c9cfe6;
+    --dorado: #e6b85f;
+    --bg: #eef1f7;
+    --card: #ffffff;
+    --border: #d5dbe9;
+    --muted: #e3e8f2;
+    --radius: 12px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Lora', Georgia, serif;
+    background: var(--bg);
+    color: var(--azul-oscuro);
+    line-height: 1.5;
+    padding: 24px 0 48px;
+  }
+  .wrap { width: 100%; max-width: none; margin: 0 auto; padding: 0 32px; }
+
+  /* Header */
+  .header {
+    background: var(--azul-oscuro);
+    color: #fff;
+    border-radius: var(--radius);
+    padding: 28px 32px;
+    text-align: center;
+    box-shadow: 0 8px 24px rgba(41,42,78,.15);
+  }
+  .header .logos { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 8px; }
+  .header .logos .brand { font-size: 13px; letter-spacing: .5px; color: var(--gris-claro); text-align: left; }
+  .header h1 { font-size: 34px; font-weight: 700; letter-spacing: .5px; }
+  .header .sub { color: var(--dorado); font-weight: 600; margin-top: 4px; font-size: 14px; letter-spacing: 1px; text-transform: uppercase; }
+  .header .periodo { display: inline-flex; align-items: center; gap: 8px; margin-top: 14px; font-size: 14px; color: var(--gris-claro); background: rgba(255,255,255,.08); padding: 6px 14px; border-radius: 999px; }
+
+  /* Date filter */
+  .filter { background: var(--card); border-radius: calc(var(--radius) * 1.5); padding: 24px 28px; margin-top: 18px; border: 1px solid var(--border); box-shadow: 0 10px 24px rgba(41,42,78,.08); display: flex; flex-direction: column; align-items: center; text-align: center; width: 100%; }
+  .filter .mode { display: inline-flex; background: var(--muted); border-radius: 999px; padding: 6px; margin-bottom: 18px; }
+  .filter .mode button { border: none; background: transparent; font-family: inherit; font-size: 13px; font-weight: 600; color: var(--gris-azulado); padding: 10px 20px; border-radius: 999px; cursor: pointer; }
+  .filter .mode button.active { background: var(--azul-oscuro); color: #fff; }
+  .filter .row { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; justify-content: center; width: 100%; }
+  .field { display: flex; flex-direction: column; gap: 6px; width: 260px; max-width: 100%; position: relative; }
+  .field label { font-size: 11px; font-weight: 700; color: var(--gris-azulado); text-transform: uppercase; letter-spacing: .8px; }
+  .field select, .field input { font-family: inherit; font-size: 14px; padding: 12px 14px; border: 1px solid var(--border); border-radius: 14px; background: #fff; color: var(--azul-oscuro); width: 100%; padding-right: 40px; }
+  .field::after { content: ''; position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: var(--gris-azulado); pointer-events: none; }
+  .filter-action { display: flex; justify-content: center; width: 100%; margin-top: 18px; }
+  .filter-action button { display: inline-flex; align-items: center; justify-content: center; gap: 10px; border: none; background: var(--azul-oscuro); color: #fff; font-family: inherit; font-size: 13px; font-weight: 700; padding: 14px 24px; border-radius: 999px; cursor: pointer; text-transform: uppercase; letter-spacing: .8px; box-shadow: 0 8px 18px rgba(41,42,78,.18); }
+  .filter-action .btn-icon { font-size: 14px; }
+  .hidden { display: none !important; }
+
+  /* Tabs */
+  .tabs { display: flex; flex-wrap: wrap; gap: 8px; margin: 22px 0 18px; justify-content: center; }
+  .tabs button { font-family: inherit; font-size: 14px; font-weight: 600; padding: 12px 24px; border: 1px solid var(--border); background: var(--card); color: var(--azul-medio); border-radius: 18px; cursor: pointer; transition: all .15s; }
+  .tabs button:hover { border-color: var(--azul-medio); }
+  .tabs button.active { background: var(--azul-oscuro); color: #fff; border-color: var(--azul-oscuro); }
+
+  /* Cards / sections */
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; margin-bottom: 18px; box-shadow: 0 4px 12px rgba(41,42,78,.05); }
+  .section-title { display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 700; color: var(--azul-oscuro); margin-bottom: 16px; padding-bottom: 10px; border-bottom: 2px solid var(--muted); }
+  .section-title .dot { width: 10px; height: 10px; border-radius: 3px; background: var(--dorado); }
+
+  /* KPI cards */
+  .kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; width: 100%; }
+  .kpi { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 24px; }
+  .stacked-blocks { display: grid; grid-template-columns: 1fr; gap: 18px; width: 100%; }
+  .stacked-blocks .card { width: 100%; min-height: auto; }
+  .full-width-card { width: 100%; }
+  .kpi .label { font-size: 13px; color: var(--gris-azulado); font-weight: 600; text-transform: uppercase; letter-spacing: .5px; }
+  .kpi .value { font-size: 30px; font-weight: 700; color: var(--azul-oscuro); margin-top: 6px; }
+  .kpi .split { font-size: 12px; color: var(--gris-azulado); margin-top: 6px; }
+
+  /* Split bar */
+  .metric-block { margin-bottom: 18px; }
+  .metric-block h4 { font-size: 15px; font-weight: 600; margin-bottom: 10px; color: var(--azul-medio); }
+  .bar { display: flex; height: 30px; border-radius: 8px; overflow: hidden; background: var(--muted); }
+  .bar .seg { display: flex; align-items: center; justify-content: center; color: #fff; font-size: 12px; font-weight: 600; white-space: nowrap; }
+  .bar .seg.cargas { background: var(--azul-oscuro); }
+  .bar .seg.pasajeros { background: var(--azul-medio); }
+  .legend { display: flex; gap: 18px; margin-top: 8px; font-size: 12px; color: var(--gris-azulado); }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .legend .sw { width: 12px; height: 12px; border-radius: 3px; }
+
+  /* Motivos */
+  .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+  .motivo { margin-bottom: 12px; }
+  .motivo .top { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 4px; gap: 8px; }
+  .motivo .desc { color: var(--azul-oscuro); }
+  .motivo .num { color: var(--gris-azulado); font-weight: 600; white-space: nowrap; }
+  .track { height: 8px; background: var(--muted); border-radius: 999px; overflow: hidden; }
+  .track .fill { height: 100%; border-radius: 999px; }
+
+  /* Tables */
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { padding: 9px 10px; text-align: right; border-bottom: 1px solid var(--border); }
+  th:first-child, td:first-child { text-align: left; }
+  thead th { background: var(--azul-oscuro); color: #fff; font-weight: 600; }
+  thead th:first-child { border-top-left-radius: 8px; }
+  thead th:last-child { border-top-right-radius: 8px; }
+  tbody tr:nth-child(even) { background: #f6f8fc; }
+  tbody tr.total-row { font-weight: 700; background: var(--muted); }
+  .col-hi { background: rgba(230,184,95,.14); font-weight: 700; }
+  .table-scroll { overflow-x: auto; }
+  .note { font-size: 12px; color: var(--gris-azulado); margin-top: 10px; font-style: italic; }
+
+  /* Simple SVG bar chart container */
+  .chart { width: 100%; }
+
+  .footer { text-align: center; color: var(--gris-azulado); font-size: 12px; margin-top: 26px; }
+  .footer strong { color: var(--azul-oscuro); }
+
+  .group-title { font-size: 15px; font-weight: 700; color: var(--azul-medio); margin: 18px 0 8px; }
+
+  @media (max-width: 1200px) {
+    .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid-3 { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 720px) {
+    .kpis, .grid-2 { grid-template-columns: 1fr; }
+    .header h1 { font-size: 26px; }
+    .header .logos { flex-direction: column; gap: 6px; }
+    .filter { padding: 18px 18px; }
+    .field { width: 100%; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="logos">
+      <div class="brand">Secretaría de Transporte<br />Comisión Nacional de Regulación del Transporte</div>
+      <div class="brand" style="text-align:right">CNRT<br />GFTAU</div>
+    </div>
+    <h1>Resumen Operativo</h1>
+    <div class="sub">Análisis de resultados</div>
+    <div class="periodo"> <span id="periodoLabel">—</span></div>
+  </header>
+
+  <!-- DATE FILTER -->
+  <div class="filter">
+    <div class="mode">
+      <button id="modeMonth" class="active" onclick="setMode('month')">Por mes</button>
+      <button id="modeRange" onclick="setMode('range')">Por rango de fechas</button>
+    </div>
+    <div class="row" id="monthControls">
+      <div class="field">
+        <label for="mFrom">Desde</label>
+        <select id="mFrom" onchange="onFilterChange()"></select>
+      </div>
+      <div class="field">
+        <label for="mTo">Hasta</label>
+        <select id="mTo" onchange="onFilterChange()"></select>
+      </div>
+    </div>
+    <div class="row hidden" id="rangeControls">
+      <div class="field">
+        <label for="dFrom">Desde</label>
+        <input type="date" id="dFrom" onchange="onFilterChange()" />
+      </div>
+      <div class="field">
+        <label for="dTo">Hasta</label>
+        <input type="date" id="dTo" onchange="onFilterChange()" />
+      </div>
+    </div>
+    <div class="filter-action">
+      <button type="button" onclick="generarInforme()"><span class="btn-icon"></span>GENERAR RESULTADOS</button>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <nav class="tabs">
+    <button class="active" onclick="setTab(0)">1 · Resumen Operativo</button>
+    <button onclick="setTab(1)">2 · Incumplimientos vs. Gendarmería</button>
+    <button onclick="setTab(2)">3 · Indicadores</button>
+  </nav>
+
+  <!-- SECTION 1 -->
+  <section id="sec0"></section>
+  <!-- SECTION 2 -->
+  <section id="sec1" class="hidden"></section>
+  <!-- SECTION 3 -->
+  <section id="sec2" class="hidden"></section>
+
+  <div class="footer">
+    <strong>GFTAU · Gerencia de Fiscalización del Transporte Automotor</strong><br />
+    Comisión Nacional de Regulación del Transporte · Análisis de resultados
+  </div>
+</div>
+
+<script>
+// ============================================================================
+// DATOS (editá acá para nuevos períodos) — meses indexados 0=Ene .. 5=Jun 2026
+// ============================================================================
+// Espera que `Generador.py` inyecte un objeto global `window.REPORT_CONFIG` con la forma:
+let MONTHS = [];
+let N = 0;
+
+function loadCalendarConfig(){
+  const cfg = window.REPORT_CONFIG || {};
+  if(!Array.isArray(cfg.months) || cfg.months.length===0){
+    console.error("REPORT_CONFIG.months no definido o vacío. El calendario es dinámico y requiere datos del generador.");
+    return;
+  }
+  MONTHS = cfg.months.map(m=>({ key:m.key, label:m.label, short:m.short, start:m.start, end:m.end }));
+  N = MONTHS.length;
+  // configurar controles de rango (date inputs)
+  const dFrom = document.getElementById('dFrom');
+  const dTo = document.getElementById('dTo');
+  const min = cfg.minDate || MONTHS[0].start;
+  const max = cfg.maxDate || MONTHS[N-1].end;
+  if(dFrom && dTo){
+    dFrom.min = min; dTo.min = min;
+    dFrom.max = max; dTo.max = max;
+    const curFrom = (cfg.currentPeriod && cfg.currentPeriod.from) || min;
+    const curTo = (cfg.currentPeriod && cfg.currentPeriod.to) || max;
+    dFrom.value = curFrom; dTo.value = curTo;
+  }
+  // poblar select por mes
+  const mFrom = document.getElementById('mFrom');
+  const mTo = document.getElementById('mTo');
+  if(mFrom && mTo){
+    mFrom.innerHTML = '';
+    mTo.innerHTML = '';
+    MONTHS.forEach((m,i)=>{
+      mFrom.insertAdjacentHTML('beforeend', `<option value="${i}">${m.label}</option>`);
+      mTo.insertAdjacentHTML('beforeend', `<option value="${i}">${m.label}</option>`);
+    });
+    const curFrom = (cfg.currentPeriod && cfg.currentPeriod.from) || MONTHS[0].start;
+    const curTo = (cfg.currentPeriod && cfg.currentPeriod.to) || MONTHS[N-1].end;
+    mFrom.value = String(dateToIdx(curFrom,false));
+    mTo.value = String(dateToIdx(curTo,true));
+  }
+}
+
+// Permite aplicar configuración en caliente (útil si Python inyecta después de cargar la página)
+function applyReportConfig(cfg){
+  window.REPORT_CONFIG = cfg || {};
+  try{ loadCalendarConfig(); }catch(e){ console.error('Error aplicando REPORT_CONFIG',e); }
+  if(N>0) render();
+}
+
+// Estructura centralizada con datos que proveerá Generador.py (datos.json)
+let dashboardData = {
+  resumen: {},
+  monthly: { controles:{cargas:[],pasajeros:[]}, actas:{cargas:[],pasajeros:[]}, retenciones:{cargas:[],pasajeros:[]} },
+  control: { controles:[], alco:[], sust:[] },
+  controlDesglose: [],
+  motivos: { cargas:[], pasajeros:[] },
+  regiones: {}, // { AMBA: { cargas:{vc,actas,ret}, pasajeros:{...} }, ... }
+  gendarmeria: { cnrt:[], gend:[], categorias:[] },
+  indicadoresGrupos: [],
+  reso284: []
+};
+
+// Cargar dashboardData desde JSON generado por Python (datos.json) o desde window.DASHBOARD_JSON
+async function loadDashboardData(){
+  const injected = window.DASHBOARD_JSON || null;
+  let src = injected;
+  if(!src){
+    try{
+      const r = await fetch('datos.json', {cache:'no-store'});
+      if(r.ok) src = await r.json();
+    }catch(e){ console.warn('No se pudo cargar datos.json:', e); }
+  }
+  if(!src){
+    console.warn('dashboardData no disponible. El frontend quedará con placeholders.');
+    return;
+  }
+  // Mapear estructura esperada desde el JSON de exportación
+  dashboardData.resumen = src.resumen || src.metadata || {};
+  dashboardData.regiones = src.regiones || {};
+  // Motivos principales si están presentes (estructura generada por exportador)
+  const pi = src.principal_infracciones || src.principal_infracciones || {};
+  dashboardData.motivos.cargas = (pi.cargas && pi.cargas.motivos) ? pi.cargas.motivos.map(m=>({desc:m.nombre,pct:m.porcentaje,count:m.cantidad||0})) : [];
+  dashboardData.motivos.pasajeros = (pi.pasajeros && pi.pasajeros.motivos) ? pi.pasajeros.motivos.map(m=>({desc:m.nombre,pct:m.porcentaje,count:m.cantidad||0})) : [];
+  // Indicadores generales: mapear desde resultados.metricas si existe
+  if(src.metricas) dashboardData.indicadores = src.metricas;
+  // Resumen principal
+  if(src.resumen){ dashboardData.resumen = {...dashboardData.resumen, ...src.resumen}; }
+  // monthly series: si el exportador no las genera, quedan arrays vacíos (placeholder)
+  if(src.monthly){ dashboardData.monthly = src.monthly; }
+}
+
+function applyDashboardJson(json){
+  window.DASHBOARD_JSON = json;
+  loadDashboardData().then(()=>{ if(N>0) render(); });
+}
+
+async function fetchDashboardData(desde, hasta){
+  const payload = {};
+  if(desde) payload.desde = desde;
+  if(hasta) payload.hasta = hasta;
+
+  try{
+    const response = await fetch('/api/procesar', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    const json = await response.json();
+    if(!response.ok || json.status === 'error'){
+      console.error('Error al procesar el informe:', json.message || response.statusText);
+      alert(json.message || 'No se pudieron obtener los datos. Revisá el rango y volvé a intentar.');
+      return;
+    }
+
+    applyDashboardJson(json);
+  }catch(e){
+    console.error('Error al solicitar datos al backend:', e);
+    alert('No se pudieron obtener los datos del servidor. Verificá que el backend esté activo y volvé a intentar.');
+  }
+}
+
+function getSelectedDateRange(){
+  if(mode === 'range'){
+    const dFrom = document.getElementById('dFrom');
+    const dTo = document.getElementById('dTo');
+    return {
+      desde: dFrom ? dFrom.value : '',
+      hasta: dTo ? dTo.value : ''
+    };
+  }
+  const mFrom = document.getElementById('mFrom');
+  const mTo = document.getElementById('mTo');
+  const fromIdx = mFrom ? parseInt(mFrom.value, 10) : 0;
+  const toIdx = mTo ? parseInt(mTo.value, 10) : (N - 1);
+  return {
+    desde: (MONTHS[fromIdx] && MONTHS[fromIdx].start) || '',
+    hasta: (MONTHS[toIdx] && MONTHS[toIdx].end) || ''
+  };
+}
+
+// ============================================================================
+// HELPERS
+// ============================================================================
+const fmt = n => new Intl.NumberFormat("es-AR").format(Math.round(n));
+const clamp = (s,e) => { s=Math.max(0,Math.min(s,N-1)); e=Math.max(0,Math.min(e,N-1)); if(s>e)[s,e]=[e,s]; return [s,e]; };
+const sumR = (a,s,e) => { let t=0; for(let i=s;i<=e;i++) t+=a[i]||0; return t; };
+const avgR = (a,s,e) => { const n=e-s+1; return n>0? sumR(a,s,e)/n : 0; };
+const metricR = (m,s,e) => { const c=sumR(m.cargas,s,e), p=sumR(m.pasajeros,s,e); return {cargas:c,pasajeros:p,total:c+p}; };
+const aggInd = (it,s,e) => it.tipo==="cantidad" ? sumR(it.v,s,e) : avgR(it.v,s,e);
+const fmtInd = (val,tipo) => tipo==="porcentaje" ? val.toFixed(2)+"%" : fmt(val);
+
+// Date -> month index
+function dateToIdx(dateStr, isEnd) {
+  if(!dateStr) return isEnd? N-1 : 0;
+  const d = new Date(dateStr+"T00:00:00");
+  for(let i=0;i<N;i++){
+    const s=new Date(MONTHS[i].start+"T00:00:00"), e=new Date(MONTHS[i].end+"T00:00:00");
+    if(d>=s && d<=e) return i;
+  }
+  // clamp to nearest
+  const first=new Date(MONTHS[0].start), last=new Date(MONTHS[N-1].end);
+  if(d<first) return 0;
+  if(d>last) return N-1;
+  return isEnd? N-1 : 0;
+}
+
+// ============================================================================
+// STATE
+// ============================================================================
+let mode = "month";
+let tab = 0;
+
+function currentRange() {
+  if(mode==="month") {
+    const mFromEl = document.getElementById("mFrom"), mToEl = document.getElementById("mTo");
+    if(!mFromEl || !mToEl) return [0, Math.max(0, N-1)];
+    return clamp(parseInt(mFromEl.value,10), parseInt(mToEl.value,10));
+  } else {
+    const dFromEl = document.getElementById("dFrom"), dToEl = document.getElementById("dTo");
+    if(!dFromEl || !dToEl) return [0, Math.max(0, N-1)];
+    return clamp(dateToIdx(dFromEl.value,false), dateToIdx(dToEl.value,true));
+  }
+}
+function periodoText(s,e){
+  if(N===0) return '—';
+  if(s<0||e<0||s>=N||e>=N) return '—';
+  return s===e ? MONTHS[s].label : MONTHS[s].label + " – " + MONTHS[e].label;
+}
+
+// ============================================================================
+// UI CONTROL
+// ============================================================================
+function setMode(m){
+  mode=m;
+  document.getElementById("modeMonth").classList.toggle("active", m==="month");
+  document.getElementById("modeRange").classList.toggle("active", m==="range");
+  document.getElementById("monthControls").classList.toggle("hidden", m!="month");
+  document.getElementById("rangeControls").classList.toggle("hidden", m!="range");
+  render();
+}
+function setTab(t){
+  tab=t;
+  document.querySelectorAll(".tabs button").forEach((b,i)=>b.classList.toggle("active", i===t));
+  [0,1,2].forEach(i=>document.getElementById("sec"+i).classList.toggle("hidden", i!==t));
+}
+function onFilterChange(){ /* dejamos el render intermedio para el botón */ }
+async function generarInforme(){
+  const { desde, hasta } = getSelectedDateRange();
+  await fetchDashboardData(desde, hasta);
+}
+
+// ============================================================================
+// RENDERERS
+// ============================================================================
+function splitBar(m){
+  const cp = m.total? (m.cargas/m.total*100):50;
+  const pp = 100-cp;
+  return `<div class="bar">
+    <div class="seg cargas" style="width:${cp}%">${cp>12?fmt(m.cargas):''}</div>
+    <div class="seg pasajeros" style="width:${pp}%">${pp>12?fmt(m.pasajeros):''}</div>
+  </div>
+  <div class="legend">
+    <span><span class="sw" style="background:var(--azul-oscuro)"></span>Cargas: ${fmt(m.cargas)}</span>
+    <span><span class="sw" style="background:var(--azul-medio)"></span>Pasajeros: ${fmt(m.pasajeros)}</span>
+  </div>`;
+}
+
+function motivoList(list, color){
+  const max = Math.max(...list.map(x=>x.pct));
+  return list.map(m=>`
+    <div class="motivo">
+      <div class="top"><span class="desc">${m.desc}</span><span class="num">${m.pct}% · ${fmt(m.count)}</span></div>
+      <div class="track"><div class="fill" style="width:${(m.pct/max*100)}%;background:${color}"></div></div>
+    </div>`).join("");
+}
+
+function renderSec0(s,e){
+  const monthlyControles = (dashboardData.monthly && dashboardData.monthly.controles) ? dashboardData.monthly.controles : {cargas: new Array(N).fill(0), pasajeros: new Array(N).fill(0)};
+  const monthlyActas = (dashboardData.monthly && dashboardData.monthly.actas) ? dashboardData.monthly.actas : {cargas: new Array(N).fill(0), pasajeros: new Array(N).fill(0)};
+  const monthlyRet = (dashboardData.monthly && dashboardData.monthly.retenciones) ? dashboardData.monthly.retenciones : {cargas: new Array(N).fill(0), pasajeros: new Array(N).fill(0)};
+  const c = metricR(monthlyControles,s,e);
+  const a = metricR(monthlyActas,s,e);
+  const r = metricR(monthlyRet,s,e);
+  const ctl = dashboardData.control || {controles:new Array(N).fill(0), alco:new Array(N).fill(0), sust:new Array(N).fill(0)};
+  const totalControl = sumR(ctl.controles,s,e);
+  const alco = sumR(ctl.alco,s,e), sust = sumR(ctl.sust,s,e);
+  const withCount = (list,total)=> (Array.isArray(list)? list : []).map(m=>({...m,count:Math.round((m.pct||0)/100*total)}));
+  const mc = withCount(dashboardData.motivos.cargas || [], a.cargas);
+  const mp = withCount(dashboardData.motivos.pasajeros || [], a.pasajeros);
+
+  const tR = { vc:0,actas:0,ret:0,pvc:0,pactas:0,pret:0 };
+  const orden = ["AMBA","CEN","CUY","NEA","NOA","COSTA","PAT"];
+  const rows = orden.map(code=>{
+    const rg = (dashboardData.regiones && dashboardData.regiones[code]) || {cargas:{vc:0,actas:0,ret:0}, pasajeros:{vc:0,actas:0,ret:0}};
+    tR.vc+=rg.cargas.vc||0; tR.actas+=rg.cargas.actas||0; tR.ret+=rg.cargas.ret||0;
+    tR.pvc+=rg.pasajeros.vc||0; tR.pactas+=rg.pasajeros.actas||0; tR.pret+=rg.pasajeros.ret||0;
+    return `<tr><td>${code}</td>
+      <td>${fmt(rg.cargas.vc||0)}</td><td>${fmt(rg.cargas.actas||0)}</td><td>${fmt(rg.cargas.ret||0)}</td>
+      <td>${fmt(rg.pasajeros.vc||0)}</td><td>${fmt(rg.pasajeros.actas||0)}</td><td>${fmt(rg.pasajeros.ret||0)}</td></tr>`;
+  }).join("");
+
+  document.getElementById("sec0").innerHTML = `
+    <div class="kpis">
+      <div class="kpi"><div class="label">Vehículos Controlados</div><div class="value">${fmt(c.total)}</div><div class="split">Cargas ${fmt(c.cargas)} · Pasajeros ${fmt(c.pasajeros)}</div></div>
+      <div class="kpi"><div class="label">Actas de Comprobación</div><div class="value">${fmt(a.total)}</div><div class="split">Cargas ${fmt(a.cargas)} · Pasajeros ${fmt(a.pasajeros)}</div></div>
+      <div class="kpi"><div class="label">Retenciones</div><div class="value">${fmt(r.total)}</div><div class="split">Cargas ${fmt(r.cargas)} · Pasajeros ${fmt(r.pasajeros)}</div></div>
+      <div class="kpi"><div class="label">Control de Conductores</div><div class="value">${fmt(totalControl)}</div><div class="split">Alcoholemia + / Sustancias +: ${fmt(alco)} · ${fmt(sust)}</div></div>
+    </div>
+
+    <div class="stacked-blocks">
+      <div class="card">
+        <div class="section-title"><span class="dot"></span>Vehículos Controlados / Actas / Retenciones</div>
+        <div class="metric-block"><h4>Vehículos Controlados</h4>${splitBar(c)}</div>
+        <div class="metric-block"><h4>Actas de Comprobación</h4>${splitBar(a)}</div>
+        <div class="metric-block"><h4>Retenciones</h4>${splitBar(r)}</div>
+      </div>
+      <div class="card">
+        <div class="section-title"><span class="dot"></span>Principales Motivos de Infracción</div>
+        <div class="grid-2">
+          <div><h4 style="color:var(--azul-oscuro);margin-bottom:12px">Cargas · ${fmt(a.cargas)} actas</h4>${motivoList(mc,'var(--azul-oscuro)')}</div>
+          <div><h4 style="color:var(--azul-medio);margin-bottom:12px">Pasajeros · ${fmt(a.pasajeros)} actas</h4>${motivoList(mp,'var(--azul-medio)')}</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="section-title"><span class="dot"></span>Resumen por Región</div>
+        <div class="table-scroll">
+        <table>
+          <thead><tr><th rowspan="2">Región</th><th colspan="3">Cargas</th><th colspan="3">Pasajeros</th></tr>
+          <tr><th>Controlados</th><th>Actas</th><th>Ret.</th><th>Controlados</th><th>Actas</th><th>Ret.</th></tr></thead>
+          <tbody>${rows}
+            <tr class="total-row"><td>TOTAL</td><td>${fmt(tR.vc)}</td><td>${fmt(tR.actas)}</td><td>${fmt(tR.ret)}</td><td>${fmt(tR.pvc)}</td><td>${fmt(tR.pactas)}</td><td>${fmt(tR.pret)}</td></tr>
+          </tbody>
+        </table></div>
+        <p class="note">El resumen por región corresponde al acumulado del padrón. Los valores superiores se recalculan según el intervalo elegido.</p>
+      </div>
+    </div>
+  `;
+}
+
+function svgBarChart(serie){
+  if(!serie || !serie.length) return "";
+  const w=Math.max(360, serie.length*90), h=220, pad=30, bw=26, gap=14;
+  const max=Math.max(...serie.flatMap(d=>[d.cnrt||0,d.gendarmeria||0]))*1.1||1;
+  const scale=v=>(h-pad-20)-(v/max*(h-pad-30));
+  let bars="";
+  serie.forEach((d,i)=>{
+    const x=pad+i*90+20;
+    const y1=scale(d.cnrt||0), y2=scale(d.gendarmeria||0);
+    bars+=`<rect x="${x}" y="${y1}" width="${bw}" height="${h-pad-20-y1}" fill="var(--azul-oscuro)" rx="3"></rect>`;
+    bars+=`<rect x="${x+bw+6}" y="${y2}" width="${bw}" height="${h-pad-20-y2}" fill="var(--dorado)" rx="3"></rect>`;
+    bars+=`<text x="${x+bw}" y="${h-6}" font-size="12" fill="#7e7f93" text-anchor="middle">${d.mes||''}</text>`;
+    bars+=`<text x="${x+bw/2}" y="${y1-4}" font-size="10" fill="#292a4e" text-anchor="middle">${d.cnrt||0}</text>`;
+    bars+=`<text x="${x+bw+6+bw/2}" y="${y2-4}" font-size="10" fill="#47658e" text-anchor="middle">${d.gendarmeria||0}</text>`;
+  });
+  return `<svg class="chart" viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid meet" style="max-width:100%">${bars}</svg>`;
+}
+
+function renderSec1(s,e){
+  const serie=[];
+  const gend = dashboardData.gendarmeria || {cnrt:[], gend:[], categorias:[]};
+  for(let i=s;i<=e;i++) serie.push({mes: (MONTHS[i]&&MONTHS[i].short)||'', cnrt: gend.cnrt ? (gend.cnrt[i]||0) : 0, gendarmeria: gend.gend ? (gend.gend[i]||0) : 0});
+  const totC=sumR(gend.cnrt||[],s,e), totG=sumR(gend.gend||[],s,e);
+  const catRows=(gend.categorias||[]).map(c=>{
+    const dif=(c.cnrt||0)-(c.gendarmeria||0);
+    return `<tr><td>${c.tipo}</td><td>${fmt(c.cnrt||0)}</td><td>${fmt(c.gendarmeria||0)}</td><td style="color:${dif>=0?'var(--azul-medio)':'#b04a4a'}">${dif>=0?'+':''}${fmt(dif)}</td></tr>`;
+  }).join("");
+  document.getElementById("sec1").innerHTML = `
+    <div class="kpis">
+      <div class="kpi"><div class="label">Incumplimientos CNRT</div><div class="value">${fmt(totC)}</div></div>
+      <div class="kpi"><div class="label">Incumplimientos Gendarmería</div><div class="value">${fmt(totG)}</div></div>
+    </div>
+    <div class="card">
+      <div class="section-title"><span class="dot"></span>Incumplimientos detectados por mes — CNRT vs. Gendarmería</div>
+      ${svgBarChart(serie)}
+      <div class="legend" style="margin-top:12px">
+        <span><span class="sw" style="background:var(--azul-oscuro)"></span>CNRT</span>
+        <span><span class="sw" style="background:var(--dorado)"></span>Gendarmería Nacional</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="section-title"><span class="dot"></span>Comparativa por tipo de incumplimiento (período)</div>
+      <div class="table-scroll">
+      <table>
+        <thead><tr><th>Tipo de incumplimiento</th><th>CNRT</th><th>Gendarmería</th><th>Diferencia</th></tr></thead>
+        <tbody>${catRows}</tbody>
+      </table></div>
+      <p class="note">Datos de muestra editables. Reemplazá los valores en el bloque <strong>gendarmeria</strong> del script.</p>
+    </div>
+  `;
+}
+
+function indTable(items,s,e,multi){
+  const rows = (items||[]).map(it=>{
+    const cells=[]; for(let i=s;i<=e;i++) cells.push(`<td>${fmtInd((it.v&&it.v[i])||0,it.tipo)}</td>`);
+    return `<tr><td style="font-family:monospace;font-size:11px;color:var(--gris-azulado)">${it.nom||it.code||''}</td><td>${it.nombre||it.label||''}</td>${cells.join("")}<td class="col-hi">${fmtInd(aggInd(it,s,e),it.tipo)}</td></tr>`;
+  }).join("");
+  const monthHeaders=[]; for(let i=s;i<=e;i++) monthHeaders.push(`<th>${(MONTHS[i]&&MONTHS[i].short)||''}</th>`);
+  const aggLabel = multi ? "Período" : ((MONTHS[s]&&MONTHS[s].short)||'');
+  return `<div class="table-scroll"><table>
+    <thead><tr><th>Código</th><th>Indicador</th>${monthHeaders.join("")}<th class="col-hi" style="background:#b5921f">${aggLabel}</th></tr></thead>
+    <tbody>${rows}</tbody>
+  </table></div>`;
+}
+
+function renderSec2(s,e){
+  const multi = s!==e;
+  let groups = (dashboardData.indicadoresGrupos||[]).map(g=>`<div class="group-title">${g.nombre}</div>${indTable(g.items,s,e,multi)}`).join("");
+  document.getElementById("sec2").innerHTML = `
+    <div class="card">
+      <div class="section-title"><span class="dot"></span>Indicadores del Sistema de Transporte Automotor</div>
+      ${groups}
+      <p class="note">${multi ? "La columna destacada muestra la suma acumulada (cantidades) o el promedio (porcentajes) del intervalo." : "La columna destacada muestra el valor del mes seleccionado."}</p>
+    </div>
+    <div class="card">
+      <div class="section-title"><span class="dot"></span>RESO 284/2009 — Viajes Ocasionales (Colegios)</div>
+      ${indTable(dashboardData.reso284||[],s,e,multi)}
+      <p class="note">Datos de muestra editables. Reemplazá los valores en el bloque <strong>reso284</strong> del script.</p>
+    </div>
+  `;
+}
+
+// ============================================================================
+// MAIN RENDER
+// ============================================================================
+function render(){
+  const [s,e]=currentRange();
+  document.getElementById("periodoLabel").textContent = periodoText(s,e);
+  renderSec0(s,e);
+  renderSec1(s,e);
+  renderSec2(s,e);
+}
+
+// INIT
+(function init(){
+  // Inicialización: intentar cargar configuración que haya sido inyectada por Python
+  try{ loadCalendarConfig(); }catch(e){ console.error('loadCalendarConfig error',e); }
+  if(N>0){ render(); }
+})();
+</script>
+</body>
+</html>

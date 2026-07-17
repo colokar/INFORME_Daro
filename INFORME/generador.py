@@ -1007,7 +1007,7 @@ if regionales_en_registros:
 else:
     print("    ✗ Ninguna región detectada")
 
-print(f"\n🚗 Tipos de transporte presentes:")
+print(f"\n Tipos de transporte presentes:")
 if transportes_en_registros:
     for transp in transportes_en_registros:
         count = sum(1 for r in registros if r.get('transporte') == transp)
@@ -1062,7 +1062,7 @@ if regiones_no_mapeadas:
         count = len([r for r in registros if r.get('regional') == reg])
         print(f"     {reg:20} → {count:,} registros ignorados")
     print()
-
+ 
 # =========================================================
 # RESUMEN FINAL
 # =========================================================
