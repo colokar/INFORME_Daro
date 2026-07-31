@@ -107,7 +107,7 @@ class Orquestador:
             print(f" • Unidades con Retención Física: {metricas.get('total_retenciones', 0):,}")
             print(f" • Controles de Conducción Positivos (Alcoholemia/Sustancias): {metricas.get('incidencias_alcoholemia', 0) + metricas.get('incidencias_sustancias', 0):,}")
             
-            print(f"\n ⚠️ SECCIÓN INCUMPLIMIENTOS / AUDITORÍA:")
+            print(f"\n  SECCIÓN INCUMPLIMIENTOS / AUDITORÍA:")
             print(f"   - Registros de Gendarmería / Confección aislados: {metricas.get('gendarmeria_confeccion_apartados', 0):,}")
             
             if regiones_stats:

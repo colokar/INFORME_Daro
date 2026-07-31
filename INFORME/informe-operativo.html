@@ -252,17 +252,160 @@ function applyReportConfig(cfg){
   if(N>0) render();
 }
 
-// Estructura centralizada con datos que proveerá Generador.py (datos.json)
+// Estructura centralizada con datos y arreglos de indicadores cargados por defecto
+const indicadoresGruposData = [
+  {
+    nombre: "Totales — Pasajeros y Cargas (Nac. e Int.)",
+    items: [
+      { nom: "CNRT-GFTAU-NAC-01", nombre: "Controles de pasajeros y cargas nacionales e internacionales generales y peligrosas", tipo: "cantidad", v: [0, 0, 0, 0, 0, 0] },
+      { nom: "CNRT-GFTAU-NAC-02", nombre: "Actas de pasajeros y cargas nacionales e internacionales generales y peligrosas", tipo: "cantidad", v: [0, 0, 0, 0, 0, 0] },
+      { nom: "CNRT-GFTAU-NAC-03", nombre: "Retenciones a vehículos de pasajeros y cargas nacionales e internacionales generales y peligrosas", tipo: "cantidad", v: [0, 0, 0, 0, 0, 0] },
+      { nom: "CNRT-GFTAU-NAC-04", nombre: "Porcentaje de actas sobre vehículos controlados de pasajeros y cargas nacionales e internacionales generales y peligrosas", tipo: "porcentaje", v: [0, 0, 0, 0, 0, 0] },
+      { nom: "CNRT-GFTAU-NAC-05", nombre: "Porcentaje de retenciones sobre vehículos controlados de pasajeros y cargas nacionales e internacionales generales y peligrosas", tipo: "porcentaje", v: [0, 0, 0, 0, 0, 0] },
+      { nom: "CNRT-GFTAU-NAC-06", nombre: "Porcentaje de retenciones de vehículos sobre actas de pasajeros y cargas nacionales e internacionales generales y peligrosas", tipo: "porcentaje", v: [0, 0, 0, 0, 0, 0] }
+    ]
+  },
+  {
+    nombre: "Pasajeros (Nac. e Int.)",
+    items: [
+      { nom: "CNRT-GFTAU-PAS-01", nombre: "Controles de vehículos de pasajeros nacionales e internacionales", tipo: "cantidad", v: [0, 0, 0, 0, 0, 0] },
+      { nom: "CNRT-GFTAU-PAS-02", nombre: "Actas de pasajeros nacionales e internacionales", tipo: "cantidad", v: [0, 0, 0, 0, 0, 0] },
+      { nom: "CNRT-GFTAU-PAS-03", nombre: "Retenciones de vehículos de pasajeros nacionales e internacionales", tipo: "cantidad", v: [0, 0, 0, 0, 0, 0] },
+      { nom: "CNRT-GFTAU-PAS-04", nombre: "Porcentaje de actas sobre vehículos controlados de pasajeros nacionales e internacionales", tipo: "porcentaje", v: [0, 0, 0, 0, 0, 0] },
+      { nom: "CNRT-GFTAU-PAS-05", nombre: "Porcentaje de retenciones sobre vehículos controlados de pasajeros nacionales e internacionales", tipo: "porcentaje", v: [0, 0, 0, 0, 0, 0] },
+      { nom: "CNRT-GFTAU-PAS-06", nombre: "Porcentaje de retenciones sobre actas de pasajeros nacionales e internacionales", tipo: "porcentaje", v: [0, 0, 0, 0, 0, 0] }
+    ]
+  },
+  {
+    nombre: "Cargas (Nac. e Int., Grales. y Peligrosas)",
+    items: [
+      { nom: "CNRT-GFTAU-C-01", nombre: "Controles de vehículos de cargas nacionales e internacionales generales y peligrosas", tipo: "cantidad", v: [0, 0, 0, 0, 0, 0] },
+      { nom: "CNRT-GFTAU-C-02", nombre: "Actas a vehículos de cargas nacionales e internacionales generales y peligrosas", tipo: "cantidad", v: [0, 0, 0, 0, 0, 0] },
+      { nom: "CNRT-GFTAU-C-03", nombre: "Retenciones de cargas nacionales e internacionales generales y peligrosas", tipo: "cantidad", v: [0, 0, 0, 0, 0, 0] },
+      { nom: "CNRT-GFTAU-C-04", nombre: "Porcentaje de actas sobre controlados de cargas nacionales e internacionales generales y peligrosas", tipo: "porcentaje", v: [0, 0, 0, 0, 0, 0] },
+      { nom: "CNRT-GFTAU-C-05", nombre: "Porcentaje de retenciones sobre controlados de cargas nacionales e internacionales generales y peligrosas", tipo: "porcentaje", v: [0, 0, 0, 0, 0, 0] },
+      { nom: "CNRT-GFTAU-C-06", nombre: "Porcentaje de retenciones sobre actas de cargas nacionales e internacionales generales y peligrosas", tipo: "porcentaje", v: [0, 0, 0, 0, 0, 0] }
+    ]
+  },
+  {
+    nombre: "Pasajeros Nacionales",
+    items: [
+      { nom: "CNRT-GFTAU-PAS-N-01", nombre: "Controles a vehículos de pasajeros nacionales", tipo: "cantidad", v: [0, 0, 0, 0, 0, 0] },
+      { nom: "CNRT-GFTAU-PAS-N-02", nombre: "Actas de pasajeros nacionales", tipo: "cantidad", v: [0, 0, 0, 0, 0, 0] },
+      { nom: "CNRT-GFTAU-PAS-N-03", nombre: "Retenciones de vehículos de pasajeros nacionales", tipo: "cantidad", v: [0, 0, 0, 0, 0, 0] },
+      { nom: "CNRT-GFTAU-PAS-N-04", nombre: "Porcentaje de actas sobre vehículos controlados de pasajeros nacionales", tipo: "porcentaje", v: [0, 0, 0, 0, 0, 0] },
+      { nom: "CNRT-GFTAU-PAS-N-05", nombre: "Porcentaje de retenciones sobre vehículos controlados de pasajeros nacionales", tipo: "porcentaje", v: [0, 0, 0, 0, 0, 0] },
+      { nom: "CNRT-GFTAU-PAS-N-06", nombre: "Porcentaje de retenciones sobre actas de pasajeros nacionales", tipo: "porcentaje", v: [0, 0, 0, 0, 0, 0] }
+    ]
+  },
+  {
+    nombre: "Pasajeros Internacionales",
+    items: [
+      { nom: "CNRT-GFTAU-PAS-I-01", nombre: "Controles vehículos de pasajeros internacionales", tipo: "cantidad", v: [0, 0, 0, 0, 0, 0] },
+      { nom: "CNRT-GFTAU-PAS-I-02", nombre: "Actas de pasajeros internacionales", tipo: "cantidad", v: [0, 0, 0, 0, 0, 0] },
+      { nom: "CNRT-GFTAU-PAS-I-03", nombre: "Retenciones de vehículos pasajeros internacionales", tipo: "cantidad", v: [0, 0, 0, 0, 0, 0] },
+      { nom: "CNRT-GFTAU-PAS-I-04", nombre: "Porcentaje de actas sobre vehículos controlados de pasajeros internacionales", tipo: "porcentaje", v: [0, 0, 0, 0, 0, 0] },
+      { nom: "CNRT-GFTAU-PAS-I-05", nombre: "Porcentaje de retenciones sobre vehículos controlados de pasajeros internacionales", tipo: "porcentaje", v: [0, 0, 0, 0, 0, 0] },
+      { nom: "CNRT-GFTAU-PAS-I-06", nombre: "Porcentaje de retenciones sobre actas de pasajeros internacionales", tipo: "porcentaje", v: [0, 0, 0, 0, 0, 0] }
+    ]
+  },
+  {
+    nombre: "Cargas Nacionales (Grales. y Peligrosas)",
+    items: [
+      { nom: "CNRT-GFTAU-CN-01", nombre: "Controles de vehículos de cargas nacionales generales y peligrosas", tipo: "cantidad", v: [0, 0, 0, 0, 0, 0] },
+      { nom: "CNRT-GFTAU-CN-02", nombre: "Actas a vehículos de cargas nacionales generales y peligrosas", tipo: "cantidad", v: [0, 0, 0, 0, 0, 0] },
+      { nom: "CNRT-GFTAU-CN-03", nombre: "Retenciones de cargas nacionales generales y peligrosas", tipo: "cantidad", v: [0, 0, 0, 0, 0, 0] },
+      { nom: "CNRT-GFTAU-CN-04", nombre: "Porcentaje de actas sobre controlados de cargas nacionales generales y peligrosas", tipo: "porcentaje", v: [0, 0, 0, 0, 0, 0] },
+      { nom: "CNRT-GFTAU-CN-05", nombre: "Porcentaje de retenciones sobre controlados de cargas nacionales generales y peligrosas", tipo: "porcentaje", v: [0, 0, 0, 0, 0, 0] },
+      { nom: "CNRT-GFTAU-CN-06", nombre: "Porcentaje de retenciones sobre actas de cargas nacionales generales y peligrosas", tipo: "porcentaje", v: [0, 0, 0, 0, 0, 0] }
+    ]
+  },
+  {
+    nombre: "Cargas Nacionales Generales",
+    items: [
+      { nom: "CNRT-GFTAU-CNG-01", nombre: "Controles de cargas nacionales generales", tipo: "cantidad", v: [0, 0, 0, 0, 0, 0] },
+      { nom: "CNRT-GFTAU-CNG-02", nombre: "Actas de cargas nacionales generales", tipo: "cantidad", v: [0, 0, 0, 0, 0, 0] },
+      { nom: "CNRT-GFTAU-CNG-03", nombre: "Retenciones de cargas nacionales generales", tipo: "cantidad", v: [0, 0, 0, 0, 0, 0] },
+      { nom: "CNRT-GFTAU-CNG-04", nombre: "Porcentaje de actas sobre controlados de cargas nacionales generales", tipo: "porcentaje", v: [0, 0, 0, 0, 0, 0] },
+      { nom: "CNRT-GFTAU-CNG-05", nombre: "Porcentaje de retenciones sobre controlados de cargas nacionales generales", tipo: "porcentaje", v: [0, 0, 0, 0, 0, 0] },
+      { nom: "CNRT-GFTAU-CNG-06", nombre: "Porcentaje de retenciones sobre actas de cargas nacionales generales", tipo: "porcentaje", v: [0, 0, 0, 0, 0, 0] }
+    ]
+  },
+  {
+    nombre: "Cargas Nacionales Peligrosas",
+    items: [
+      { nom: "CNRT-GFTAU-CNP-01", nombre: "Controles de cargas nacionales peligrosas", tipo: "cantidad", v: [0, 0, 0, 0, 0, 0] },
+      { nom: "CNRT-GFTAU-CNP-02", nombre: "Actas de cargas nacionales peligrosas", tipo: "cantidad", v: [0, 0, 0, 0, 0, 0] },
+      { nom: "CNRT-GFTAU-CNP-03", nombre: "Retenciones de cargas nacionales peligrosas", tipo: "cantidad", v: [0, 0, 0, 0, 0, 0] },
+      { nom: "CNRT-GFTAU-CNP-04", nombre: "Porcentaje de actas sobre controlados de cargas nacionales peligrosas", tipo: "porcentaje", v: [0, 0, 0, 0, 0, 0] },
+      { nom: "CNRT-GFTAU-CNP-05", nombre: "Porcentaje de retenciones sobre controlados de cargas nacionales peligrosas", tipo: "porcentaje", v: [0, 0, 0, 0, 0, 0] },
+      { nom: "CNRT-GFTAU-CNP-06", nombre: "Porcentaje de retenciones sobre actas de cargas nacionales peligrosas", tipo: "porcentaje", v: [0, 0, 0, 0, 0, 0] }
+    ]
+  },
+  {
+    nombre: "Cargas Internacionales (Grales. y Peligrosas)",
+    items: [
+      { nom: "CNRT-GFTAU-CI-01", nombre: "Controles de cargas internacionales generales y peligrosas", tipo: "cantidad", v: [0, 0, 0, 0, 0, 0] },
+      { nom: "CNRT-GFTAU-CI-02", nombre: "Actas de cargas internacionales generales y peligrosas", tipo: "cantidad", v: [0, 0, 0, 0, 0, 0] },
+      { nom: "CNRT-GFTAU-CI-03", nombre: "Retenciones de cargas internacionales generales y peligrosas", tipo: "cantidad", v: [0, 0, 0, 0, 0, 0] },
+      { nom: "CNRT-GFTAU-CI-04", nombre: "Porcentaje de actas sobre controlados de cargas internacionales generales y peligrosas", tipo: "porcentaje", v: [0, 0, 0, 0, 0, 0] },
+      { nom: "CNRT-GFTAU-CI-05", nombre: "Porcentaje de retenciones sobre controlados de cargas internacionales generales y peligrosas", tipo: "porcentaje", v: [0, 0, 0, 0, 0, 0] },
+      { nom: "CNRT-GFTAU-CI-06", nombre: "Porcentaje de retenciones sobre actas de cargas internacionales generales y peligrosas", tipo: "porcentaje", v: [0, 0, 0, 0, 0, 0] }
+    ]
+  },
+  {
+    nombre: "Cargas Internacionales Peligrosas",
+    items: [
+      { nom: "CNRT-GFTAU-CIP-01", nombre: "Controles de cargas internacionales peligrosas", tipo: "cantidad", v: [0, 0, 0, 0, 0, 0] },
+      { nom: "CNRT-GFTAU-CIP-02", nombre: "Actas de cargas internacionales peligrosas", tipo: "cantidad", v: [0, 0, 0, 0, 0, 0] },
+      { nom: "CNRT-GFTAU-CIP-03", nombre: "Retenciones de cargas internacionales peligrosas", tipo: "cantidad", v: [0, 0, 0, 0, 0, 0] },
+      { nom: "CNRT-GFTAU-CIP-04", nombre: "Porcentaje de actas sobre controlados de cargas internacionales peligrosas", tipo: "porcentaje", v: [0, 0, 0, 0, 0, 0] },
+      { nom: "CNRT-GFTAU-CIP-05", nombre: "Porcentaje de retenciones sobre controlados de cargas internacionales generales", tipo: "porcentaje", v: [0, 0, 0, 0, 0, 0] },
+      { nom: "CNRT-GFTAU-CIP-06", nombre: "Porcentaje de retenciones sobre actas de cargas internacionales peligrosas", tipo: "porcentaje", v: [0, 0, 0, 0, 0, 0] }
+    ]
+  },
+  {
+    nombre: "Cargas Internacionales Generales",
+    items: [
+      { nom: "CNRT-GFTAU-CIG-01", nombre: "Controles de cargas internacionales generales", tipo: "cantidad", v: [0, 0, 0, 0, 0, 0] },
+      { nom: "CNRT-GFTAU-CIG-02", nombre: "Actas de cargas internacionales generales", tipo: "cantidad", v: [0, 0, 0, 0, 0, 0] },
+      { nom: "CNRT-GFTAU-CIG-03", nombre: "Retenciones de cargas internacionales generales", tipo: "cantidad", v: [0, 0, 0, 0, 0, 0] },
+      { nom: "CNRT-GFTAU-CIG-04", nombre: "Porcentaje de actas sobre controlados de cargas internacionales generales", tipo: "porcentaje", v: [0, 0, 0, 0, 0, 0] },
+      { nom: "CNRT-GFTAU-CIG-05", nombre: "Porcentaje de retenciones sobre controlados de cargas internacionales generales", tipo: "porcentaje", v: [0, 0, 0, 0, 0, 0] },
+      { nom: "CNRT-GFTAU-CIG-06", nombre: "Porcentaje de retenciones sobre actas de cargas internacionales generales", tipo: "porcentaje", v: [0, 0, 0, 0, 0, 0] }
+    ]
+  },
+  {
+    nombre: "Transporte Urbano",
+    items: [
+      { nom: "CNRT-GFTAU-URB-01", nombre: "Controles a vehiculos de transporte urbano", tipo: "cantidad", v: [0, 0, 0, 0, 0, 0] },
+      { nom: "CNRT-GFTAU-URB-02", nombre: "Actas a vehiculos de transporte urbano", tipo: "cantidad", v: [0, 0, 0, 0, 0, 0] },
+      { nom: "CNRT-GFTAU-URB-03", nombre: "Retenciones a vehiculos de transporte urbano", tipo: "cantidad", v: [0, 0, 0, 0, 0, 0] },
+      { nom: "CNRT-GFTAU-URB-04", nombre: "Porcentaje de actas sobre controles de urbano", tipo: "porcentaje", v: [0, 0, 0, 0, 0, 0] },
+      { nom: "CNRT-GFTAU-URB-05", nombre: "Porcentaje de retenciones sobre controlados en urbano", tipo: "porcentaje", v: [0, 0, 0, 0, 0, 0] },
+      { nom: "CNRT-GFTAU-URB-06", nombre: "Porcentaje de retenciones sobre actas de urbano", tipo: "porcentaje", v: [0, 0, 0, 0, 0, 0] }
+    ]
+  }
+];
+
+const reso284Data = [
+  { nom: "CNRT-GFTAU-RES-01", nombre: "Solicitudes de fiscalizaciones de viajes ocasionales (res. 284/09)", tipo: "cantidad", v: [0, 0, 0, 0, 0, 0] },
+  { nom: "CNRT-GFTAU-RES-02", nombre: "Solicitudes de fiscalizaciones viajes ocasionales (res 284/09) controladas", tipo: "cantidad", v: [0, 0, 0, 0, 0, 0] },
+  { nom: "CNRT-GFTAU-RES-03", nombre: "Porcentaje de controles realizados sobre solicitudes de fiscalización de viajes ocasionales (res 284/09) recibidas", tipo: "porcentaje", v: [0, 0, 0, 0, 0, 0] },
+  { nom: "CNRT-GFTAU-RES-04", nombre: "Controles de alcoholemia realizados a conductores afectados a viajes ocasionales (res. 284/09)", tipo: "cantidad", v: [0, 0, 0, 0, 0, 0] },
+  { nom: "CNRT-GFTAU-RES-05", nombre: "Controles de alcoholemia positivos de conductores afectados a viajes ocasionales (res. 284/09)", tipo: "cantidad", v: [0, 0, 0, 0, 0, 0] }
+];
+
 let dashboardData = {
   resumen: {},
   monthly: { controles:{cargas:[],pasajeros:[]}, actas:{cargas:[],pasajeros:[]}, retenciones:{cargas:[],pasajeros:[]} },
   control: { controles:[], alco:[], sust:[] },
   controlDesglose: [],
   motivos: { cargas:[], pasajeros:[] },
-  regiones: {}, // { AMBA: { cargas:{vc,actas,ret}, pasajeros:{...} }, ... }
+  regiones: {},
   gendarmeria: { cnrt:[], gend:[], categorias:[] },
-  indicadoresGrupos: [],
-  reso284: []
+  indicadoresGrupos: indicadoresGruposData,
+  reso284: reso284Data
 };
 
 // Cargar dashboardData desde JSON generado por Python (datos.json) o desde window.DASHBOARD_JSON
@@ -279,19 +422,22 @@ async function loadDashboardData(){
     console.warn('dashboardData no disponible. El frontend quedará con placeholders.');
     return;
   }
-  // Mapear estructura esperada desde el JSON de exportación
+  
   dashboardData.resumen = src.resumen || src.metadata || {};
   dashboardData.regiones = src.regiones || {};
-  // Motivos principales si están presentes (estructura generada por exportador)
-  const pi = src.principal_infracciones || src.principal_infracciones || {};
+  
+  const pi = src.principal_infracciones || {};
   dashboardData.motivos.cargas = (pi.cargas && pi.cargas.motivos) ? pi.cargas.motivos.map(m=>({desc:m.nombre,pct:m.porcentaje,count:m.cantidad||0})) : [];
   dashboardData.motivos.pasajeros = (pi.pasajeros && pi.pasajeros.motivos) ? pi.pasajeros.motivos.map(m=>({desc:m.nombre,pct:m.porcentaje,count:m.cantidad||0})) : [];
-  // Indicadores generales: mapear desde resultados.metricas si existe
-  if(src.metricas) dashboardData.indicadores = src.metricas;
-  // Resumen principal
+  
+  if(src.metricas) {
+    dashboardData.indicadores = src.metricas;
+    actualizarIndicadoresDesdeMetricas(src.metricas);
+  }
   if(src.resumen){ dashboardData.resumen = {...dashboardData.resumen, ...src.resumen}; }
-  // monthly series: si el exportador no las genera, quedan arrays vacíos (placeholder)
   if(src.monthly){ dashboardData.monthly = src.monthly; }
+  if(src.gendarmeria){ dashboardData.gendarmeria = src.gendarmeria; }
+  if(src.control){ dashboardData.control = src.control; }
 }
 
 function applyDashboardJson(json){
@@ -363,7 +509,6 @@ function dateToIdx(dateStr, isEnd) {
     const s=new Date(MONTHS[i].start+"T00:00:00"), e=new Date(MONTHS[i].end+"T00:00:00");
     if(d>=s && d<=e) return i;
   }
-  // clamp to nearest
   const first=new Date(MONTHS[0].start), last=new Date(MONTHS[N-1].end);
   if(d<first) return 0;
   if(d>last) return N-1;
@@ -387,6 +532,7 @@ function currentRange() {
     return clamp(dateToIdx(dFromEl.value,false), dateToIdx(dToEl.value,true));
   }
 }
+
 function periodoText(s,e){
   if(N===0) return '—';
   if(s<0||e<0||s>=N||e>=N) return '—';
@@ -404,12 +550,15 @@ function setMode(m){
   document.getElementById("rangeControls").classList.toggle("hidden", m!="range");
   render();
 }
+
 function setTab(t){
   tab=t;
   document.querySelectorAll(".tabs button").forEach((b,i)=>b.classList.toggle("active", i===t));
   [0,1,2].forEach(i=>document.getElementById("sec"+i).classList.toggle("hidden", i!==t));
 }
-function onFilterChange(){ /* dejamos el render intermedio para el botón */ }
+
+function onFilterChange(){ /* Render intermedio / preparado para eventos */ }
+
 async function generarInforme(){
   const { desde, hasta } = getSelectedDateRange();
   await fetchDashboardData(desde, hasta);
@@ -432,7 +581,8 @@ function splitBar(m){
 }
 
 function motivoList(list, color){
-  const max = Math.max(...list.map(x=>x.pct));
+  if(!list || !list.length) return `<p class="note">Sin datos registrantes para el período.</p>`;
+  const max = Math.max(...list.map(x=>x.pct)) || 1;
   return list.map(m=>`
     <div class="motivo">
       <div class="top"><span class="desc">${m.desc}</span><span class="num">${m.pct}% · ${fmt(m.count)}</span></div>
@@ -505,7 +655,7 @@ function renderSec0(s,e){
 
 function svgBarChart(serie){
   if(!serie || !serie.length) return "";
-  const w=Math.max(360, serie.length*90), h=220, pad=30, bw=26, gap=14;
+  const w=Math.max(360, serie.length*90), h=220, pad=30, bw=26;
   const max=Math.max(...serie.flatMap(d=>[d.cnrt||0,d.gendarmeria||0]))*1.1||1;
   const scale=v=>(h-pad-20)-(v/max*(h-pad-30));
   let bars="";
@@ -550,7 +700,6 @@ function renderSec1(s,e){
         <thead><tr><th>Tipo de incumplimiento</th><th>CNRT</th><th>Gendarmería</th><th>Diferencia</th></tr></thead>
         <tbody>${catRows}</tbody>
       </table></div>
-      <p class="note">Datos de muestra editables. Reemplazá los valores en el bloque <strong>gendarmeria</strong> del script.</p>
     </div>
   `;
 }
@@ -570,38 +719,58 @@ function indTable(items,s,e,multi){
 
 function renderSec2(s,e){
   const multi = s!==e;
-  let groups = (dashboardData.indicadoresGrupos||[]).map(g=>`<div class="group-title">${g.nombre}</div>${indTable(g.items,s,e,multi)}`).join("");
+  let groupsHtml = (dashboardData.indicadoresGrupos||[]).map(g=>`<div class="group-title" style="font-weight:bold;margin-top:15px;margin-bottom:5px;color:var(--azul-oscuro)">${g.nombre}</div>${indTable(g.items,s,e,multi)}`).join("");
+  let resoHtml = indTable(dashboardData.reso284, s, e, multi);
+  
   document.getElementById("sec2").innerHTML = `
     <div class="card">
-      <div class="section-title"><span class="dot"></span>Indicadores del Sistema de Transporte Automotor</div>
-      ${groups}
-      <p class="note">${multi ? "La columna destacada muestra la suma acumulada (cantidades) o el promedio (porcentajes) del intervalo." : "La columna destacada muestra el valor del mes seleccionado."}</p>
+      <div class="section-title"><span class="dot"></span>Matriz de Indicadores Físicos de Fiscalización</div>
+      ${groupsHtml}
     </div>
-    <div class="card">
-      <div class="section-title"><span class="dot"></span>RESO 284/2009 — Viajes Ocasionales (Colegios)</div>
-      ${indTable(dashboardData.reso284||[],s,e,multi)}
-      <p class="note">Datos de muestra editables. Reemplazá los valores en el bloque <strong>reso284</strong> del script.</p>
+    <div class="card" style="margin-top:20px;">
+      <div class="section-title"><span class="dot"></span>Resolución 284/09 (Viajes Ocasionales)</div>
+      ${resoHtml}
     </div>
   `;
 }
 
-// ============================================================================
-// MAIN RENDER
-// ============================================================================
 function render(){
-  const [s,e]=currentRange();
-  document.getElementById("periodoLabel").textContent = periodoText(s,e);
+  const [s,e] = currentRange();
+  const subEl = document.getElementById("subperiodo");
+  if(subEl) subEl.textContent = periodoText(s,e);
   renderSec0(s,e);
   renderSec1(s,e);
   renderSec2(s,e);
 }
 
-// INIT
-(function init(){
-  // Inicialización: intentar cargar configuración que haya sido inyectada por Python
-  try{ loadCalendarConfig(); }catch(e){ console.error('loadCalendarConfig error',e); }
-  if(N>0){ render(); }
-})();
+// ============================================================================
+// CONEXIÓN BACKEND (Mapeo de métricas devueltas por Python hacia los arrays `v`)
+// ============================================================================
+function actualizarIndicadoresDesdeMetricas(metricas){
+  if(!metricas) return;
+  
+  // Mapea un ítem si existe en la respuesta de Python
+  const mapItem = (item) => {
+    if(metricas[item.nom] && Array.isArray(metricas[item.nom])){
+      item.v = metricas[item.nom];
+    }
+  };
+
+  dashboardData.indicadoresGrupos.forEach(grupo => {
+    grupo.items.forEach(mapItem);
+  });
+  
+  dashboardData.reso284.forEach(mapItem);
+}
+
+// ============================================================================
+// INICIALIZACIÓN
+// ============================================================================
+document.addEventListener("DOMContentLoaded", async () => {
+  loadCalendarConfig();
+  await loadDashboardData();
+  if(N>0) render();
+});
 </script>
 </body>
 </html>
