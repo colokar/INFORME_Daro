@@ -740,7 +740,7 @@ for _, fila in df.iterrows():
     # =========================================================
     # RECUENTO ESPECIAL DE ARTÍCULOS (TU BIBLIOTECA EXTERNA)
     # =========================================================
-    texto_items = str(fila.get("ITEMS INFRACCION", ""))
+    texto_items = str(row.get("ITEMS INFRACCION", ""))
         
     # Le mandamos el texto de la celda a tu archivo de consultas
     articulos_encontrados = contar_articulos_en_fila(texto_items)
