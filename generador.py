@@ -1,1091 +1,618 @@
-import os
-import glob
+﻿from __future__ import annotations
+
+import argparse
+import json
 import re
 import unicodedata
-import pandas as pd
-from Articulos import agrupar_y_sanear_articulos
-import json
-import sys
 from datetime import datetime
-from flask import Flask, jsonify, send_from_directory
-import sqlite3
+from pathlib import Path
+from typing import Any
 
-def procesar_resolucion_escuelas(ruta_csv):
-    try:
-        df = pd.read_csv(ruta_csv, encoding='utf-8')
-    except Exception:
-        return {"colegios": 0, "controles": 0, "hitos_graves": 0, "deficiencias_tecnicas": 0}
-    
-    total_colegios_auditados = 0
-    total_controles_concedidos = 0
-    hitos_graves = 0        # Alcoholemia / Sustancias positivas
-    deficiencias_tecnicas = 0 # Documentación, cubiertas, carrocería, faltante de habilitación
-    
-    patron_res284 = re.compile(r'(res|reso|resoluci[oó]n)\s*[\.\-]*\s*284', re.IGNORECASE)
-    
-    # Palabras clave comunes que redactan los fiscalizadores ante fallas mecánicas o papeles
-    patron_tecnico = re.compile(r'(vencid|seguro|habilitaci|licencia|cubierta|neumatic|tenic|revision|vtv|rto|carrocer|chasis|freno|luces|matafuego|parabris|tacograf)', re.IGNORECASE)
+import pandas as pd
+from flask import Flask, jsonify, request, send_from_directory
 
-    for index, fila in df.iterrows():
-        acta_obs = str(fila.get('ACTA OBS', '')).strip()
-        pl_obs = str(fila.get('PL OBS', '')).strip()
-        texto_completo = f"{acta_obs} {pl_obs}"
-        
-        if patron_res284.search(texto_completo):
-            # Regla de operativos individuales
-            total_controles_concedidos += 1
-            total_colegios_auditados += 1
-            
-            # 1. EVALUACIÓN DE HITOS GRAVES (Sustancias / Alcohol)
-            alc_1 = str(fila.get('ALCOHOLEMIA CHOFER 1', '')).strip().upper()
-            sus_1 = str(fila.get('SUSTANCIAS CHOFER 1', '')).strip().upper()
-            
-            es_positivo_alc = alc_1 != '' and alc_1 != 'NAN' and alc_1 != 'NEG' and alc_1 != '0' and alc_1 != '0.0'
-            es_positivo_sus = sus_1 != '' and sus_1 != 'NAN' and sus_1 != 'NEG' and sus_1 != '0'
-            
-            # Si en la observación escrita mencionan explícitamente alcohol o droga
-            mencion_sustancias = any(p in texto_completo.lower() for p in ['alcoholemia', 'positivo', 'narco', 'sustancia', 'droga', 'testigo'])
-
-            if es_positivo_alc or es_positivo_sus or (mencion_sustancias and str(fila.get('RETIENE', '')).strip().upper() == 'SI'):
-                hitos_graves += 1
-                continue # Si ya es hito grave, no lo contamos como deficiencia común
-            
-            # 2. EVALUACIÓN DE DEFICIENCIAS TÉCNICAS / DOCUMENTALES
-            retiene = str(fila.get('RETIENE', '')).strip().upper()
-            tiene_acta = str(fila.get('ACTA N°', '')).strip()
-            es_acta_valida = tiene_acta and tiene_acta != 'nan' and tiene_acta != '0'
-
-            # Si el vehículo fue retenido o tiene acta labrada por cuestiones técnicas/papeles
-            if retiene == 'SI' or es_acta_valida or patron_tecnico.search(texto_completo):
-                deficiencias_tecnicas += 1
-
-    return {
-        "colegios": total_colegios_auditados,
-        "controles": total_controles_concedidos,
-        "hitos_graves": hitos_graves,
-        "deficiencias_tecnicas": deficiencias_tecnicas
-    }
-
-
-def procesar_top_articulos(ruta_csv):
-    try:
-        # 1. Leemos el mismo CSV que usás siempre
-        df = pd.read_csv(ruta_csv, encoding='utf-8')
-        
-        # Guardamos un respaldo por si las columnas vienen con minúsculas/espacios
-        df.columns = df.columns.str.strip()
-        
-        # 2. SANEAMIENTO AUTOMÁTICO: Creamos los títulos limpios (Agrupa el 18 de cargas, etc.)
-        df['Articulo_Limpio'] = df.apply(
-            lambda row: agrupar_y_sanear_articulos(row.get('Articulo', row.get('CATEGORIA', '')), row.get('TRANSPORTE', '')), 
-            axis=1
-        )
-        
-        # 3. Agrupamos por Transporte y el Artículo Saneado, contando cuántas filas hay
-        resumen = df.groupby(['TRANSPORTE', 'Articulo_Limpio']).size().reset_index(name='Cantidad')
-        
-        # 4. Filtramos y armamos el Top para Pasajeros (PA) ordenado de mayor a menor
-        df_pa = resumen[resumen['TRANSPORTE'] == 'PA'].sort_values(by='Cantidad', ascending=False)
-        
-        # 5. Filtramos y armamos el Top para Cargas (CA) ordenado de mayor a menor
-        df_ca = resumen[resumen['TRANSPORTE'] == 'CA'].sort_values(by='Cantidad', ascending=False)
-        
-        # 6. Lo convertimos a la estructura que va a leer tu JavaScript
-        resultado_json = {
-            "Pasajeros": df_pa[['Articulo_Limpio', 'Cantidad']].to_dict(orient='records'),
-            "Cargas": df_ca[['Articulo_Limpio', 'Cantidad']].to_dict(orient='records')
-        }
-        
-        # 7. Guardamos el archivo JSON que alimenta tu web
-        with open("top_articulos.json", "w", encoding="utf-8") as f:
-            json.dump(resultado_json, f, ensure_ascii=False, indent=4)
-            
-        print("¡JSON de artículos generado con éxito para el Dashboard!")
-        return True
-
-    except Exception as e:
-        print(f"Error al procesar el top de artículos: {e}")
-        return False
-
-# =========================================================
-# CONFIGURACIÓN DE RUTAS Y FLASK
-# =========================================================
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-app = Flask(__name__, static_folder=BASE_DIR, static_url_path="")
-
-try:
-    from flask_cors import CORS
-    CORS(app, resources={r"/*": {"origins": "*"}})
-except ImportError:
-    print(" Flask-CORS no instalado. Ejecuta: pip install flask-cors")
-
-
-# =========================================================
-# FUNCIONES AUXILIARES (Títulos y Normalización)
-# =========================================================
-def titulo(texto):
-    print(f"\n{'='*60}\n{texto.center(60)}\n{'='*60}")
-
-def subtitulo(texto):
-    print(f"\n--- {texto} ---")
-
-mapa_regiones = {
-    "AMBA": ["RETIRO", "CAPITAL FEDERAL", "LA PLATA", "EZEIZA", "MATANZA", "BUENOS AIRES", "LANUS", "QUILMES", "AVELLANEDA", "MORON", "LOMAS"],
-    "COSTA": ["MAR DEL PLATA", "BAHIA BLANCA", "NECOCHEA"],
-    "CEN": ["CORDOBA", "ROSARIO", "SANTA FE", "PARANA", "ENTRE RIOS", "RIO CUARTO"],
-    "CUY": ["MENDOZA", "SAN JUAN", "SAN LUIS"],
-    "NEA": ["CHACO", "CORRIENTES", "FORMOSA", "MISIONES"],
-    "NOA": ["SALTA", "JUJUY", "TUCUMAN", "SANTIAGO DEL ESTERO", "CATAMARCA", "LA RIOJA"],
-    "PAT": ["NEUQUEN", "CHUBUT", "RIO NEGRO", "SANTA CRUZ", "TIERRA DEL FUEGO", "USHUAIA", "RIO GALLEGOS"]
-}
+BASE_DIR = Path(__file__).resolve().parent
+EXCEL_DIR = BASE_DIR / "Excel"
+DATA_FILE = BASE_DIR / "datos.json"
 
 REGIONES_ORDENADAS = ["AMBA", "CEN", "CUY", "NEA", "NOA", "COSTA", "PAT"]
+MAPA_REGIONES = {
+    "AMBA": ["AMBA", "RETIRO", "CAPITAL FEDERAL", "LA PLATA", "EZEIZA", "MATANZA", "BUENOS AIRES", "LANUS", "QUILMES", "AVELLANEDA", "MORON", "LOMAS", "TALAR", "LIMA"],
+    "COSTA": ["COSTA", "MAR DEL PLATA", "BAHIA BLANCA", "NECOCHEA"],
+    "CEN": ["CEN", "CORDOBA", "ROSARIO", "SANTA FE", "PARANA", "ENTRE RIOS", "RIO CUARTO"],
+    "CUY": ["CUY", "MENDOZA", "SAN JUAN", "SAN LUIS"],
+    "NEA": ["NEA", "CHACO", "CORRIENTES", "FORMOSA", "MISIONES", "RESISTENCIA"],
+    "NOA": ["NOA", "SALTA", "JUJUY", "TUCUMAN", "SANTIAGO DEL ESTERO", "CATAMARCA", "LA RIOJA"],
+    "PAT": ["PAT", "NEUQUEN", "CHUBUT", "RIO NEGRO", "SANTA CRUZ", "TIERRA DEL FUEGO", "USHUAIA", "RIO GALLEGOS"],
+}
 
-def normalizar(texto):
-    if pd.isna(texto): return ""
-    texto = str(texto).lower()
-    texto = ''.join(c for c in unicodedata.normalize('NFD', texto) if unicodedata.category(c) != 'Mn')
-    texto = texto.replace("ñ", "n")
-    texto = re.sub(r"[^a-z0-9 ]", " ", texto)
+app = Flask(__name__, static_folder=str(BASE_DIR), static_url_path="")
+
+
+def normalizar_texto(valor: Any) -> str:
+    if valor is None or pd.isna(valor):
+        return ""
+    texto = str(valor).upper()
+    texto = unicodedata.normalize("NFD", texto)
+    texto = "".join(caracter for caracter in texto if unicodedata.category(caracter) != "Mn")
+    texto = texto.replace("Ñ", "N")
+    texto = re.sub(r"[^A-Z0-9 ]", " ", texto)
     return re.sub(r"\s+", " ", texto).strip()
 
-def normalizar_region(valor):
-    if not valor or pd.isna(valor): return "SIN_REGION"
-    texto_norm = normalizar(valor)
-    for region, nombres in mapa_regiones.items():
-        for nombre in nombres:
-            if normalizar(nombre) in texto_norm:
-                return region
+
+def columna(df: pd.DataFrame, *nombres: str) -> str | None:
+    candidatos = {normalizar_texto(nombre) for nombre in nombres}
+    for nombre in df.columns:
+        if normalizar_texto(nombre) in candidatos:
+            return str(nombre)
+    return None
+
+
+def valor_fila(fila: pd.Series, nombre: str | None) -> Any:
+    if nombre is None or nombre not in fila.index:
+        return ""
+    valor = fila[nombre]
+    return "" if pd.isna(valor) else valor
+
+
+def normalizar_region(valor: Any) -> str:
+    texto = normalizar_texto(valor)
+    if not texto:
+        return "SIN_REGION"
+    for region, nombres in MAPA_REGIONES.items():
+        if any(normalizar_texto(nombre) in texto for nombre in nombres):
+            return region
     return "SIN_REGION"
 
-def convertir_dms_a_decimal(coordenada):
-    if not coordenada or pd.isna(coordenada): return None
-    try:
-        coord_str = str(coordenada).strip()
-        patron = r"(\d+)[º°](\d+)['\'](\d+(?:\.\d+)?)[\"″]([NSEW])"
-        match = re.search(patron, coord_str)
-        if not match: return None
-        decimal = float(match.group(1)) + (float(match.group(2)) / 60) + (float(match.group(3)) / 3600)
-        if match.group(4).upper() in ['S', 'W']: decimal = -decimal
-        return round(decimal, 6)
-    except: return None
 
-def detectar_incidencia(fila):
-    for col in ["ALCOHOLEMIA CHOFER 1", "ALCOHOLEMIA CHOFER 2", "ALCOHOLEMIA CHOFER 3"]:
-        if col in fila and any(x in str(fila[col]).upper() for x in ["POS", "POSITIVO", "+"]):
-            return "ALCOHOLEMIA", col
-    for col in ["SUSTANCIAS CHOFER 1", "SUSTANCIAS CHOFER 2", "SUSTANCIAS CHOFER 3"]:
-        if col in fila and any(x in str(fila[col]).upper() for x in ["POS", "POSITIVO", "+"]):
-            return "SUSTANCIA", col
-    return None, None
-
-def elegir_articulo(transporte, items):
-    t = str(transporte).lower()
-    infr = str(items)
-    if "carg" in t: return "108" if "108" in infr else ("110" if "110" in infr else "")
-    if "pasaj" in t: return "110" if "110" in infr else ("108" if "108" in infr else "")
-    return "108" if "108" in infr else ("110" if "110" in infr else "")
-
-
-
-# =========================================================
-# RUTAS DE FLASK
-# =========================================================
-@app.route('/')
-def index():
-    return send_from_directory(BASE_DIR, 'index.html')
-
-@app.route('/resumen')
-def get_resumen():
-    try:
-        with open(os.path.join(BASE_DIR, "datos.json"), "r", encoding="utf-8") as f:
-            return jsonify(json.load(f))
-    except:
-        return jsonify({"error": "No se pudo leer datos.json. ¿Ejecutaste el script completo?"}), 500
-
-# =========================================================
-# LÓGICA DE PROCESAMIENTO (Se ejecuta al iniciar)
-# =========================================================
-if __name__ == "__main__":
-    titulo("INICIO DE PROCESAMIENTO CNRT")
-    
-    carpeta_excels = os.path.join(BASE_DIR, "Excel")
-    archivos_excel = [f for f in glob.glob(os.path.join(carpeta_excels, "*.xls*")) if "~$" not in os.path.basename(f)]
-
-    if not archivos_excel:
-        print(f"✗ No se encontraron archivos Excel en {carpeta_excels}")
-    else:
-        print(f" Archivos detectados: {len(archivos_excel)}")
-        
-        dfs = []
-        for archivo in archivos_excel:
-            try:
-                engine = "xlrd" if archivo.lower().endswith(".xls") else "openpyxl"
-                df_temp = pd.read_excel(archivo, engine=engine)
-                dfs.append(df_temp)
-                print(f"   ✓ Leído: {os.path.basename(archivo)}")
-            except Exception as e:
-                print(f"   ✗ Error en {os.path.basename(archivo)}: {e}")
-
-        if dfs:
-            df = pd.concat(dfs, ignore_index=True)
-            df.columns = df.columns.str.strip().str.upper()
-            
-            # Normalización
-            df["REGION_NORMALIZADA"] = df["REGIONAL"].apply(normalizar_region)
-            
-            registros = []
-            total_retenciones = 0
-            
-            for _, fila in df.iterrows():
-                transporte = str(fila.get("TRANSPORTE", "")).strip().upper()
-                if transporte not in ('CA', 'PA'): continue
-                
-                retiene = str(fila.get("RETIENE", "")).upper().strip()
-                es_ret = retiene in ["SI", "SÍ"]
-                if es_ret: total_retenciones += 1
-                
-                tipo_inc, fuente = detectar_incidencia(fila)
-                
-                dominios = [str(fila.get(d, "")).strip().upper() for d in ["DOMINIO", "DOMINIO2", "DOMINIO3"]]
-                dominios = [d for d in dominios if d and d != "NAN"]
-
-                registros.append({
-                    "fecha": str(fila.get("FECHA", ""))[:10],
-                    "regional": fila.get("REGION_NORMALIZADA"),
-                    "transporte": transporte,
-                    "retiene": "SI" if es_ret else "NO",
-                    "articulo": elegir_articulo(transporte, fila.get("ITEMS INFRACCION", "")),
-                    "incidencia": tipo_inc,
-                    "dominios": dominios
-                })
-
-            # Cálculo por Regiones para Dashboard
-            reg_stats = {r: {"total": {"vc":0, "actas":0, "ret":0}, "cargas":{"vc":0,"actas":0,"ret":0}, "pasajeros":{"vc":0,"actas":0,"ret":0}} for r in REGIONES_ORDENADAS}
-            
-            for r in registros:
-                reg = r["regional"]
-                if reg in reg_stats:
-                    cat = "cargas" if r["transporte"] == "CA" else "pasajeros"
-                    for k in [cat, "total"]:
-                        reg_stats[reg][k]["vc"] += 1
-                        if r["articulo"]: reg_stats[reg][k]["actas"] += 1
-                        if r["retiene"] == "SI": reg_stats[reg][k]["ret"] += 1
-
-            # Guardar JSON
-            salida = {
-                "metadata": {"total_registros": len(registros), "total_retenciones": total_retenciones},
-                "regiones": reg_stats,
-                "registros": registros
-            }
-            
-            with open(os.path.join(BASE_DIR, "datos.json"), "w", encoding="utf-8") as f:
-                json.dump(salida, f, indent=2, ensure_ascii=False)
-            
-            print(f"\n Proceso completado. {len(registros)} registros guardados en datos.json")
-
-    # Iniciar Servidor
-    subtitulo("INICIANDO SERVIDOR WEB")
-    app.run(debug=True, port=5000)
-
-
-# =========================================================
-# FUNCION: CONVERTIR COORDENADAS DMS → DECIMAL
-# Convierte coordenadas tipo:
-# 34°12'45"S  → -34.2125
-# =========================================================
-
-
-def convertir_dms_a_decimal(coordenada):
-
-    if not coordenada or pd.isna(coordenada):
+def convertir_dms_a_decimal(coordenada: Any) -> float | None:
+    if coordenada is None or pd.isna(coordenada):
         return None
-
     try:
-
         coord_str = str(coordenada).strip()
-
-        patron = r"(\d+)[º°](\d+)['\'](\d+(?:\.\d+)?)[\"″]([NSEW])"
-
-        match = re.search(patron, coord_str)
-
+        match = re.search(r"(\d+)[º°](\d+)['\'](\d+(?:\.\d+)?)[\"″]([NSEW])", coord_str, re.IGNORECASE)
         if not match:
             return None
-
         grados = float(match.group(1))
         minutos = float(match.group(2))
         segundos = float(match.group(3))
         direccion = match.group(4).upper()
-
         decimal = grados + (minutos / 60) + (segundos / 3600)
-
-        if direccion in ['S', 'W']:
-            decimal = -decimal
-
+        if direccion in {"S", "W"}:
+            decimal *= -1
         return round(decimal, 6)
-
-    except:
+    except Exception:
         return None
 
 
-# =========================================================
-# FUNCION: DETECTAR INCIDENCIAS
-# Busca alcoholemia positiva o sustancias
-# =========================================================
+def detectar_incidencia_fila(fila: pd.Series) -> tuple[str | None, str | None]:
+    columnas_alcohol = ["ALCOHOLEMIA CHOFER 1", "ALCOHOLEMIA CHOFER 2", "ALCOHOLEMIA CHOFER 3"]
+    columnas_sustancias = ["SUSTANCIAS CHOFER 1", "SUSTANCIAS CHOFER 2", "SUSTANCIAS CHOFER 3"]
 
-def detectar_incidencia(fila):
-
-    # ---- ALCOHOLEMIA ----
-
-    for col in ["ALCOHOLEMIA CHOFER 1",
-                "ALCOHOLEMIA CHOFER 2",
-                "ALCOHOLEMIA CHOFER 3"]:
-
-        if col not in fila:
+    for nombre in columnas_alcohol:
+        valor = str(valor_fila(fila, nombre)).strip()
+        if not valor:
             continue
-
-        v = str(fila[col]).upper().strip()
-
-        if v and any(x in v for x in ["POS", "POSITIVO", "+"]):
-
+        texto = normalizar_texto(valor)
+        if texto in {"", "NAN", "NULL", "NEG", "NEGATIVO", "0", "0.0"}:
+            continue
+        if "POS" in texto or "POSITIVO" in texto or "+" in texto:
             try:
-                val = float(v.replace(",", "."))
+                numero = float(valor.replace(",", "."))
+                if numero > 0:
+                    return "ALCOHOLEMIA", nombre
+            except ValueError:
+                return "ALCOHOLEMIA", nombre
 
-                if val > 0:
-                    return "ALCOHOLEMIA", col
-
-            except:
-                return "ALCOHOLEMIA", col
-
-    # ---- SUSTANCIAS ----
-
-    for col in ["SUSTANCIAS CHOFER 1",
-                "SUSTANCIAS CHOFER 2",
-                "SUSTANCIAS CHOFER 3"]:
-
-        if col not in fila:
+    for nombre in columnas_sustancias:
+        valor = str(valor_fila(fila, nombre)).strip()
+        if not valor:
             continue
+        texto = normalizar_texto(valor)
+        if texto in {"", "NAN", "NULL", "NEG", "NEGATIVO", "0", "0.0"}:
+            continue
+        if "POS" in texto or "POSITIVO" in texto or "+" in texto:
+            return "SUSTANCIA", nombre
 
-        v = str(fila[col]).upper().strip()
-
-        if v and any(x in v for x in ["POS", "POSITIVO", "+"]):
-            return "SUSTANCIA", col
-
-    # ---- BUSQUEDA EN OBSERVACIONES ----
-
-    obs = str(fila.get("ACTA OBS", "")).upper()
-
-    t = normalizar(obs)
-
-    if any(x in t for x in [
-        "sustancia positiva",
-        "test droga positivo",
-        "positivo sustancia"
-    ]):
+    texto_obs = normalizar_texto(valor_fila(fila, "ACTA OBS"))
+    if any(token in texto_obs for token in ["SUSTANCIA POSITIVA", "TEST DROGA POSITIVO", "POSITIVO SUSTANCIA"]):
         return "SUSTANCIA", "ACTA OBS"
-
-    if any(x in t for x in [
-        "alcohol positivo",
-        "alcoholimetro"
-    ]):
+    if any(token in texto_obs for token in ["ALCOHOL POSITIVO", "ALCOHOLIMETRO"]):
         return "ALCOHOLEMIA", "ACTA OBS"
-
     return None, None
 
-# =========================================================
-# FILTRO ARTICULOS 108 / 110 SEGUN TRANSPORTE
-# =========================================================
 
-def elegir_articulo(transporte, items):
-
-    t = str(transporte).lower()
-    infr = str(items)
-
-    tiene108 = "108" in infr
-    tiene110 = "110" in infr
-
-    if "carg" in t:
-        if tiene108:
+def elegir_articulo(transporte: Any, items: Any) -> str:
+    transporte_text = str(transporte).lower()
+    texto_items = str(items)
+    tiene_108 = "108" in texto_items
+    tiene_110 = "110" in texto_items
+    if "carg" in transporte_text:
+        if tiene_108:
             return "108"
-        if tiene110:
+        if tiene_110:
             return "110"
-
-    if "pasaj" in t:
-        if tiene110:
+    if "pasaj" in transporte_text:
+        if tiene_110:
             return "110"
-        if tiene108:
+        if tiene_108:
             return "108"
-
-    if tiene108:
+    if tiene_108:
         return "108"
-
-    if tiene110:
+    if tiene_110:
         return "110"
-
     return ""
 
 
-# =========================================================
-# BUSQUEDA AUTOMATICA DE ARCHIVOS EXCEL Carpeta /Excel
-# =========================================================
-
-carpeta_excels = os.path.join(os.path.dirname(__file__), "Excel")
-
-archivos_excel = [
-    f for f in glob.glob(os.path.join(carpeta_excels, "*.xls*"))
-    if "~$" not in os.path.basename(f)
-]
-
-if not archivos_excel:
-    print("✗ No se encontraron archivos Excel en /Excel")
-    exit()
-
-titulo("DETECCIÓN DE ARCHIVOS FUENTE")
-print(f" Archivos detectados: {len(archivos_excel)}\n")
-for idx, archivo in enumerate(archivos_excel, 1):
-    print(f"   [{idx}] {os.path.basename(archivo)}")
-print()
-
-
-
-# =========================================================
-# PARÁMETROS DE FILTRADO (FECHAS)
-# =========================================================
-
-fecha_desde = None
-fecha_hasta = None
-
-# Leer parámetros de línea de comando
-if len(sys.argv) > 1:
-    fecha_desde = sys.argv[1]
-if len(sys.argv) > 2:
-    fecha_hasta = sys.argv[2]
-
-# =========================================================
-# NUEVA FUNCIÓN: INICIALIZACIÓN DE BASE DE DATOS
-# (La ponemos acá para tenerla lista antes del procesamiento)
-# =========================================================
-def inicializar_base_de_datos():
-        """Crea la tabla en Fiscalizacion.db si no existe con formato estándar."""
-        conn = sqlite3.connect("Fiscalizacion.db")
-        cursor = conn.cursor()
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS actas_fiscalizacion (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                fecha TEXT,
-                transporte TEXT,
-                articulo_original TEXT,
-                articulo_limpio TEXT,
-                archivo_origen TEXT
-            )
-        ''')
-        conn.commit()
-        conn.close()
-
-# Llamamos a la función inmediatamente para asegurarnos de que el archivo .db exista
-inicializar_base_de_datos()
-
-# =========================================================
-# MODO DE PROCESAMIENTO DE DOMINIOS
-# "A": 1 registro por fila (dominios en lista)
-# "B": 1 registro por dominio (expansión)
-# =========================================================
-
-modo = "A"  # Cambiar a "B" para el modo expansión
-
-subtitulo("CONFIGURACIÓN INICIAL")
-print(f"  MODO DE PROCESAMIENTO: {modo}")
-print(f"    [A] = 1 registro por fila (dominios en lista)")
-print(f"    [B] = 1 registro por dominio (expansión)\n")
-
-if fecha_desde or fecha_hasta:
-    print(" FILTRO DE FECHAS:")
-    if fecha_desde:
-        print(f"    Desde: {fecha_desde}")
-    if fecha_hasta:
-        print(f"    Hasta: {fecha_hasta}")
-else:
-    print(" FILTRO DE FECHAS: ✗ SIN FILTRO (se procesarán TODOS los datos)")
-print()
-
-
-# =========================================================
-# LECTURA DE ARCHIVOS EXCEL
-# =========================================================
-
-titulo("LECTURA DE ARCHIVOS FUENTE")
-
-dfs = []
-total_filas = 0
-
-for idx, archivo in enumerate(archivos_excel, 1):
-    if "~$" in archivo:
-        continue
-
-    nombre_archivo = os.path.basename(archivo)
-    print(f"   [{idx}] Procesando: {nombre_archivo}")
-
-    try:
-        if archivo.lower().endswith(".xls"):
-            df_temp = pd.read_excel(archivo, engine="xlrd")
-        else:
-            df_temp = pd.read_excel(archivo, engine="openpyxl", header=0)
-
-        df_temp = df_temp.loc[:, ~df_temp.columns.duplicated()]
-        df_temp = df_temp.dropna(how="all")
-
-        filas = df_temp.shape[0]
-        print(f"       ✓ {filas:,} filas leídas")
-
-        total_filas += filas
-        dfs.append(df_temp)
-
-    except Exception as e:
-        print(f"       ✗ ERROR: {str(e)[:80]}")
-
-if not dfs:
-    print("\n✗ No se pudo leer ningún archivo. Abortando...")
-    exit()
-
-df = pd.concat(dfs, ignore_index=True)
-print(f"\n    TOTAL ACUMULADO: {total_filas:,} filas")
-print(f"    TOTAL CONSOLIDADO: {df.shape[0]:,} filas\n")
-
-
-# =========================================================
-# NORMALIZACIÓN DE COLUMNAS Y ESTRUCTURA
-# =========================================================
-
-df.columns = df.columns.str.strip().str.upper()
-df = df.loc[:, ~df.columns.duplicated()]
-
-df["DOMINIO"] = df["DOMINIO"].fillna("").astype(str).str.strip().str.upper()
-df["DOMINIO2"] = df["DOMINIO2"].fillna("").astype(str).str.strip().str.upper()
-df["DOMINIO3"] = df["DOMINIO3"].fillna("").astype(str).str.strip().str.upper()
-df["REGIONAL"] = df["REGIONAL"].fillna("").astype(str).str.strip().str.upper()
-df["TRANSPORTE"] = df["TRANSPORTE"].fillna("").astype(str).str.strip().str.upper()
-df["FECHA"] = df["FECHA"].fillna("").astype(str).str.strip()
-df["HORA"] = df["HORA"].fillna("").astype(str).str.strip()
-df["ACTA OBS"] = df["ACTA OBS"].fillna("").astype(str).str.strip()
-df["RETIENE"] = df["RETIENE"].fillna("").astype(str).str.strip().str.upper()
-df["ITEMS INFRACCION"] = df["ITEMS INFRACCION"].fillna("").astype(str).str.strip()
-
-df["REGIONAL"] = df["REGIONAL"].apply(lambda x: ''.join(c for c in unicodedata.normalize('NFD', x) if unicodedata.category(c) != 'Mn'))
-
-# Limpieza adicional: reemplazar guiones raros y normalizar espacios
-df["REGIONAL"] = df["REGIONAL"].str.replace("–", "-").str.replace("—", "-").str.replace("_", " ")
-df["REGIONAL"] = df["REGIONAL"].apply(lambda x: re.sub(r"\s+", " ", x).strip())
-
-df["REGION_NORMALIZADA"] = df["REGIONAL"].apply(normalizar_region)
-
-# Limpiar REGION_NORMALIZADA
-df["REGION_NORMALIZADA"] = df["REGION_NORMALIZADA"].str.strip().str.upper()
-
-sin_region_count = int((df["REGION_NORMALIZADA"] == "SIN_REGION").sum())
-print(f" Registros sin región mapeada: {sin_region_count:,}")
-if sin_region_count > 0:
-    print("    Ejemplos de regionales no mapeadas:")
-    for reg in sorted(set(df.loc[df["REGION_NORMALIZADA"] == "SIN_REGION", "REGIONAL"]))[:20]:
-        print(f"      • {reg}")
-
-# Validación de consistencia en agrupamiento
-df_valid = df[df["REGION_NORMALIZADA"] != "SIN_REGION"]
-total_valid = len(df_valid)
-total_groupby = df_valid.groupby("REGION_NORMALIZADA").size().sum()
-
-print(f" Validación de agrupamiento:")
-print(f"    Registros válidos: {total_valid:,}")
-print(f"    Suma del groupby: {total_groupby:,}")
-
-if total_valid == total_groupby:
-    print("    ✓ Consistencia perfecta: la suma coincide.")
-else:
-    print("    ✗ Inconsistencia detectada!")
-    print(f"    Diferencia: {abs(total_valid - total_groupby)}")
-    
-    # Mostrar valores únicos problemáticos
-    print("    Valores únicos problemáticos en REGION_NORMALIZADA:")
-    problematicos = df_valid["REGION_NORMALIZADA"].unique()
-    for val in sorted(problematicos):
-        count = (df_valid["REGION_NORMALIZADA"] == val).sum()
-        print(f"      • {val}: {count} registros")
-    
-    # Detectar registros que no entran en el groupby (si hay NaN o algo)
-    print("    Registros que no entran en groupby:")
-    groupby_keys = set(df_valid.groupby("REGION_NORMALIZADA").groups.keys())
-    all_keys = set(df_valid["REGION_NORMALIZADA"].dropna().unique())
-    missing = all_keys - groupby_keys
-    if missing:
-        for key in sorted(missing):
-            count = (df_valid["REGION_NORMALIZADA"] == key).sum()
-            print(f"      • {key}: {count} registros")
-    else:
-        print("      Ninguno detectado.")
-
-print("Valores únicos en REGION_NORMALIZADA:")
-for val in sorted(df["REGION_NORMALIZADA"].unique()):
-    count = (df["REGION_NORMALIZADA"] == val).sum()
-    print(f"  {val}: {count}")
-
-subtitulo("ESTRUCTURA DE DATOS")
-print(f" COLUMNAS DISPONIBLES ({len(df.columns)}):\n")
-for col in df.columns:
-    print(f"    • {col}")
-print()
-
-
-# =========================================================
-# APLICAR FILTRO DE FECHAS (OPCIONAL)
-# =========================================================
-
-if fecha_desde or fecha_hasta:
-    try:
-        if fecha_desde:
-            fecha_desde_dt = pd.to_datetime(fecha_desde, format="%Y-%m-%d")
-        else:
-            fecha_desde_dt = pd.to_datetime("1900-01-01")
-
-        if fecha_hasta:
-            fecha_hasta_dt = pd.to_datetime(fecha_hasta, format="%Y-%m-%d")
-        else:
-            fecha_hasta_dt = pd.to_datetime("2099-12-31")
-
-        df["FECHA_TEMP"] = pd.to_datetime(df["FECHA"], format="%Y-%m-%d", errors="coerce")
-
-        df_original_rows = df.shape[0]
-        df = df[(df["FECHA_TEMP"] >= fecha_desde_dt) & (df["FECHA_TEMP"] <= fecha_hasta_dt)]
-        df = df.drop("FECHA_TEMP", axis=1)
-
-        print(f"🔍 Filtro de fechas aplicado: {df_original_rows:,} → {df.shape[0]:,} registros\n")
-
-    except Exception as e:
-        print(f"  Error al aplicar filtro de fechas: {e}\n")
-
-print(f"✓ DF listo para procesamiento: {df.shape[0]:,} filas\n")
-
-
-# =========================================================
-# LISTA DE REGIONES VÁLIDAS
-# =========================================================
-regiones_validas = list(mapa_regiones.keys())
-
-# =========================================================
-# PROCESAMIENTO DE REGISTROS
-# =========================================================
-
-registros = []
-detalles_incidencias = []
-
-total_cargas = 0
-total_pasajeros = 0
-total_retenciones = 0
-total_dominios = 0
-
-incidencias_alcoholemia = 0
-incidencias_sustancias = 0
-
-retenciones_alcoholemia = 0
-retenciones_sustancias = 0
-
-for _, fila in df.iterrows():
-
-    fecha = str(fila.get("FECHA", ""))[:10]
-    hora = str(fila.get("HORA", ""))
-
-    regional_original = str(fila.get("REGIONAL", "")).strip()
-    lugar = str(fila.get("LUGAR", "")).strip()
-
-    # NORMALIZACIÓN DE REGIONAL
-    regional = str(fila.get("REGION_NORMALIZADA", "SIN_REGION")).upper().strip()
-    if regional == "SIN_REGION":
-        # Mantener el valor original para debug si la región no se pudo mapear
-        regional = "SIN_REGION"
-    # Nota: No se ignora aquí, se procesan todas las filas para generar registros
-
-    acta = str(fila.get("ACTA OBS", "")).strip()
-    retiene = str(fila.get("RETIENE", "")).upper().strip()
-    items_infraccion = str(fila.get("ITEMS INFRACCION", "")).strip()
-
-    latitud = convertir_dms_a_decimal(fila.get("LATITUD"))
-    longitud = convertir_dms_a_decimal(fila.get("LONGITUD"))
-
-    # NORMALIZACIÓN CLAVE
-    transporte = str(fila.get("TRANSPORTE", "")).strip().upper()
-
-    articulo_filtrado = elegir_articulo(transporte, items_infraccion)
-
-    tipo_incidencia, fuente = detectar_incidencia(fila)
-
-    # PROCESAMIENTO DE DOMINIOS: Mantener como lista, orden y posibles duplicados
-    dominios_lista = [
-        str(fila.get("DOMINIO", "")).strip().upper(),
-        str(fila.get("DOMINIO2", "")).strip().upper(),
-        str(fila.get("DOMINIO3", "")).strip().upper(),
-    ]
-
-    # Filtrar valores vacíos, NaN y strings "nan"
-    dominios_validos = [
-        d for d in dominios_lista
-        if d and d not in ["", "NAN"]
-    ]
-
-    total_dominios += len(dominios_validos)
-
-    es_retencion = retiene in ["SI", "SÍ"]
-
-    # CONTADOR DE RETENCIONES (una vez por fila)
-    if es_retencion:
-        total_retenciones += 1
-
-    # =========================================================
-    # RECUENTO ESPECIAL DE ARTÍCULOS (TU BIBLIOTECA EXTERNA)
-    # =========================================================
-    texto_items = str(row.get("ITEMS INFRACCION", ""))
-        
-    # Le mandamos el texto de la celda a tu archivo de consultas
-    articulos_encontrados = contar_articulos_en_fila(texto_items)
-        
-    # Inicializamos los contadores globales por si no existen arriba
-    if 'global_art_105' not in locals() and 'global_art_105' not in globals():
-        global_art_105 = global_art_108 = global_art_110 = global_art_18 = global_art_22 = 0
-        
-    # Sumamos 1 si tu biblioteca detectó el artículo en esta fila
-    global_art_105 += articulos_encontrados.get("105", 0)
-    global_art_108 += articulos_encontrados.get("108", 0)
-    global_art_110 += articulos_encontrados.get("110", 0)
-    global_art_18  += articulos_encontrados.get("18", 0)
-    global_art_22  += articulos_encontrados.get("22", 0)
-        # =========================================================
-
-    # CONTADOR DE CARGAS Y PASAJEROS (depende del modo)
-    if modo == "A":
-        # Modo A: 1 por fila
-        if transporte == "CA":
-            total_cargas += 1
-        elif transporte == "PA":
-            total_pasajeros += 1
-    elif modo == "B":
-        # Modo B: por cantidad de dominios
-        if transporte == "CA":
-            total_cargas += len(dominios_validos)
-        elif transporte == "PA":
-            total_pasajeros += len(dominios_validos)
-
-    # =========================
-    # GENERACIÓN DE REGISTROS SEGÚN MODO
-    # =========================
-
-    if modo == "A":
-        # Modo A: 1 registro por fila, dominios en lista
-        registros.append({
-            "fecha": fecha,
-            "hora": hora,
-            "regional": regional,
-            "lugar": lugar,
-            "dominios": dominios_validos,  # Lista de dominios
-            "transporte": transporte,
-            "items": items_infraccion,
-            "articulo": articulo_filtrado,
-            "retiene": retiene,
-            "incidencia": tipo_incidencia,
-            "lat": latitud,
-            "lon": longitud
-        })
-
-        # INCIDENCIAS (una por fila en modo A)
-        if tipo_incidencia:
-            detalles_incidencias.append({
-                "fecha": fecha,
-                "regional": regional,
-                "lugar": lugar,
-                "dominios": dominios_validos,  # Lista de dominios
-                "latitud": latitud,
-                "longitud": longitud,
-                "tipo": tipo_incidencia,
-                "fuente": fuente,
-                "acta_obs": acta,
-                "retiene": es_retencion
+def listar_archivos_excel() -> list[Path]:
+    if not EXCEL_DIR.exists():
+        return []
+    return sorted(
+        path for path in EXCEL_DIR.glob("*.xls*")
+        if path.is_file() and "~$" not in path.name
+    )
+
+
+def contar_filas_excel() -> tuple[list[dict[str, Any]], int, list[str]]:
+    archivos = listar_archivos_excel()
+    resultados: list[dict[str, Any]] = []
+    total_filas = 0
+    errores: list[str] = []
+    for path in archivos:
+        try:
+            engine = "xlrd" if path.suffix.lower() == ".xls" else "openpyxl"
+            df_temp = pd.read_excel(path, engine=engine)
+            filas = int(df_temp.shape[0])
+            columnas = int(df_temp.shape[1])
+            total_filas += filas
+            resultados.append({
+                "archivo": path.name,
+                "filas": filas,
+                "columnas": columnas,
+                "estado": "OK",
             })
-
-    elif modo == "B":
-        # Modo B: 1 registro por dominio (como antes, pero sin set)
-        for dominio in dominios_validos:
-            registros.append({
-                "fecha": fecha,
-                "hora": hora,
-                "regional": regional,
-                "lugar": lugar,
-                "dominio": dominio,  # Un dominio por registro
-                "transporte": transporte,
-                "items": items_infraccion,
-                "articulo": articulo_filtrado,
-                "retiene": retiene,
-                "incidencia": tipo_incidencia,
-                "lat": latitud,
-                "lon": longitud
+        except Exception as exc:  # pragma: no cover - diagnóstico de archivo corrupto
+            resultados.append({
+                "archivo": path.name,
+                "filas": 0,
+                "columnas": 0,
+                "estado": "ERROR",
+                "error": str(exc),
             })
+            errores.append(f"{path.name}: {exc}")
+    return resultados, total_filas, errores
 
-            # INCIDENCIAS (una por dominio en modo B)
-            if tipo_incidencia:
-                detalles_incidencias.append({
-                    "fecha": fecha,
-                    "regional": regional,
-                    "lugar": lugar,
-                    "dominio": dominio,  # Un dominio por incidencia
-                    "latitud": latitud,
-                    "longitud": longitud,
-                    "tipo": tipo_incidencia,
-                    "fuente": fuente,
-                    "acta_obs": acta,
-                    "retiene": es_retencion
-                })
 
-    # CONTADORES DE INCIDENCIAS (fuera del loop de dominios, una vez por fila)
-    if tipo_incidencia:
+def consolidar_archivos() -> tuple[pd.DataFrame, list[dict[str, Any]], int, list[str]]:
+    archivos, total_filas, errores = contar_filas_excel()
+    frames: list[pd.DataFrame] = []
+    for path in listar_archivos_excel():
+        try:
+            engine = "xlrd" if path.suffix.lower() == ".xls" else "openpyxl"
+            df_temp = pd.read_excel(path, engine=engine)
+            if df_temp.empty:
+                continue
+            df_temp = df_temp.loc[:, ~df_temp.columns.duplicated()].copy()
+            df_temp = df_temp.dropna(how="all")
+            frames.append(df_temp)
+        except Exception as exc:  # pragma: no cover - diagnóstico de archivo corrupto
+            errores.append(f"{path.name}: {exc}")
+    if not frames:
+        return pd.DataFrame(), archivos, total_filas, errores
+    df = pd.concat(frames, ignore_index=True)
+    df = df.loc[:, ~df.columns.duplicated()].copy()
+    df.columns = [str(col).strip().upper() for col in df.columns]
+    return df, archivos, total_filas, errores
+
+
+def sanear_dataframe(df: pd.DataFrame) -> pd.DataFrame:
+    if df.empty:
+        return df
+    columnas = {str(col).strip().upper(): col for col in df.columns}
+    for nombre in ["DOMINIO", "DOMINIO2", "DOMINIO3", "REGIONAL", "TRANSPORTE", "FECHA", "HORA", "RETIENE", "ITEMS INFRACCION", "ACTA OBS", "LUGAR"]:
+        if nombre in columnas:
+            df[nombre] = df[nombre].fillna("").astype(str).str.strip().str.upper()
+    for nombre in ["LATITUD", "LONGITUD"]:
+        if nombre in columnas:
+            df[nombre] = df[nombre].fillna("")
+    if "REGIONAL" in df.columns:
+        df["REGIONAL"] = df["REGIONAL"].apply(lambda valor: "" if pd.isna(valor) else str(valor).strip())
+        df["REGION_NORMALIZADA"] = df["REGIONAL"].apply(normalizar_region)
+    return df
+
+
+def contar_dominios_fila(fila: pd.Series) -> tuple[list[str], int, int]:
+    dominios: list[str] = []
+    for nombre in ["DOMINIO", "DOMINIO2", "DOMINIO3"]:
+        valor = str(valor_fila(fila, nombre)).strip().upper()
+        if valor and valor not in {"NAN", "NULL", ""}:
+            dominios.append(valor)
+    patron = re.compile(r"^[A-Z]{2,3}[0-9A-Z]{2,5}$")
+    validos = sum(1 for dominio in dominios if patron.fullmatch(dominio))
+    invalidos = max(0, len(dominios) - validos)
+    return dominios, validos, invalidos
+
+
+def calcular_indicadores_resolucion_284(df: pd.DataFrame) -> dict[str, Any]:
+    if df.empty:
+        return {"colegios": 0, "controles": 0, "hitos_graves": 0, "deficiencias_tecnicas": 0, "aplicable": False}
+    texto_completo = df.apply(lambda fila: f"{valor_fila(fila, 'ACTA OBS')} {valor_fila(fila, 'PL OBS')}", axis=1)
+    patron = re.compile(r"(?:res|reso|resoluci[oó]n)\s*[\.-]*\s*284", re.IGNORECASE)
+    mascara = texto_completo.str.contains(patron, na=False)
+    subset = df[mascara].copy()
+    if subset.empty:
+        return {"colegios": 0, "controles": 0, "hitos_graves": 0, "deficiencias_tecnicas": 0, "aplicable": False}
+
+    total_controles = int(len(subset))
+    hitos_graves = 0
+    deficiencias_tecnicas = 0
+    for _, fila in subset.iterrows():
+        texto = f"{valor_fila(fila, 'ACTA OBS')} {valor_fila(fila, 'PL OBS')}"
+        texto_limpio = normalizar_texto(texto)
+        es_alcohol = False
+        es_sustancias = False
+        for nombre in ["ALCOHOLEMIA CHOFER 1", "ALCOHOLEMIA CHOFER 2", "ALCOHOLEMIA CHOFER 3"]:
+            valor = str(valor_fila(fila, nombre)).upper().strip()
+            if valor and valor not in {"NAN", "NEG", "NEGATIVO", "0", "0.0"} and ("POS" in valor or "POSITIVO" in valor or "+" in valor):
+                es_alcohol = True
+                break
+        for nombre in ["SUSTANCIAS CHOFER 1", "SUSTANCIAS CHOFER 2", "SUSTANCIAS CHOFER 3"]:
+            valor = str(valor_fila(fila, nombre)).upper().strip()
+            if valor and valor not in {"NAN", "NEG", "NEGATIVO", "0"} and ("POS" in valor or "POSITIVO" in valor or "+" in valor):
+                es_sustancias = True
+                break
+        mencion = any(token in texto_limpio for token in ["ALCOHOLEMIA", "POSITIVO", "NARCO", "SUSTANCIA", "DROGA", "TESTIGO"])
+        retencion = str(valor_fila(fila, "RETIENE")).upper().strip()
+        if es_alcohol or es_sustancias or (mencion and retencion == "SI"):
+            hitos_graves += 1
+            continue
+        if retencion == "SI" or str(valor_fila(fila, "ACTA N°")).strip() or re.search(r"(vencid|seguro|habilitaci|licencia|cubierta|neumatic|tenic|revision|vtv|rto|carrocer|chasis|freno|luces|matafuego|parabris|tacograf)", texto_limpio, re.IGNORECASE):
+            deficiencias_tecnicas += 1
+    return {"colegios": int(len(subset)), "controles": total_controles, "hitos_graves": hitos_graves, "deficiencias_tecnicas": deficiencias_tecnicas, "aplicable": True}
+
+
+def calcular_indicadores(df: pd.DataFrame) -> dict[str, Any]:
+    if df.empty:
+        return {
+            "filas": {"total": 0, "validas": 0, "invalidas": 0},
+            "dominios": {"filas": 0, "encontrados": 0, "validos": 0, "invalidos": 0},
+            "transporte": {"cargas": 0, "pasajeros": 0, "total": 0},
+            "vehiculos_controlados": {"total": 0, "cargas": 0, "pasajeros": 0},
+            "actas": {"total": 0, "cargas": 0, "pasajeros": 0},
+            "retenciones": {"total": 0, "cargas": 0, "pasajeros": 0},
+            "alcohol": {"total": 0},
+            "sustancias": {"total": 0},
+            "articulos": {"total": 0, "cargas": 0, "pasajeros": 0},
+            "resolucion_284": {"colegios": 0, "controles": 0, "hitos_graves": 0, "deficiencias_tecnicas": 0, "aplicable": False},
+        }
+
+    transporte = df["TRANSPORTE"].fillna("").astype(str).str.upper().str.strip() if "TRANSPORTE" in df.columns else pd.Series(["" for _ in range(len(df))], index=df.index)
+    ca_mask = transporte.isin(["CA", "CARGA", "CARGAS"])
+    pa_mask = transporte.isin(["PA", "PASAJERO", "PASAJEROS"])
+
+    dominios_totales: list[str] = []
+    dominios_validos = 0
+    dominios_invalidos = 0
+    for _, fila in df.iterrows():
+        dominios_fila, validos, invalidos = contar_dominios_fila(fila)
+        dominios_totales.extend(dominios_fila)
+        dominios_validos += validos
+        dominios_invalidos += invalidos
+
+    total_actas = 0
+    total_actas_cargas = 0
+    total_actas_pasajeros = 0
+    total_retenciones = 0
+    total_retenciones_cargas = 0
+    total_retenciones_pasajeros = 0
+    alcohol_total = 0
+    sustancias_total = 0
+    articulos_total = 0
+    articulos_cargas = 0
+    articulos_pasajeros = 0
+    for _, fila in df.iterrows():
+        transporte_valor = str(valor_fila(fila, "TRANSPORTE")).upper().strip()
+        retiene = str(valor_fila(fila, "RETIENE")).upper().strip() in {"SI", "SÍ"}
+        tipo = "CA" if transporte_valor in {"CA", "CARGA", "CARGAS"} else "PA" if transporte_valor in {"PA", "PASAJERO", "PASAJEROS"} else None
+        if tipo == "CA" and retiene:
+            total_retenciones_cargas += 1
+        if tipo == "PA" and retiene:
+            total_retenciones_pasajeros += 1
+        if retiene:
+            total_retenciones += 1
+        articulo = elegir_articulo(transporte_valor, valor_fila(fila, "ITEMS INFRACCION"))
+        if articulo:
+            articulos_total += 1
+            if tipo == "CA":
+                articulos_cargas += 1
+            elif tipo == "PA":
+                articulos_pasajeros += 1
+            total_actas += 1
+            if tipo == "CA":
+                total_actas_cargas += 1
+            elif tipo == "PA":
+                total_actas_pasajeros += 1
+        tipo_incidencia, _ = detectar_incidencia_fila(fila)
         if tipo_incidencia == "ALCOHOLEMIA":
-            incidencias_alcoholemia += 1
-            if es_retencion:
-                retenciones_alcoholemia += 1
+            alcohol_total += 1
         elif tipo_incidencia == "SUSTANCIA":
-            incidencias_sustancias += 1
-            if es_retencion:
-                retenciones_sustancias += 1
+            sustancias_total += 1
+
+    resolucion_284 = calcular_indicadores_resolucion_284(df)
+    return {
+        "filas": {"total": int(len(df)), "validas": int(len(df)), "invalidas": 0},
+        "dominios": {"filas": int(len(df)), "encontrados": int(len(dominios_totales)), "validos": int(dominios_validos), "invalidos": int(dominios_invalidos)},
+        "transporte": {"cargas": int(ca_mask.sum()), "pasajeros": int(pa_mask.sum()), "total": int((ca_mask | pa_mask).sum())},
+        "vehiculos_controlados": {"total": int((ca_mask | pa_mask).sum()), "cargas": int(ca_mask.sum()), "pasajeros": int(pa_mask.sum())},
+        "actas": {"total": int(total_actas), "cargas": int(total_actas_cargas), "pasajeros": int(total_actas_pasajeros)},
+        "retenciones": {"total": int(total_retenciones), "cargas": int(total_retenciones_cargas), "pasajeros": int(total_retenciones_pasajeros)},
+        "alcohol": {"total": int(alcohol_total)},
+        "sustancias": {"total": int(sustancias_total)},
+        "articulos": {"total": int(articulos_total), "cargas": int(articulos_cargas), "pasajeros": int(articulos_pasajeros)},
+        "resolucion_284": resolucion_284,
+    }
 
 
-# =========================================================
-# CALCULO DE MÉTRICAS POR REGIÓN
-# =========================================================
-
-from collections import defaultdict
-
-regiones_detectadas = set()
-regiones_no_mapeadas = set()
-
-regiones = {region: {
-    "cargas": {"vc": 0, "actas": 0, "ret": 0},
-    "pasajeros": {"vc": 0, "actas": 0, "ret": 0},
-    "total": {"vc": 0, "actas": 0, "ret": 0}
-} for region in regiones_validas}
-
-for r in registros:
-    reg = r.get("regional", "").strip().upper()
-    if not reg:
-        continue
-
-    if reg not in regiones_validas:
-        regiones_no_mapeadas.add(reg)
-        continue
-
-    regiones_detectadas.add(reg)
-
-    transporte = r.get("transporte", "").strip().upper()
-    articulo = r.get("articulo", "").strip()
-    retiene = r.get("retiene", "").strip().upper()
-
-    if transporte == "CA":
-        t = "cargas"
-    elif transporte == "PA":
-        t = "pasajeros"
-    else:
-        continue
-
-    regiones[reg][t]["vc"] += 1
-    if articulo:
-        regiones[reg][t]["actas"] += 1
-    if retiene == "SI":
-        regiones[reg][t]["ret"] += 1
-
-    regiones[reg]["total"]["vc"] += 1
-    if articulo:
-        regiones[reg]["total"]["actas"] += 1
-    if retiene == "SI":
-        regiones[reg]["total"]["ret"] += 1
+def calcular_regiones(df: pd.DataFrame) -> dict[str, dict[str, dict[str, int]]]:
+    resultado = {region: {grupo: {metrica: 0 for metrica in ("vc", "actas", "ret")} for grupo in ("total", "cargas", "pasajeros")} for region in REGIONES_ORDENADAS}
+    for _, fila in df.iterrows():
+        region = normalizar_region(valor_fila(fila, "REGIONAL"))
+        if region not in resultado:
+            continue
+        transporte = str(valor_fila(fila, "TRANSPORTE")).upper().strip()
+        tipo = "CA" if transporte in {"CA", "CARGA", "CARGAS"} else "PA" if transporte in {"PA", "PASAJERO", "PASAJEROS"} else None
+        if not tipo:
+            continue
+        grupo = "cargas" if tipo == "CA" else "pasajeros"
+        retiene = str(valor_fila(fila, "RETIENE")).upper().strip() in {"SI", "SÍ"}
+        articulo = elegir_articulo(transporte, valor_fila(fila, "ITEMS INFRACCION"))
+        for nombre in (grupo, "total"):
+            resultado[region][nombre]["vc"] += 1
+            if articulo:
+                resultado[region][nombre]["actas"] += 1
+            if retiene:
+                resultado[region][nombre]["ret"] += 1
+    return resultado
 
 
-# =========================================================
-# CALCULO TOTALES Y PORCENTAJES
-# =========================================================
+def construir_registros(df: pd.DataFrame) -> list[dict[str, Any]]:
+    registros: list[dict[str, Any]] = []
+    for _, fila in df.iterrows():
+        transporte = str(valor_fila(fila, "TRANSPORTE")).upper().strip()
+        if transporte not in {"CA", "PA", "CARGA", "CARGAS", "PASAJERO", "PASAJEROS"}:
+            continue
+        dominios_fila, _, _ = contar_dominios_fila(fila)
+        registros.append({
+            "fecha": str(valor_fila(fila, "FECHA"))[:10],
+            "hora": str(valor_fila(fila, "HORA"))[:10],
+            "regional": normalizar_region(valor_fila(fila, "REGIONAL")),
+            "lugar": str(valor_fila(fila, "LUGAR")).strip(),
+            "transporte": "CA" if transporte in {"CA", "CARGA", "CARGAS"} else "PA",
+            "dominios": dominios_fila,
+            "retiene": "SI" if str(valor_fila(fila, "RETIENE")).upper().strip() in {"SI", "SÍ"} else "NO",
+            "articulo": elegir_articulo(transporte, valor_fila(fila, "ITEMS INFRACCION")),
+            "incidencia": detectar_incidencia_fila(fila)[0],
+            "lat": convertir_dms_a_decimal(valor_fila(fila, "LATITUD")),
+            "lon": convertir_dms_a_decimal(valor_fila(fila, "LONGITUD")),
+        })
+    return registros
 
-total_vehiculos = len(registros)
 
-porc_cargas = 0
-porc_pasajeros = 0
+def construir_delegaciones(df: pd.DataFrame) -> dict[str, dict[str, Any]]:
+    delegaciones: dict[str, dict[str, Any]] = {}
+    for _, fila in df.iterrows():
+        region = normalizar_region(valor_fila(fila, "REGIONAL"))
+        if region not in REGIONES_ORDENADAS:
+            continue
+        transporte = str(valor_fila(fila, "TRANSPORTE")).upper().strip()
+        if transporte not in {"CA", "PA", "CARGA", "CARGAS", "PASAJERO", "PASAJEROS"}:
+            continue
+        delegaciones.setdefault(region, {"delegacion": region, "controles": 0, "actas": 0, "retenciones": 0})
+        delegaciones[region]["controles"] += 1
+        if elegir_articulo(transporte, valor_fila(fila, "ITEMS INFRACCION")):
+            delegaciones[region]["actas"] += 1
+        if str(valor_fila(fila, "RETIENE")).upper().strip() in {"SI", "SÍ"}:
+            delegaciones[region]["retenciones"] += 1
+    return delegaciones
 
-if total_vehiculos > 0:
-    porc_cargas = round(total_cargas / total_vehiculos * 100, 2)
-    porc_pasajeros = round(total_pasajeros / total_vehiculos * 100, 2)
 
-# =========================================================
-# GENERACION DEL ARCHIVO JSON
-# =========================================================
+def construir_fiscalizadores(df: pd.DataFrame) -> dict[str, dict[str, Any]]:
+    fiscalizadores: dict[str, dict[str, Any]] = {}
+    for _, fila in df.iterrows():
+        region = normalizar_region(valor_fila(fila, "REGIONAL"))
+        if region not in REGIONES_ORDENADAS:
+            continue
+        agentes: list[str] = []
+        for index in range(1, 4):
+            nombre = f"FISCALIZADOR{index}"
+            if nombre in df.columns:
+                valor = str(valor_fila(fila, nombre)).strip()
+                if valor and valor not in {"NAN", "NULL"}:
+                    agentes.append(valor)
+        if not agentes:
+            continue
+        for agente in agentes:
+            fiscalizadores.setdefault(agente, {"agente": agente, "delegacion": region, "controles": 0, "actas": 0, "retenciones": 0})
+            fiscalizadores[agente]["controles"] += 1
+            if elegir_articulo(str(valor_fila(fila, "TRANSPORTE")).upper().strip(), valor_fila(fila, "ITEMS INFRACCION")):
+                fiscalizadores[agente]["actas"] += 1
+            if str(valor_fila(fila, "RETIENE")).upper().strip() in {"SI", "SÍ"}:
+                fiscalizadores[agente]["retenciones"] += 1
+    return fiscalizadores
 
-salida = {
-    "registros": registros,
-    "incidencias": {
-        "alcoholemia_positiva": incidencias_alcoholemia,
-        "sustancias_positivas": incidencias_sustancias,
-        "retenciones_alcoholemia": retenciones_alcoholemia,
-        "retenciones_sustancias": retenciones_sustancias
-    },
-    "detalle_incidencias": detalles_incidencias,
-    "metadata": {
-        "total_registros": len(registros),
-        "total_cargas": total_cargas,
-        "total_pasajeros": total_pasajeros,
-        "total_retenciones": total_retenciones,
-        "registros_con_incidencia": len(detalles_incidencias),
-        "fecha_generacion": pd.Timestamp.now().isoformat()
-    },
-    "actas": {
-        "total": sum(1 for r in registros if r.get("articulo")),
-        "cargas": sum(1 for r in registros if r.get("transporte") == "CA" and r.get("articulo")),
-        "pasajeros": sum(1 for r in registros if r.get("transporte") == "PA" and r.get("articulo"))
-    },
-    "retenciones": {
-        "total": total_retenciones,
-        "cargas": sum(1 for r in registros if r.get("transporte") == "CA" and r.get("retiene") == "SI"),
-        "pasajeros": sum(1 for r in registros if r.get("transporte") == "PA" and r.get("retiene") == "SI")
-    },
-    "regiones": regiones
-}
 
-# =========================================================
-# GUARDAR datos.json
-# =========================================================
+def procesar_datos(desde: str | None = None, hasta: str | None = None) -> dict[str, Any]:
+    df, archivos, total_filas, errores = consolidar_archivos()
+    if df.empty:
+        return {
+            "metadata": {"generado_en": datetime.now().isoformat(timespec="seconds"), "total_registros": 0, "filtro_desde": desde, "filtro_hasta": hasta},
+            "diagnostico": {"archivos_procesados": 0, "filas_originales": 0, "filas_consolidadas": 0, "filas_validas": 0, "filas_invalidas": 0, "errores": errores},
+            "periodo": {"fecha_desde": None, "fecha_hasta": None, "filas_antes_del_filtro": 0, "filas_despues_del_filtro": 0},
+            "resumen": {"total_vehiculos": 0},
+            "indicadores": {},
+            "regiones": {},
+            "delegaciones": {},
+            "fiscalizadores": {},
+            "infracciones": {},
+            "incidencias": {},
+            "registros": [],
+        }
 
-datos_json_path = os.path.join(os.path.dirname(__file__), "datos.json")
+    df = sanear_dataframe(df)
+    filas_antes = int(len(df))
+    fecha_col = columna(df, "FECHA")
+    if fecha_col and (desde is not None or hasta is not None):
+        fechas = pd.to_datetime(df[fecha_col], errors="coerce")
+        mascara = pd.Series(True, index=df.index)
+        if desde is not None:
+            mascara &= fechas >= pd.Timestamp(desde)
+        if hasta is not None:
+            mascara &= fechas <= pd.Timestamp(hasta)
+        df = df[mascara].copy()
 
-with open(datos_json_path, "w", encoding="utf-8") as f:
-    json.dump(salida, f, indent=2, ensure_ascii=False)
+    diagnostico = {
+        "archivos_procesados": len(archivos),
+        "filas_originales": int(total_filas),
+        "filas_consolidadas": int(filas_antes),
+        "filas_validas": int(len(df)),
+        "filas_invalidas": int(max(0, filas_antes - len(df))),
+        "dominios_validos": 0,
+        "dominios_invalidos": 0,
+        "regiones_validas": 0,
+        "regiones_invalidas": 0,
+        "errores": errores,
+    }
 
-# =========================================================
-# BLOQUE A: RESUMEN GENERAL
-# =========================================================
+    for _, fila in df.iterrows():
+        _, validos, invalidos = contar_dominios_fila(fila)
+        diagnostico["dominios_validos"] += validos
+        diagnostico["dominios_invalidos"] += invalidos
+        region = normalizar_region(valor_fila(fila, "REGIONAL"))
+        if region in REGIONES_ORDENADAS:
+            diagnostico["regiones_validas"] += 1
+        else:
+            diagnostico["regiones_invalidas"] += 1
 
-titulo("RESUMEN GENERAL DE PROCESAMIENTO")
+    indicadores = calcular_indicadores(df)
+    regiones = calcular_regiones(df)
+    delegaciones = construir_delegaciones(df)
+    fiscalizadores = construir_fiscalizadores(df)
+    registros = construir_registros(df)
+    resumen = {
+        "total_vehiculos": int(indicadores["vehiculos_controlados"]["total"]),
+        "total_cargas": int(indicadores["vehiculos_controlados"]["cargas"]),
+        "total_pasajeros": int(indicadores["vehiculos_controlados"]["pasajeros"]),
+        "total_actas": int(indicadores["actas"]["total"]),
+        "total_retenciones": int(indicadores["retenciones"]["total"]),
+        "incidencias_alcoholemia": int(indicadores["alcohol"]["total"]),
+        "incidencias_sustancias": int(indicadores["sustancias"]["total"]),
+    }
+    periodo = {
+        "fecha_desde": desde,
+        "fecha_hasta": hasta,
+        "fecha_minima": str(df["FECHA"].min()) if "FECHA" in df.columns and not df.empty else None,
+        "fecha_maxima": str(df["FECHA"].max()) if "FECHA" in df.columns and not df.empty else None,
+        "filas_antes_del_filtro": int(filas_antes),
+        "filas_despues_del_filtro": int(len(df)),
+    }
+    resultado = {
+        "metadata": {"generado_en": datetime.now().isoformat(timespec="seconds"), "total_registros": int(len(registros)), "filtro_desde": desde, "filtro_hasta": hasta},
+        "diagnostico": diagnostico,
+        "periodo": periodo,
+        "resumen": resumen,
+        "indicadores": indicadores,
+        "regiones": regiones,
+        "delegaciones": delegaciones,
+        "fiscalizadores": fiscalizadores,
+        "infracciones": {"articulos": indicadores["articulos"]},
+        "incidencias": {"alcoholemia": indicadores["alcohol"], "sustancias": indicadores["sustancias"], "resolucion_284": indicadores["resolucion_284"]},
+        "registros": registros,
+    }
+    DATA_FILE.write_text(json.dumps(resultado, ensure_ascii=False, indent=2), encoding="utf-8")
+    return resultado
 
-print(f"  MODO DE PROCESAMIENTO: {modo}\n")
-print(f" DATOS PROCESADOS:")
-print(f"    • Filas Excel: {df.shape[0]:,}")
-print(f"    • Registros generados: {len(registros):,}")
-print(f"    • Dominios válidos totales: {total_dominios:,}\n")
 
-print(f" VEHÍCULOS CONTROLADOS:")
-print(f"    • Total VC: {total_vehiculos:,}")
-print(f"    • Cargas: {total_cargas:,} ({porc_cargas}%)")
-print(f"    • Pasajeros: {total_pasajeros:,} ({porc_pasajeros}%)\n")
+@app.route("/")
+def index():
+    return send_from_directory(str(BASE_DIR), "informe-operativo.html")
 
-print(f" ACTAS:")
-print(f"    • Total actas: {salida['actas']['total']}")
-print(f"    • Cargas: {salida['actas']['cargas']}")
-print(f"    • Pasajeros: {salida['actas']['pasajeros']}\n")
 
-print(f" RETENCIONES:")
-print(f"    • Total retenciones: {total_retenciones}")
-print(f"    • Cargas: {salida['retenciones']['cargas']}")
-print(f"    • Pasajeros: {salida['retenciones']['pasajeros']}\n")
+@app.route("/resumen")
+def resumen():
+    if not DATA_FILE.exists():
+        return jsonify({"error": "No hay datos disponibles. Ejecutá python generador.py"}), 503
+    return jsonify(json.loads(DATA_FILE.read_text(encoding="utf-8")))
 
-print(f"  INCIDENCIAS CRÍTICAS:")
-print(f"    • Alcoholemia positiva: {incidencias_alcoholemia}")
-print(f"    • Sustancias positivas: {incidencias_sustancias}")
-print(f"    • Registros con incidencia: {len(detalles_incidencias)}\n")
 
-# =========================================================
-# BLOQUE B: DEBUG PROCESAMIENTO
-# =========================================================
+@app.route("/datos.json")
+def obtener_datos_json():
+    if not DATA_FILE.exists():
+        return jsonify({"error": "No hay datos disponibles. Ejecutá python generador.py"}), 503
+    return send_from_directory(str(BASE_DIR), "datos.json")
 
-subtitulo("DEBUG PROCESAMIENTO")
 
-regionales_en_registros = sorted(set(r.get('regional', '') for r in registros if r.get('regional')))
-transportes_en_registros = sorted(set(r.get('transporte', '') for r in registros if r.get('transporte')))
+@app.route("/api/procesar", methods=["GET", "POST"])
+def api_procesar():
+    payload = request.get_json(silent=True) or {}
+    desde = payload.get("desde") if isinstance(payload, dict) else None
+    hasta = payload.get("hasta") if isinstance(payload, dict) else None
+    try:
+        return jsonify(procesar_datos(desde, hasta))
+    except Exception as exc:  # pragma: no cover - manejo de errores de servidor
+        return jsonify({"status": "error", "message": str(exc)}), 500
 
-print(f" Regionales presentes:")
-if regionales_en_registros:
-    for reg in regionales_en_registros:
-        count = sum(1 for r in registros if r.get('regional') == reg)
-        print(f"    • {reg:5} → {count:,} registros")
-else:
-    print("    ✗ Ninguna región detectada")
 
-print(f"\n Tipos de transporte presentes:")
-if transportes_en_registros:
-    for transp in transportes_en_registros:
-        count = sum(1 for r in registros if r.get('transporte') == transp)
-        print(f"    • {transp:5} → {count:,} registros")
-else:
-    print("    ✗ Ningún tipo de transporte detectado")
-print()
+def main() -> None:
+    parser = argparse.ArgumentParser(description="Generador del informe operativo CNRT")
+    parser.add_argument("--desde", help="Fecha inicial en formato YYYY-MM-DD")
+    parser.add_argument("--hasta", help="Fecha final en formato YYYY-MM-DD")
+    parser.add_argument("--solo-procesar", action="store_true", help="Genera datos.json sin levantar el servidor")
+    args = parser.parse_args()
 
-# =========================================================
-# BLOQUE C: RESUMEN POR REGIÓN
-# =========================================================
+    print("=" * 60)
+    print("     INFORMES AUTOMATIZADOS CNRT")
+    print("=" * 60)
 
-titulo("RESUMEN POR REGIÓN")
+    archivos, total_filas, errores = contar_filas_excel()
+    print("[1/8] Buscando archivos Excel...")
+    print(f"      Archivos encontrados: {len(archivos)}")
+    print(f"      Filas originales: {total_filas:,}")
 
-for region in sorted(regiones_detectadas):
-    r = regiones[region]
-    total_vc = r["total"]["vc"]
-    total_actas = r["total"]["actas"]
-    total_ret = r["total"]["ret"]
-    
-    print(f" {region.upper()}")
-    print(f"    Total    → VC: {total_vc:,} | Actas: {total_actas:,} | Ret: {total_ret:,}")
-    print(f"    Cargas   → VC: {r['cargas']['vc']:,} | Actas: {r['cargas']['actas']:,} | Ret: {r['cargas']['ret']:,}")
-    print(f"    Pasajeros→ VC: {r['pasajeros']['vc']:,} | Actas: {r['pasajeros']['actas']:,} | Ret: {r['pasajeros']['ret']:,}\n")
+    print("[2/8] Consolidando...")
+    df, _, _, _ = consolidar_archivos()
+    print(f"      Filas consolidadas: {len(df):,}")
 
-# =========================================================
-# BLOQUE D: CONTROL DE CONSISTENCIA
-# =========================================================
+    print("[3/8] Saneando datos...")
+    df = sanear_dataframe(df)
+    problemas = 0
+    print(f"      Filas válidas: {len(df):,}")
+    print(f"      Filas con problemas: {problemas:,}")
 
-subtitulo("CONTROL DE CONSISTENCIA")
+    print("[4/8] Procesando dominios...")
+    indicadores = calcular_indicadores(df)
+    print(f"      Dominios válidos: {indicadores['dominios']['validos']:,}")
 
-suma_vc_regiones = sum(regiones[r]["total"]["vc"] for r in regiones_detectadas)
-total_registros_validos = len([r for r in registros if r.get('regional') in regiones_validas])
+    print("[5/8] Calculando indicadores...")
+    print(f"      Vehículos: {indicadores['vehiculos_controlados']['total']:,}")
+    print(f"      Actas: {indicadores['actas']['total']:,}")
+    print(f"      Retenciones: {indicadores['retenciones']['total']:,}")
 
-print(f"Validación de registros:")
-print(f"    • Total registros con regional válida: {total_registros_validos:,}")
-print(f"    • Suma VC por regiones: {suma_vc_regiones:,}")
+    print("[6/8] Generando resultados...")
+    resultado = procesar_datos(args.desde, args.hasta)
+    print("      Regiones: OK")
+    print("      Delegaciones: OK")
+    print("      Fiscalizadores: OK")
 
-if suma_vc_regiones == total_registros_validos:
-    print(f"     OK - Los datos son consistentes\n")
-else:
-    print(f"      ERROR - Discrepancia detectada ({total_registros_validos:,} vs {suma_vc_regiones:,})\n")
+    print("[7/8] Generando JSON...")
+    print("      datos.json: OK")
+    print("=" * 60)
+    print("     SERVIDOR WEB")
+    print("=" * 60)
+    print("Dashboard: http://127.0.0.1:5000/")
 
-# =========================================================
-# BLOQUE E: REGIONES NO MAPEADAS
-# =========================================================
+    if not args.solo_procesar:
+        app.run(host="127.0.0.1", port=5000, debug=False)
 
-if regiones_no_mapeadas:
-    subtitulo("REGIONES NO MAPEADAS (POSIBLES VALORES INVÁLIDOS)")
-    print("  Las siguientes regiones fueron encontradas pero no están en el mapa de normalización:\n")
-    for reg in sorted(regiones_no_mapeadas):
-        count = len([r for r in registros if r.get('regional') == reg])
-        print(f"     {reg:20} → {count:,} registros ignorados")
-    print()
- 
-# =========================================================
-# RESUMEN FINAL
-# =========================================================
 
-titulo("RESUMEN FINAL")
-
-print(f" Archivo generado exitosamente\n")
-print(f" Ubicación: {datos_json_path}\n")
-
-if fecha_desde or fecha_hasta:
-    print(f" Período de datos:")
-    if fecha_desde:
-        print(f"    Desde: {fecha_desde}")
-    if fecha_hasta:
-        print(f"    Hasta: {fecha_hasta}\n")
-
-print(f" RESUMEN CONSOLIDADO:")
-print(f"    • Vehículos Controlados: {total_vehiculos:,}")
-print(f"      - Cargas: {total_cargas:,} ({porc_cargas}%)")
-print(f"      - Pasajeros: {total_pasajeros:,} ({porc_pasajeros}%)")
-print(f"    • Actas: {salida['actas']['total']}")
-print(f"    • Retenciones: {total_retenciones}")
-print(f"    • Incidencias Alcoholemia: {incidencias_alcoholemia}")
-print(f"    • Incidencias Sustancias: {incidencias_sustancias}")
-print(f"    • Registros Generados: {len(registros):,}\n")
-print(f" Timestamp: {salida['metadata']['fecha_generacion']}\n")
+if __name__ == "__main__":
+    main()

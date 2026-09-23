@@ -41,6 +41,17 @@ def valor(fila: pd.Series, nombre: str | None) -> Any:
     return fila[nombre] if nombre and nombre in fila.index and not pd.isna(fila[nombre]) else ""
 
 
+def agentes_de_fila(fila: pd.Series, columnas: list[str | None]) -> list[str]:
+    agentes: list[str] = []
+    for nombre in columnas:
+        if not nombre:
+            continue
+        agente = normalizar(valor(fila, nombre))
+        if agente and agente not in {"NAN", "NULL"} and agente not in agentes:
+            agentes.append(agente)
+    return agentes
+
+
 def region_de(regional: Any, lugar: Any) -> str:
     texto = f"{normalizar(regional)} {normalizar(lugar)}"
     return next((region for region, nombres in MAPA_REGIONES.items() if any(nombre in texto for nombre in nombres)), "SIN_REGION")
@@ -65,7 +76,14 @@ def es_positivo(fila: pd.Series, prefijo: str) -> bool:
 def leer_excels() -> pd.DataFrame:
     archivos = sorted(p for p in EXCEL_DIR.glob("*.xls*") if not p.name.startswith("~$"))
     if not archivos: raise FileNotFoundError(f"No hay archivos Excel en {EXCEL_DIR}")
-    tablas = [pd.read_excel(p, engine="xlrd" if p.suffix.lower() == ".xls" else "openpyxl") for p in archivos]
+    tablas = []
+    for archivo in archivos:
+        if archivo.suffix.lower() == ".xls":
+            inicio = archivo.read_bytes()[:512].lstrip().lower()
+            if inicio.startswith(b"<html") or b"<table" in inicio:
+                tablas.extend(pd.read_html(archivo))
+                continue
+        tablas.append(pd.read_excel(archivo, engine="xlrd" if archivo.suffix.lower() == ".xls" else "openpyxl"))
     return pd.concat(tablas, ignore_index=True).dropna(how="all")
 
 
@@ -80,6 +98,9 @@ def procesar_datos(desde: str | None = None, hasta: str | None = None) -> dict[s
     metricas = {"total_vehiculos": 0, "total_cargas": 0, "total_pasajeros": 0, "total_actas": 0, "total_retenciones": 0, "incidencias_alcoholemia": 0, "incidencias_sustancias": 0, "gendarmeria_confeccion_apartados": 0, "sin_region": 0}
     regional_col, transporte_col, lugar_col = columna(df, "REGIONAL"), columna(df, "TRANSPORTE"), columna(df, "LUGAR")
     retiene_col, acta_col, items_col = columna(df, "RETIENE"), columna(df, "ACTA N°", "ACTA Nº", "ACTA N�"), columna(df, "ITEMS INFRACCION")
+    fiscalizador_cols = [columna(df, f"FISCALIZADOR{i}", f"FISCALIZADOR {i}") for i in range(1, 4)]
+    ranking_delegaciones: dict[str, dict[str, int | str]] = {}
+    ranking_agentes: dict[str, dict[str, int | str]] = {}
     for _, fila in df.iterrows():
         regional = normalizar(valor(fila, regional_col))
         if "GENDARMERIA" in regional or "CONFECCION" in regional:
@@ -95,12 +116,28 @@ def procesar_datos(desde: str | None = None, hasta: str | None = None) -> dict[s
         alco, sustancias = es_positivo(fila, "ALCOHOLEMIA"), es_positivo(fila, "SUSTANCIAS")
         fecha = valor(fila, fecha_col)
         fecha_texto = pd.Timestamp(fecha).date().isoformat() if not pd.isna(fecha) else ""
-        registros.append({"fecha": fecha_texto, "regional": region, "transporte": tipo, "retiene": "SI" if retiene else "NO", "incidencia": "ALCOHOLEMIA" if alco else ("SUSTANCIA" if sustancias else None)})
+        agentes = agentes_de_fila(fila, fiscalizador_cols)
+        registros.append({"fecha": fecha_texto, "regional": region, "transporte": tipo, "retiene": "SI" if retiene else "NO", "incidencia": "ALCOHOLEMIA" if alco else ("SUSTANCIA" if sustancias else None), "agentes": agentes})
         metricas["total_vehiculos"] += 1; metricas[f"total_{clave}"] += 1; metricas["total_actas"] += int(tiene_acta); metricas["total_retenciones"] += int(retiene); metricas["incidencias_alcoholemia"] += int(alco); metricas["incidencias_sustancias"] += int(sustancias)
         if region not in regiones: metricas["sin_region"] += 1; continue
         for grupo in ("total", clave):
             regiones[region][grupo]["vc"] += 1; regiones[region][grupo]["actas"] += int(tiene_acta); regiones[region][grupo]["ret"] += int(retiene)
-    resultado = {"metadata": {"generado_en": datetime.now().isoformat(timespec="seconds"), "total_registros": len(registros), "filtro_desde": desde, "filtro_hasta": hasta}, "metricas": metricas, "regiones": regiones, "registros": registros}
+        if region not in ranking_delegaciones:
+            ranking_delegaciones[region] = {"delegacion": region, "controles": 0, "actas": 0, "retenciones": 0}
+        ranking_delegaciones[region]["controles"] += 1
+        ranking_delegaciones[region]["actas"] += int(tiene_acta)
+        ranking_delegaciones[region]["retenciones"] += int(retiene)
+        for agente in agentes:
+            if agente not in ranking_agentes:
+                ranking_agentes[agente] = {"agente": agente, "delegacion": region, "controles": 0, "actas": 0, "retenciones": 0}
+            ranking_agentes[agente]["controles"] += 1
+            ranking_agentes[agente]["actas"] += int(tiene_acta)
+            ranking_agentes[agente]["retenciones"] += int(retiene)
+    ranking = {
+        "delegaciones": sorted(ranking_delegaciones.values(), key=lambda item: (-int(item["controles"]), -int(item["actas"]), -int(item["retenciones"]), str(item["delegacion"]))),
+        "agentes": sorted(ranking_agentes.values(), key=lambda item: (-int(item["controles"]), -int(item["actas"]), -int(item["retenciones"]), str(item["agente"]))),
+    }
+    resultado = {"metadata": {"generado_en": datetime.now().isoformat(timespec="seconds"), "total_registros": len(registros), "filtro_desde": desde, "filtro_hasta": hasta}, "metricas": metricas, "regiones": regiones, "registros": registros, "ranking": ranking}
     DATA_FILE.write_text(json.dumps(resultado, ensure_ascii=False, indent=2), encoding="utf-8")
     return resultado
 
@@ -123,4 +160,4 @@ def api_procesar():
 
 if __name__ == "__main__":
     procesar_datos()
-    app.run(host="127.0.0.1", port=5000, debug=False)
+    app.run(host="127.0.0.1", port=5001, debug=False)

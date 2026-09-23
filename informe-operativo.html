@@ -53,8 +53,8 @@
   .filter .row { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; justify-content: center; width: 100%; }
   .field { display: flex; flex-direction: column; gap: 6px; width: 260px; max-width: 100%; position: relative; }
   .field label { font-size: 11px; font-weight: 700; color: var(--gris-azulado); text-transform: uppercase; letter-spacing: .8px; }
-  .field select, .field input { font-family: inherit; font-size: 14px; line-height: 1.3; min-height: 44px; padding: 10px 14px; border: 1px solid var(--border); border-radius: 14px; background: #fff; color: var(--azul-oscuro); width: 100%; }
-  .field select { appearance: auto; }
+  .field select, .field input { font-family: inherit; font-size: 14px; padding: 12px 14px; border: 1px solid var(--border); border-radius: 14px; background: #fff; color: var(--azul-oscuro); width: 100%; padding-right: 40px; }
+  .field::after { content: ''; position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: var(--gris-azulado); pointer-events: none; }
   .filter-action { display: flex; justify-content: center; width: 100%; margin-top: 18px; }
   .filter-action button { display: inline-flex; align-items: center; justify-content: center; gap: 10px; border: none; background: var(--azul-oscuro); color: #fff; font-family: inherit; font-size: 13px; font-weight: 700; padding: 14px 24px; border-radius: 999px; cursor: pointer; text-transform: uppercase; letter-spacing: .8px; box-shadow: 0 8px 18px rgba(41,42,78,.18); }
   .filter-action .btn-icon { font-size: 14px; }
@@ -74,6 +74,8 @@
   /* KPI cards */
   .kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; width: 100%; }
   .kpi { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 24px; }
+  #sec0 .kpi { transition: transform .25s ease, box-shadow .25s ease; }
+  #sec0 .kpi:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(41,42,78,.15); }
   .stacked-blocks { display: grid; grid-template-columns: 1fr; gap: 18px; width: 100%; }
   .stacked-blocks .card { width: 100%; min-height: auto; }
   .full-width-card { width: 100%; }
@@ -114,6 +116,16 @@
   .table-scroll { overflow-x: auto; }
   .note { font-size: 12px; color: var(--gris-azulado); margin-top: 10px; font-style: italic; }
 
+  .ranking-toolbar { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 16px; align-items: end; }
+  .ranking-toolbar .field { width: min(220px, 100%); }
+  .ranking-summary { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 12px 0 18px; }
+  .ranking-summary .stat { background: linear-gradient(180deg, #f8f9fe 0%, #eef2fb 100%); border: 1px solid var(--border); border-radius: 14px; padding: 16px; }
+  .ranking-summary .stat .label { font-size: 11px; color: var(--gris-azulado); text-transform: uppercase; letter-spacing: .8px; font-weight: 700; }
+  .ranking-summary .stat .value { font-size: 28px; font-weight: 700; margin-top: 6px; color: var(--azul-oscuro); }
+  .ranking-pos { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 999px; background: rgba(71,101,142,.12); color: var(--azul-oscuro); font-size: 11px; font-weight: 700; margin-right: 8px; }
+  .ranking-name { display: flex; align-items: center; }
+  .ranking-badge { display: inline-flex; align-items: center; border-radius: 999px; background: rgba(230,184,95,.14); color: var(--azul-oscuro); padding: 4px 8px; font-size: 11px; font-weight: 700; }
+
   /* Simple SVG bar chart container */
   .chart { width: 100%; }
 
@@ -146,16 +158,15 @@
     </div>
     <h1>Resumen Operativo</h1>
     <div class="sub">Análisis de resultados</div>
-    <div class="periodo"> <span id="periodoLabel">—</span></div>
   </header>
 
   <!-- DATE FILTER -->
   <div class="filter">
     <div class="mode">
-      <button id="modeRange" class="active" onclick="setMode('range')">Por rango de fechas</button>
-      <button id="modeMonth" onclick="setMode('month')">Por mes</button>
+      <button id="modeMonth" class="active" onclick="setMode('month')">Por mes</button>
+      <button id="modeRange" onclick="setMode('range')">Por rango de fechas</button>
     </div>
-    <div class="row hidden" id="monthControls">
+    <div class="row" id="monthControls">
       <div class="field">
         <label for="mFrom">Desde</label>
         <select id="mFrom" onchange="onFilterChange()"></select>
@@ -165,7 +176,7 @@
         <select id="mTo" onchange="onFilterChange()"></select>
       </div>
     </div>
-    <div class="row" id="rangeControls">
+    <div class="row hidden" id="rangeControls">
       <div class="field">
         <label for="dFrom">Desde</label>
         <input type="date" id="dFrom" onchange="onFilterChange()" />
@@ -182,9 +193,9 @@
 
   <!-- TABS -->
   <nav class="tabs">
-    <button class="active" onclick="setTab(0)">1 · Resumen Operativo</button>
-    <button onclick="setTab(1)">2 · Incumplimientos vs. Gendarmería</button>
-    <button onclick="setTab(2)">3 · Indicadores</button>
+    <button class="active" onclick="setTab(0)">Resumen Operativo</button>
+    <button onclick="setTab(1)">Delegaciones</button>
+    <button onclick="setTab(2)">Indicadores</button>
   </nav>
 
   <!-- SECTION 1 -->
@@ -211,6 +222,7 @@ let N = 0;
 function loadCalendarConfig(){
   const cfg = window.REPORT_CONFIG || {};
   if(!Array.isArray(cfg.months) || cfg.months.length===0){
+    console.error("REPORT_CONFIG.months no definido o vacío. El calendario es dinámico y requiere datos del generador.");
     return;
   }
   MONTHS = cfg.months.map(m=>({ key:m.key, label:m.label, short:m.short, start:m.start, end:m.end }));
@@ -242,24 +254,6 @@ function loadCalendarConfig(){
     mFrom.value = String(dateToIdx(curFrom,false));
     mTo.value = String(dateToIdx(curTo,true));
   }
-}
-
-// El backend entrega registros con fecha. A partir de ellos se arma el
-// calendario: así el filtro mensual nunca queda vacío ni mal dimensionado.
-function crearConfiguracionCalendario(datos){
-  const fechas = (datos.registros || [])
-    .map(r => r.fecha)
-    .filter(f => /^\d{4}-\d{2}-\d{2}$/.test(f))
-    .sort();
-  if(!fechas.length) return null;
-  const meses = [...new Set(fechas.map(f => f.slice(0,7)))].map(key => {
-    const [anio, mes] = key.split('-').map(Number);
-    const inicio = `${key}-01`;
-    const fin = new Date(anio, mes, 0).toISOString().slice(0,10);
-    const nombre = new Intl.DateTimeFormat('es-AR', {month:'long', year:'numeric', timeZone:'UTC'}).format(new Date(`${inicio}T00:00:00Z`));
-    return { key, start: inicio, end: fin, label: nombre.charAt(0).toUpperCase()+nombre.slice(1), short: nombre.slice(0,3) };
-  });
-  return { months: meses, minDate: fechas[0], maxDate: fechas[fechas.length-1], currentPeriod: {from: fechas[0], to: fechas[fechas.length-1]} };
 }
 
 // Permite aplicar configuración en caliente (útil si Python inyecta después de cargar la página)
@@ -439,11 +433,6 @@ async function loadDashboardData(){
     console.warn('dashboardData no disponible. El frontend quedará con placeholders.');
     return;
   }
-  const configuracionCalendario = crearConfiguracionCalendario(src);
-  if(configuracionCalendario){
-    window.REPORT_CONFIG = configuracionCalendario;
-    loadCalendarConfig();
-  }
   
   dashboardData.resumen = src.resumen || src.metadata || {};
   dashboardData.regiones = src.regiones || {};
@@ -540,7 +529,7 @@ function dateToIdx(dateStr, isEnd) {
 // ============================================================================
 // STATE
 // ============================================================================
-let mode = "range";
+let mode = "month";
 let tab = 0;
 
 function currentRange() {
@@ -640,7 +629,7 @@ function renderSec0(s,e){
   document.getElementById("sec0").innerHTML = `
     <div class="kpis">
       <div class="kpi"><div class="label">Vehículos Controlados</div><div class="value">${fmt(c.total)}</div><div class="split">Cargas ${fmt(c.cargas)} · Pasajeros ${fmt(c.pasajeros)}</div></div>
-      <div class="kpi"><div class="label">Actas de Comprobación</div><div class="value">${fmt(a.total)}</div><div class="split">Cargas ${fmt(a.cargas)} · Pasajeros ${fmt(a.pasajeros)}</div></div>
+      <div class="kpi"><div class="label">Infracciones</div><div class="value">${fmt(a.total)}</div><div class="split">Cargas ${fmt(a.cargas)} · Pasajeros ${fmt(a.pasajeros)}</div></div>
       <div class="kpi"><div class="label">Retenciones</div><div class="value">${fmt(r.total)}</div><div class="split">Cargas ${fmt(r.cargas)} · Pasajeros ${fmt(r.pasajeros)}</div></div>
       <div class="kpi"><div class="label">Control de Conductores</div><div class="value">${fmt(totalControl)}</div><div class="split">Alcoholemia + / Sustancias +: ${fmt(alco)} · ${fmt(sust)}</div></div>
     </div>
@@ -693,35 +682,131 @@ function svgBarChart(serie){
   return `<svg class="chart" viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid meet" style="max-width:100%">${bars}</svg>`;
 }
 
+function getRankingData(){
+  const ranking = dashboardData.ranking || {};
+  const delegaciones = Array.isArray(ranking.delegaciones) && ranking.delegaciones.length
+    ? ranking.delegaciones
+    : Object.entries(dashboardData.regiones || {}).map(([delegacion, data]) => ({
+        delegacion,
+        controles: (data && data.total && data.total.vc) || 0,
+        actas: (data && data.total && data.total.actas) || 0,
+        retenciones: (data && data.total && data.total.ret) || 0,
+      }));
+
+  const agentes = Array.isArray(ranking.agentes) && ranking.agentes.length
+    ? ranking.agentes
+    : (() => {
+        const map = {};
+        const registros = Array.isArray(dashboardData.registros) ? dashboardData.registros : [];
+        registros.forEach(item => {
+          const personas = Array.isArray(item.agentes) ? item.agentes : (item.agente ? [item.agente] : []);
+          const delegacion = item.regional || 'SIN_REGION';
+          personas.forEach(agente => {
+            if (!agente) return;
+            if (!map[agente]) map[agente] = { agente, delegacion, controles: 0, actas: 0, retenciones: 0 };
+            map[agente].controles += 1;
+            map[agente].actas += (item.acta || item.tiene_acta || 0) ? 1 : 0;
+            map[agente].retenciones += (item.retiene === 'SI') ? 1 : 0;
+          });
+        });
+        return Object.values(map);
+      })();
+
+  return { delegaciones, agentes };
+}
+
 function renderSec1(s,e){
-  const serie=[];
-  const gend = dashboardData.gendarmeria || {cnrt:[], gend:[], categorias:[]};
-  for(let i=s;i<=e;i++) serie.push({mes: (MONTHS[i]&&MONTHS[i].short)||'', cnrt: gend.cnrt ? (gend.cnrt[i]||0) : 0, gendarmeria: gend.gend ? (gend.gend[i]||0) : 0});
-  const totC=sumR(gend.cnrt||[],s,e), totG=sumR(gend.gend||[],s,e);
-  const catRows=(gend.categorias||[]).map(c=>{
-    const dif=(c.cnrt||0)-(c.gendarmeria||0);
-    return `<tr><td>${c.tipo}</td><td>${fmt(c.cnrt||0)}</td><td>${fmt(c.gendarmeria||0)}</td><td style="color:${dif>=0?'var(--azul-medio)':'#b04a4a'}">${dif>=0?'+':''}${fmt(dif)}</td></tr>`;
-  }).join("");
+  const { delegaciones, agentes } = getRankingData();
+  const scopeSelect = document.getElementById('rankingScope');
+  const sortSelect = document.getElementById('rankingSort');
+  const delegacionSelect = document.getElementById('rankingDelegation');
+  const scope = scopeSelect ? scopeSelect.value : 'delegaciones';
+  const sort = sortSelect ? sortSelect.value : 'controles';
+  const delegacionFiltro = delegacionSelect ? delegacionSelect.value : 'TODAS';
+
+  const filas = (scope === 'agentes' ? agentes : delegaciones)
+    .filter(item => delegacionFiltro === 'TODAS' || (scope === 'agentes' ? (item.delegacion || 'SIN_REGION') === delegacionFiltro : (item.delegacion || item.delegacion || item.delegacion) === delegacionFiltro || (item.delegacion || 'SIN_REGION') === delegacionFiltro))
+    .map(item => ({
+      nombre: scope === 'agentes' ? (item.agente || 'Sin agente') : (item.delegacion || 'Sin región'),
+      delegacion: (item.delegacion || 'SIN_REGION'),
+      controles: Number(item.controles || 0),
+      actas: Number(item.actas || 0),
+      retenciones: Number(item.retenciones || 0),
+    }))
+    .sort((a, b) => {
+      const valA = a[sort] || 0;
+      const valB = b[sort] || 0;
+      return valB - valA || a.nombre.localeCompare(b.nombre);
+    });
+
+  const totalControles = filas.reduce((sum, item) => sum + item.controles, 0);
+  const totalActas = filas.reduce((sum, item) => sum + item.actas, 0);
+  const totalRetenciones = filas.reduce((sum, item) => sum + item.retenciones, 0);
+
+  const delegacionesList = ['TODAS', ...new Set(delegaciones.map(item => item.delegacion || 'SIN_REGION'))];
+  const filtroOptions = delegacionesList.map(value => `<option value="${value}" ${value === delegacionFiltro ? 'selected' : ''}>${value === 'TODAS' ? 'Todas las delegaciones' : value}</option>`).join('');
+
+  const rowsHtml = filas.slice(0, 12).map((item, index) => {
+    const tasa = item.controles ? ((item.actas / item.controles) * 100) : 0;
+    return `<tr>
+      <td><span class="ranking-name"><span class="ranking-pos">${index + 1}</span>${item.nombre}</span></td>
+      <td>${fmt(item.controles)}</td>
+      <td>${fmt(item.actas)}</td>
+      <td>${fmt(item.retenciones)}</td>
+      <td>${tasa.toFixed(1)}%</td>
+    </tr>`;
+  }).join('');
+
   document.getElementById("sec1").innerHTML = `
-    <div class="kpis">
-      <div class="kpi"><div class="label">Incumplimientos CNRT</div><div class="value">${fmt(totC)}</div></div>
-      <div class="kpi"><div class="label">Incumplimientos Gendarmería</div><div class="value">${fmt(totG)}</div></div>
-    </div>
     <div class="card">
-      <div class="section-title"><span class="dot"></span>Incumplimientos detectados por mes — CNRT vs. Gendarmería</div>
-      ${svgBarChart(serie)}
-      <div class="legend" style="margin-top:12px">
-        <span><span class="sw" style="background:var(--azul-oscuro)"></span>CNRT</span>
-        <span><span class="sw" style="background:var(--dorado)"></span>Gendarmería Nacional</span>
+      <div class="section-title"><span class="dot"></span>RANKING DE AGENTES Y DELEGACIONES</div>
+      <div class="ranking-toolbar">
+        <div class="field">
+          <label for="rankingScope">Ver ranking</label>
+          <select id="rankingScope" onchange="renderSec1(currentRange()[0], currentRange()[1])">
+            <option value="delegaciones" ${scope === 'delegaciones' ? 'selected' : ''}>Delegaciones</option>
+            <option value="agentes" ${scope === 'agentes' ? 'selected' : ''}>Agentes</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="rankingSort">Ordenar por</label>
+          <select id="rankingSort" onchange="renderSec1(currentRange()[0], currentRange()[1])">
+            <option value="controles" ${sort === 'controles' ? 'selected' : ''}>Controles</option>
+            <option value="actas" ${sort === 'actas' ? 'selected' : ''}>Actas</option>
+            <option value="retenciones" ${sort === 'retenciones' ? 'selected' : ''}>Retenciones</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="rankingDelegation">Delegación</label>
+          <select id="rankingDelegation" onchange="renderSec1(currentRange()[0], currentRange()[1])">
+            ${filtroOptions}
+          </select>
+        </div>
       </div>
-    </div>
-    <div class="card">
-      <div class="section-title"><span class="dot"></span>Comparativa por tipo de incumplimiento (período)</div>
+
+      <div class="ranking-summary">
+        <div class="stat"><div class="label">Controles</div><div class="value">${fmt(totalControles)}</div></div>
+        <div class="stat"><div class="label">Actas</div><div class="value">${fmt(totalActas)}</div></div>
+        <div class="stat"><div class="label">Retenciones</div><div class="value">${fmt(totalRetenciones)}</div></div>
+      </div>
+
       <div class="table-scroll">
-      <table>
-        <thead><tr><th>Tipo de incumplimiento</th><th>CNRT</th><th>Gendarmería</th><th>Diferencia</th></tr></thead>
-        <tbody>${catRows}</tbody>
-      </table></div>
+        <table class="ranking-table">
+          <thead>
+            <tr>
+              <th>${scope === 'agentes' ? 'Agente' : 'Delegación'}</th>
+              <th>Controles</th>
+              <th>Actas</th>
+              <th>Ret.</th>
+              <th>% Actas</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rowsHtml || `<tr><td colspan="5" style="text-align:center;color:var(--gris-azulado);padding:20px;">Sin datos para este filtro.</td></tr>`}
+          </tbody>
+        </table>
+      </div>
+      <p class="note">Ranking actualizado con el intervalo vigente del filtro de fechas. La tabla muestra los principales resultados del período y la delegación seleccionada.</p>
     </div>
   `;
 }
@@ -734,7 +819,7 @@ function indTable(items,s,e,multi){
   const monthHeaders=[]; for(let i=s;i<=e;i++) monthHeaders.push(`<th>${(MONTHS[i]&&MONTHS[i].short)||''}</th>`);
   const aggLabel = multi ? "Período" : ((MONTHS[s]&&MONTHS[s].short)||'');
   return `<div class="table-scroll"><table>
-    <thead><tr><th>Código</th><th>Indicador</th>${monthHeaders.join("")}<th class="col-hi" style="background:#b5921f">${aggLabel}</th></tr></thead>
+    <thead><tr><th>Indicador</th><th>Descripción</th>${monthHeaders.join("")}<th class="col-hi" style="background:#b5921f">${aggLabel}</th></tr></thead>
     <tbody>${rows}</tbody>
   </table></div>`;
 }
